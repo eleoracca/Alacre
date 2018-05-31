@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# ignore file ending with...
+*~
+*.root
+*.pmc
+*.pdf
