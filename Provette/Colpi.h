@@ -1,16 +1,16 @@
-#ifndef COLPI_H
-#define COLPI_H
-
-#include "TObject.h"
-
-class Colpi : public TObject{
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Dichiarazione della classe Colpi                        ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
   ~ Ultima modifica: 15/11/2017                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+#ifndef COLPI_H
+#define COLPI_H
+
+#include "Punto.h"
+
+class Colpi : public Punto{
   
  public:
 

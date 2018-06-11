@@ -1,14 +1,14 @@
-#include "Colpi.h"
-#include "TMath.h"
-
-ClassImp(Colpi)
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Implementazione della classe Colpi                      ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
   ~ Ultima modifica: 15/11/2017                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+#include "Colpi.h"
+#include "TMath.h"
+
+ClassImp(Colpi)
 
 // Costruttori
 Colpi::Colpi(): TObject(),
