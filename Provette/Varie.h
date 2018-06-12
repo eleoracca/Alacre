@@ -8,6 +8,7 @@
   ~ Ultima modifica: 15/11/2017                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+/*
 typedef Vertice VTX;
 
 struct Vertice {
@@ -16,5 +17,6 @@ struct Vertice {
   double Z;
   int molteplicita;
 };
+*/
 
 #endif
