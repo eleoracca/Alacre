@@ -18,44 +18,46 @@ Vertice::Vertice(): Punto(),
    dmRumore(0)
 {}
 
+//Costruttori
 //Vertice::Vertice(double X,double Y,double Z,int Mult,int IDnumber,double Noiselvl):
 Vertice::Vertice(double X,double Y,double Z,int Molteplicita, double Rumore):
    Punto(X,Y,Z),
-   dmMolteplicita(Mult),
+   dmMolteplicita(Mlteplicita),
    //dmID(ID),
    dmRumore(Rumore)
-   {}
+{}
 
+//Distruttori
 Vertice::~Vertice() 
 
 // ---------- Getter ----------
 int GetMolteplicita()
 {
-  return dmMolteplicita;
+   return dmMolteplicita;
 }
 
 /*int GetID()
 {
-  return dmID;
+   return dmID;
 }*/
 
 double GetRumore()
 {
-  return dmRumore;
+   return dmRumore;
 }
 
 // ---------- Setter ----------
 void Vertice::SetMolteplicita(int Molteplicita) 
 {
-  dmMolteplicita = Molteplicita;
+   dmMolteplicita = Molteplicita;
 }
 
 /*void Vertice::SetID(int ID) 
 {
-  dmID = ID;
+   dmID = ID;
 }*/
 
 void Vertice::SetRumore(double Rumore) 
 {
-  dmRumore = Rumore;
+   dmRumore = Rumore;
 }

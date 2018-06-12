@@ -6,7 +6,7 @@
 #include "TRandom3.h"
 #include "TTree.h"
 
-#include "Colpi.h"
+#include "Urto.h"
 #include "Varie.h"
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,11 +22,11 @@ void Albero(int numeroeventi){
   TTree *alberello = new TTree("quercia", "Tree di Racca e Sauda");
 
   // Hit sul primo rivelatore
-  TClonesArray *PuntatoreRiv1 = new TClonesArray("Colpi", numeroeventi);
+  TClonesArray *PuntatoreRiv1 = new TClonesArray("Urto", numeroeventi);
   TClonesArray &IndPuntRiv1 = *PuntatoreRiv1;
   
   // Hit sul secondo rivelatore
-  TClonesArray *PuntatoreRiv2 = new TClonesArray("Colpi", numeroeventi);
+  TClonesArray *PuntatoreRiv2 = new TClonesArray("Urto", numeroeventi);
   TClonesArray &IndPuntRiv2 = *PuntatoreRiv2;
 
   // Vertice della collisione

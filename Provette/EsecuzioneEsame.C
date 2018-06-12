@@ -39,7 +39,7 @@ void EsecuzioneEsame(TString myopt = "fast"){
   }
 
   // Caricamento delle macro necessarie
-  gSystem->CompileMacro("Colpi.cxx", opt);
+  gSystem->CompileMacro("Urto.cxx", opt);
   gSystem->CompileMacro("Albero.C", opt);
 
   // Generazione degli eventi
