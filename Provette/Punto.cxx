@@ -2,7 +2,7 @@
   ~ Implementazione della classe Punti                      ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 15/11/2017                             ~
+  ~ Ultima modifica: 12/06/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #include "TMath.h"
@@ -68,70 +68,70 @@ void Punto::SetSferiche(const double RaggioS, const double Theta, const double P
 
 void Punto::SetX(const double X)
 {
-   dmX = X;
+      dmX = X;
 
-   CartesianeSferiche();
-   CartesianeCilindriche();
+      CartesianeSferiche();
+      CartesianeCilindriche();
 }
 
 void Punto::SetY(const double Y)
 {
-   dmY = Y;
+      dmY = Y;
 
-   CartesianeSferiche();
-   CartesianeCilindriche();
+      CartesianeSferiche();
+      CartesianeCilindriche();
 }
 
 void Punto::SetZ(const double Z)
 {
-   dmZ = Z;
+      dmZ = Z;
 
-   CartesianeSferiche();
-   CartesianeCilindriche();
+      CartesianeSferiche();
+      CartesianeCilindriche();
 }
 
 void Punto::SetTheta(const double Theta)
 {
-   dmTheta = Theta;
+      dmTheta = Theta;
    
-   SfericheCartesiane();
-   CartesianeCilindriche();
+      SfericheCartesiane();
+      CartesianeCilindriche();
 }
 
 void Punto::SetPhi(const double Phi)
 {
-   dmPhi = Phi;
+      dmPhi = Phi;
 
-   CilindricheCartesiane();
-   CartesianeSferiche();
+      CilindricheCartesiane();
+      CartesianeSferiche();
 }
 
 void Punto::SetRaggioC(const double RaggioC)
 {
-   dmRaggioC = RaggioC;
+      dmRaggioC = RaggioC;
 
-   CilindricheCartesiane();
-   CartesianeSferiche();
+      CilindricheCartesiane();
+      CartesianeSferiche();
 
-   if (dmX == 0. && dmY == 0.){
-      Printf("Attenzione: Coordinate X e Y nulle! \
-         \n Potrebbero esserci problemi con le conversioni delle coordinate. \
-         \n Controlla i valori inseriti e il codice!");
-   }
+      if (dmX == 0. && dmY == 0.){
+        Printf("Attenzione: Coordinate X e Y nulle! \
+           \n Potrebbero esserci problemi con le conversioni delle coordinate. \
+           \n Controlla i valori inseriti e il codice!");
+      }
 }
 
 void Punto::SetRaggioS(const double RaggioS)
 {
-   dmRaggioS = RaggioS;
+      dmRaggioS = RaggioS;
 
-   SfericheCartesiane();
-   CartesianeCilindriche();
+      SfericheCartesiane();
+      CartesianeCilindriche();
 
-   if (dmX == 0. && dmY == 0. && dmZ == 0.){
-      Printf("Attenzione: Coordinate X, Y e Z nulle! \
-         \n Potrebbero esserci problemi con le conversioni delle coordinate. \
-         \n Controlla i valori inseriti e il codice!");
-   }
+      if (dmX == 0. && dmY == 0. && dmZ == 0.){
+        Printf("Attenzione: Coordinate X, Y e Z nulle! \
+           \n Potrebbero esserci problemi con le conversioni delle coordinate. \
+           \n Controlla i valori inseriti e il codice!");
+      }
 }
 
 
@@ -144,7 +144,7 @@ double Punto::GetDistanza(Punto &PuntoUno, Punto &PuntoDue)
 double Punto::GetDeltaPhi(Punto &PuntoUno, Punto &PuntoDue)
 {
    return TMath::Abs(PuntoUno.GetPhi() - PuntoDue.GetPhi());
-};
+}
 
 
 // ----------- Member functions -----------
@@ -217,13 +217,13 @@ void Punto::CartesianeSferiche(){
 }
 
 
-void Punto::SphericaltoCartesian() {
-   dmX=fSRadius*TMath::Sin(dmTheta)*TMath::Cos(dmPhi);
-   dmY=fSRadius*TMath::Sin(dmTheta)*TMath::Sin(dmPhi);
-   dmZ=fSRadius*TMath::Cos(dmTheta);
+void Punto::SfericheCilindriche(){
+   dmX = dmRaggioS * TMath::Sin(dmTheta) * TMath::Cos(dmPhi);
+   dmY = dmRaggioS * TMath::Sin(dmTheta) * TMath::Sin(dmPhi);
+   dmZ = dmRaggioS * TMath::Cos(dmTheta);
 }
 
-void Punto::CylindricaltoCartesian() {
-   dmX=fCRadius*TMath::Cos(dmPhi);
-   dmY=fCRadius*TMath::Sin(dmPhi);
+void Punto::CilindricheCartesiane(){
+   dmX = dmRaggioC * TMath::Cos(dmPhi);
+   dmY = dmRaggioC * TMath::Sin(dmPhi);
 }
