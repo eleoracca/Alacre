@@ -5,32 +5,23 @@
   ~ Macro per l'esecuzione della simulazione d'esame        ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 15/11/2017                             ~
+  ~ Ultima modifica: 13/06/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-void EsecuzioneEsame(TString myopt = "fast"){
-  // Dichiarazione dei parametri della simulazione
-  int numeroesperimenti = 0;
+// ************************ Dichiarazione delle funzioni ************************
+void EsecuzioneEsame(bool fileconfig = kFalse, TString myopt = "fast");
 
+
+
+// *********************** Implementazione delle funzioni ***********************
+void EsecuzioneEsame(bool fileconfig, TString myopt){
   // Dichiarazione dei timer
   TStopwatch tempototale;
   TStopwatch tempogenerazione;
-  TStopwatch tempotrasporto;
   TStopwatch temporicostruzione;
-  
-  // Interimento dei parametri della simulazione
-  cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" << endl;
-  cout << "---------- Inserire i parametri per la generazione ---------" << endl;
-  cout << "+ numero di eventi: ";
-  cin >> numeroesperimenti;
-  cout << "\n\n----------- Inserire i parametri per il trasporto ----------" << endl;
-  cout << "\n\n--------- Inserire i parametri per la ricostruzione --------" << endl;
-  
+  TStopwatch tempoanalisi;
 
-  // --------- Simulazione e analisi ---------
-  tempototale.Start(kTRUE);
-
-  char * opt;
+  char *opt;
   if(myopt.Contains("force")){
     opt = "kfg";
   }
@@ -39,20 +30,16 @@ void EsecuzioneEsame(TString myopt = "fast"){
   }
 
   // Caricamento delle macro necessarie
-  gSystem->CompileMacro("Urto.cxx", opt);
   gSystem->CompileMacro("Albero.C", opt);
+  
+  // --------- Simulazione e analisi ---------
+  tempototale.Start(kTRUE);
 
   // Generazione degli eventi
   cout << "~~~~~~~~~~~~~~~~ Generazione degli eventi ~~~~~~~~~~~~~~~~" << endl;
   tempogenerazione.Start(kTRUE);
-  Albero(numeroesperimenti);
+  Albero(fileconfig);
   tempogenerazione.Stop();
-
-  // Trasporto degli eventi
-  cout << "~~~~~~~~~~~~~~~~~ Trasporto degli eventi ~~~~~~~~~~~~~~~~~" << endl;
-  tempotrasporto.Start(kTRUE);
-  
-  tempotrasporto.Stop();
 
   // Ricostruzione degli eventi
   cout << "~~~~~~~~~~~~~~~ Ricostruzione degli eventi ~~~~~~~~~~~~~~~" << endl;
@@ -60,13 +47,20 @@ void EsecuzioneEsame(TString myopt = "fast"){
   
   temporicostruzione.Stop();
 
+  // Ricostruzione degli eventi
+  cout << "~~~~~~~~~~~~~~~~~~ Analisi degli eventi ~~~~~~~~~~~~~~~~~~" << endl;
+  tempoanalisi.Start(kTRUE);
+  
+  tempoanalisi.Stop();
+
   // Dati finali
   tempototale.Stop();
   cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" << endl;
   cout << "Simulazione completata" << endl;
   cout << "La durata totale è:                     " << tempototale.Print() << endl;
   cout << "La generazione degli eventi è durata:   " << tempogenerazione.Print() << endl;
-  cout << "Il trasporto degli eventi è durata:     " << tempotrasporto.Print() << endl;
   cout << "La ricostruzione degli eventi è durata: " << temporicostruzione.Print() << endl;
+  cout << "L'analisi degli eventi è durata:        " << tempoanalisi.Print() << endl;
+  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" << endl;
   
 }
