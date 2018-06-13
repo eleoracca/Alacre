@@ -34,13 +34,13 @@ class Trasporto : public TObject {
     void Rotate(double Theta, double Phi);
 
 	  // ----------- Getter -----------
-    int    GetDirectID()     const; {return dmID;}
-    double GetDirectTheta()  const; {return dmTheta;}
-    double GetDirectPhi()    const; {return dmPhi;}
-    double GetDirCos1()      const; {return dmCDx;}
-    double GetDirCos2()      const; {return dmCDy;}
-    double GetDirCos3()      const; {return dmCDz;}
-    bool   GetRotStatus()    const; {return dmIsrotated;}
+    int    GetDirectID()     const;
+    double GetDirectTheta()  const;
+    double GetDirectPhi()    const;
+    double GetDirCos1()      const;
+    double GetDirCos2()      const;
+    double GetDirCos3()      const;
+    bool   GetRotStatus()    const;
 
   private:
 
@@ -56,7 +56,7 @@ class Trasporto : public TObject {
     double dmCDz;         //! Coseno Direttore z.
     bool   dmIsrotated;   //! Debug flag.
 
-	ClassDef(Trasporto, 1)
+ClassDef(Trasporto, 1)
 
 };
 
