@@ -1,0 +1,11 @@
+//numeroeventi,distmolteplicita,par1molteplicita,par2molteplicita,multiplescattering,rumore,disteta,par1rumore,par2rumore
+10
+fissa
+2.
+0.
+kFALSE
+kFALSE
+kFALSE
+fissa
+2.
+0.
