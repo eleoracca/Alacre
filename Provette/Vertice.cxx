@@ -1,5 +1,5 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Implementazione della classe Vertice                      ~
+  ~ Implementazione della classe Vertice                    ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
   ~ Ultima modifica: 12/06/2018                             ~
@@ -12,9 +12,10 @@
 #endif
 
 ClassImp(Vertice)
-Vertice::Vertice(): Punto(),
+Vertice::Vertice(): 
+   Punto(),
    dmMolteplicita(0),
-  // dmID(0),
+   //dmID(0),
    dmRumore(0)
 {}
 
@@ -22,26 +23,27 @@ Vertice::Vertice(): Punto(),
 //Vertice::Vertice(double X,double Y,double Z,int Mult,int IDnumber,double Noiselvl):
 Vertice::Vertice(double X,double Y,double Z,int Molteplicita, double Rumore):
    Punto(X,Y,Z),
-   dmMolteplicita(Mlteplicita),
+   dmMolteplicita(Molteplicita),
    //dmID(ID),
    dmRumore(Rumore)
 {}
 
 //Distruttori
 Vertice::~Vertice() 
+{}
 
 // ---------- Getter ----------
-int GetMolteplicita()
+int Vertice::GetMolteplicita()
 {
    return dmMolteplicita;
 }
 
-/*int GetID()
+/*int Vertice::GetID()
 {
    return dmID;
 }*/
 
-double GetRumore()
+double Vertice::GetRumore()
 {
    return dmRumore;
 }
