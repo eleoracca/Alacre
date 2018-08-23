@@ -50,7 +50,8 @@ class Punto : public TObject {
   void CartesianeSferiche();
   void SfericheCartesiane();
   void CilindricheCartesiane();
-  
+
+  // ----------- Data Member -----------
   double dmX; //! Cartesiane: X
   double dmY; //! Cartesiane: Y
   double dmZ; //! Cartesiane: Z

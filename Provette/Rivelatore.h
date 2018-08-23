@@ -14,10 +14,26 @@
 class Rivelatore : public TObject{
   
  public:
-  Rivelatore();
+
+  // ----------- Costruttori -----------
+  Rivelatore();  
+  Rivelatore(TString Configurazione);
+
+  // ----------- Distruttori -----------
+  virtual ~Rivelatore(){};
+
+  // ----------- Setter -----------
   
-  Rivelatore();
-} 
+  // ----------- Getter -----------
+  
+ private:
+  // ----------- Member functions -----------
+
+  // ----------- Data Member -----------
+};
+#endif
+
+
 /*namespace detector {
   
   static const Double_t rBP = 3.;   //cm    R Beam Pipe
@@ -44,4 +60,3 @@ class Rivelatore : public TObject{
 }*/
 
 
-#endif
