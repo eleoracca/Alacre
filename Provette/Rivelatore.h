@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Dichiarazione della classe Vertice                        ~
+  ~ Dichiarazione della classe Rivelatore                   ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 12/06/2018                             ~
+  ~ Ultima modifica: 23/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #ifndef RIVELATORE_H
@@ -15,48 +15,57 @@ class Rivelatore : public TObject{
   
  public:
 
-  // ----------- Costruttori -----------
+  // ------------- Costruttori --------------
   Rivelatore();  
   Rivelatore(TString Configurazione);
 
-  // ----------- Distruttori -----------
+  // ------------- Distruttori --------------
   virtual ~Rivelatore(){};
 
-  // ----------- Setter -----------
+  // ---------------- Setter ----------------
+  void SetRBP(const double RaggioBP);
+  void SetR1L(const double Raggio1L);
+  void SetR2L(const double Raggio2L);
+  void SetSBP(const double SpessoreBP);
+  void SetS1L(const double Spessore1L);
+  void SetLunghezza(const double Lunghezza);
+  void SetEtaMin(const double Etamin);
+  void SetEtaMax(const double Etamax);
+  void SetSmearZ(const double SmearZ);
+  void SetSmearRP(const double SmearRPhi);
+  void SetMaterialeBP(const TMaterial Materiale);
   
-  // ----------- Getter -----------
+  // ---------------- Getter ----------------
+  double GetRBP() const;
+  double GetR1L() const;
+  double GetR2L() const;
+  double GetSBP() const;
+  double GetS1L() const;
+  double GetLunghezza() const;
+  double GetEtaMin() const;
+  double GetEtaMax() const;
+  double GetSmearZ() const;
+  double GetSmearRP() const;
   
  private:
   // ----------- Member functions -----------
 
-  // ----------- Data Member -----------
+  // ------------- Data Member --------------
+  static const double dmRaggioBP; //! Raggio della Beam Pipe in cm
+  static const double dmRaggio1L; //! Raggio del primo strato in cm
+  static const double dmRaggio2L; //! Raggio del secondo strato in cm
+  static const double dmSpessoreBP; //! Spessore della Beam Pipe in cm
+  static const double dmSpessoreL; //! Spessore del primo strato in cm
+  static const double dmLunghezza; //! Lunghezza del rivelatore in cm
+  static const double dmEtaMinimo; //! Pseudorapidità minima rilevabile
+  static const double dmEtaMassimo; //! Pseudorapidità massima rilevabile
+  static const double dmSmearingZ; //! Smearing nella direzione Z in cm
+  static const double dmSmearingRPhi; //! Smearing nelle direzioni R e #phi in cm
+  static const double dmTaglioPhi; //! Taglio su #phi in mrad
+  static const double dmTheta; //! #theta del multiple scattering nella RMS della generazione gaussiana in rad
+  static const TMaterial dmMaterialeBP; //! Materiale della Beam Pipe
 };
+
 #endif
-
-
-/*namespace detector {
-  
-  static const Double_t rBP = 3.;   //cm    R Beam Pipe
-  static const Double_t tBP = 0.08; //cm    thickness Beam Pipe
-  
-  static const Double_t r1L = 4.;   //cm    R 1st Layer
-  static const Double_t t1L = 0.02; //cm    thickness 1st Layer
-  
-  static const Double_t r2L = 7.;   //cm    R 2nd Layer
-  static const Double_t t2L = 0.02; //cm    thickness 2nd Layer
-  
-  static const Double_t length = 27.; //cm
-  
-  static const Double_t etaMin = -2.; // pseudorapidity acceptance  
-  static const Double_t etaMax = 2.;
-  
-  static const Double_t smZ = 0.012; //cm  smearing Z direction  (120 #mum)
-  static const Double_t smRPhi = 0.003; //cm  smearing r#phi direction (30 #mum)
-
-  static const Double_t cutPhi = 0.01; // rad = 10 mrad
-
-  static const Double_t thetaSpace = TMath::Sqrt(2.)*0.001; //[rad] RMS generazione gaussiana theta multiple scattering
-  
-}*/
 
 
