@@ -68,14 +68,20 @@ void Albero(bool fileconfig = kFALSE){
   }
   
   // File di output per i dati generati dal Monte Carlo
-  TFile fileoutput("AlberoDati.root", "RECREATE");
+  TFile fileoutput("Simulazione.root", "RECREATE");
+  if(fileoutput.IsZombie()){
+    cout << "C'è stato un problema nel creare il file Simulazione.root" << endl;
+    return;
+  }
 
   // Tree della simulazione
   TTree *alberello = new TTree("alberello", "Tree della simulazione di Racca e Sauda");
 
-  // Vertice della collisione
-  TClonesArray *PuntatoreVertice = new TClonesArray("Vertice", numeroeventi);
-  TClonesArray &IndPuntVertice = *PuntatoreVertice;
+  // Vertice della collisione e direzione
+  Vertice *PuntatoreVertice = new Vertice();
+  Vertice &IndPuntVertice = *PuntatoreVertice;
+  Trasporto *PuntatoreDirezione = new Trasporto();
+  Trasporto &IndPuntDirezione = *PuntatoreDirezione;
 
   // Urti sulla beam pipe
   TClonesArray *PuntatoreBP = new TClonesArray("Urto", numeroeventi);
@@ -95,18 +101,35 @@ void Albero(bool fileconfig = kFALSE){
   alberello->Branch("UrtiRivelatore1", &PuntatoreRiv1);
   alberello->Branch("UrtiRivelatore2", &RuntatoreRiv2);
 
+  // Rivelatore
+  //Rivelatore Rivelatore = new Rivelatore("Detector.txt");
+
   // Loop sugli eventi per creare i dati della simulazione
   for(int i = 0; i < numeroeventi; i++){
 
     // Generazione della molteplicità dell'evento
     int numeroparticelle = 0;
 
-    //if con condizioni a seconda della forma della molteplicità
-    while(numeroparticelle <= 0){
-      numeroparticelle = (int)(0.5 + gRandom->Gaus(50., 20.));
+    if(distmolteplicita == "gaussiana"){
+      while(numeroparticelle == 0){
+	numeroparticelle = (int)(0.5 + gRandom->Gaus(par1molteplicita, par2molteplicita));
+      }
+    }
+    else if(distmolteplicita == "uniforme"){
+      while(numeroparticelle == 0){
+	numeroparticelle = (int)(0.5 + gRandom->Uniform(par1molteplicita, par2molteplicita));
+      }
+    }
+    else{
+      while(numeroparticelle == 0){
+	numeroparticelle = (int)par1molteplicita;
+      }
     }
         
     // Generazione del vertice dell'evento, rms in centimetri
+    //PuntatoreVertice->SetCasuale(0.01, 5.3, numeroparticelle);
+    //PuntatoreVertice->SetCasuale(Rivelatore.GetSigmaX, Rivelatore.GetSigmaZ, numeroparticelle);
+    
     /*
     vertice.molteplicita = numeroparticelle;
     vertice.X = gRandom->Gaus(0., 0.01);
