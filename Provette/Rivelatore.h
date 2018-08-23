@@ -13,10 +13,10 @@
 
 class Rivelatore : public TObject{
   
-  public:
-     Rivelatore();
-
-     Rivelatore();
+ public:
+  Rivelatore();
+  
+  Rivelatore();
 } 
 /*namespace detector {
   

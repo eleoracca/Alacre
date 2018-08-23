@@ -23,7 +23,7 @@ class Urto : public Punto{
   Urto(double x, double y, double z, int NumLayer, int ID = 0);
   
   //  ---------- Distruttori ----------
-  virtual ~Urto();
+  virtual ~Urto(){}
   
   // ---------- Member function ----------
   
@@ -31,7 +31,7 @@ class Urto : public Punto{
   void SetX(double x);
   void SetY(double y);
   void SetZ(double z);
-  void NowRealHit();
+  void OraUrtoReale();
   void SetIDUrto(int ID);
   void SetNumLayerUrto(int NumLayer);
   
@@ -40,23 +40,23 @@ class Urto : public Punto{
   double GetY() const;
   double GetZ() const;
   int GetNumeroLayer() const;
-  bool IsReal() const;
+  bool TestReale() const;
   int GetIDUrto() const;
   
   // Calcolo dell'intersezione cilindrica e restituzione del parametro
   static double CalcoloT(double Theta, double Phi, double XO, double YO, double Raggio);
   
   // Genera un urto partendo da un vertice
-  static Hit UrtoSuVertice(Vertice& Origine, Direzione& Direttrice, double Raggio, int ID, int NumLayer = 0);
+  static Urto UrtoSuVertice(Vertice& Origine, Trasporto& Direttrice, double Raggio, int ID, int NumLayer = 0);
   
   // Genera un urto partendo dall'urto, contemplando anche lo cattering multiplo con il materiale lungo la traiettoria
-  Hit GetUrtodaUrto(Direzione& Direttrice, double Raggio, TMaterial& Materiale, double Larghezza, bool ScatteringMult = kTRUE, int NumLayer = 0, double P = 750, int Z = 1, double Beta = 1);
+  Urto GetUrtodaUrto(Trasporto& Direttrice, double Raggio, TMaterial& Materiale, double Larghezza, bool ScatteringMult = kTRUE, int NumLayer = 0, double P = 750, int Z = 1, double Beta = 1);
   
   // Smearing: modifica delle coordinate a causa della risoluzione definita
   void SmearingGaussiano(double RaggioD, double ZDevStd, double RPhiDevStd);
   
   // Rumore: il primo generatore crea una distribuzione uniforme di urti sul rivelatore
-  static Hit RumoreRivelatore(double RaggioC, double Zmin, double Zmax);
+  static Urto RumoreRivelatore(double RaggioC, double Zmin, double Zmax);
   
  private:
   // Data Member
@@ -68,6 +68,6 @@ class Urto : public Punto{
   bool dmUrtoReale; //! Permette di decidere se l'urto reale oppure no
   
   ClassDef(Urto,1)
-    };
+};
 
 #endif

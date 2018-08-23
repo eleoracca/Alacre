@@ -12,20 +12,18 @@
 #endif
 
 ClassImp(Vertice)
-Vertice::Vertice(): 
-   Punto(),
-   dmMolteplicita(0),
-   //dmID(0),
-   dmRumore(0)
-{}
 
 //Costruttori
+Vertice::Vertice(): Punto(),
+                    dmMolteplicita(0),
+                    //dmID(0),
+                    dmRumore(0)
+{}
 //Vertice::Vertice(double X,double Y,double Z,int Mult,int IDnumber,double Noiselvl):
-Vertice::Vertice(double X,double Y,double Z,int Molteplicita, double Rumore):
-   Punto(X,Y,Z),
-   dmMolteplicita(Molteplicita),
-   //dmID(ID),
-   dmRumore(Rumore)
+Vertice::Vertice(double X,double Y,double Z,int Molteplicita, double Rumore): Punto(X,Y,Z),
+									      dmMolteplicita(Molteplicita),
+									      //dmID(ID),
+									      dmRumore(Rumore)
 {}
 
 //Distruttori
@@ -35,23 +33,23 @@ Vertice::~Vertice()
 // ---------- Getter ----------
 int Vertice::GetMolteplicita()
 {
-   return dmMolteplicita;
+  return dmMolteplicita;
 }
 
 /*int Vertice::GetID()
 {
-   return dmID;
+  return dmID;
 }*/
 
 double Vertice::GetRumore()
 {
-   return dmRumore;
+  return dmRumore;
 }
 
 // ---------- Setter ----------
 void Vertice::SetMolteplicita(int Molteplicita) 
 {
-   dmMolteplicita = Molteplicita;
+  dmMolteplicita = Molteplicita;
 }
 
 /*void Vertice::SetID(int ID) 
@@ -61,5 +59,5 @@ void Vertice::SetMolteplicita(int Molteplicita)
 
 void Vertice::SetRumore(double Rumore) 
 {
-   dmRumore = Rumore;
+  dmRumore = Rumore;
 }
