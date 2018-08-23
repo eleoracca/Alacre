@@ -6,7 +6,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined (__CINT__) || defined (__MAKECINT__)
-#include "Direzione.h"
+#include "Trasporto.h"
 #include "Punto.h"
 #include "TMaterial.h"
 #include "TMath.h"

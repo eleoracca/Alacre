@@ -1,8 +1,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Implementazione della classe Punti                      ~
+  ~ Implementazione della classe Punto                      ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 12/06/2018                             ~
+  ~ Ultima modifica: 23/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #include "TMath.h"
@@ -11,7 +11,7 @@
 
 ClassImp(Punto)
 
-// ----------- Costruttori -----------
+// ------------- Costruttori --------------
 Punto::Punto(): TObject(),
                 dmX(0.),
                 dmY(0.),
@@ -31,11 +31,11 @@ Punto::Punto(double X, double Y, double Z): TObject(),
   CartesianeCilindriche(); // Assegna i valori delle coordinate cilindriche
 }
 
-// ----------- Distruttori -----------
+// ------------- Distruttori --------------
 Punto::~Punto()
 {}
 
-// ----------- Setters -----------
+// ---------------- Setter ----------------
 void Punto::SetCartesiane(const double X, const double Y, const double Z)
 {
   dmX = X;
@@ -135,7 +135,7 @@ void Punto::SetRaggioS(const double RaggioS)
 }
 
 
-// ----------- Getters -----------
+// ---------------- Getter ----------------
 double Punto::GetDistanza(Punto &PuntoUno, Punto &PuntoDue)
 {
   return TMath::Sqrt((PuntoUno.GetX() - PuntoDue.GetX()) * (PuntoUno.GetX() - PuntoDue.GetX()) + (PuntoUno.GetY() - PuntoDue.GetY()) * (PuntoUno.GetY() - PuntoDue.GetY()) + (PuntoUno.GetZ() - PuntoDue.GetZ()) * (PuntoUno.GetZ() - PuntoDue.GetZ()));

@@ -2,7 +2,7 @@
   ~ Dichiarazione della classe Punto                        ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 11/06/2018                             ~
+  ~ Ultima modifica: 23/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #ifndef PUNTO_H
@@ -14,14 +14,14 @@ class Punto : public TObject {
 
  public:
    
-  // ----------- Costruttori -----------
+  // ------------- Costruttori --------------
   Punto();
   Punto(double X, double Y, double Z);
   
-  // ----------- Distruttori -----------
+  // ------------- Distruttori --------------
   virtual ~Punto(){}
   
-  // ----------- Setter -----------
+  // ---------------- Setter ----------------
   void SetCartesiane(const double X, const double Y, const double Z); //! Cartesiane: X, Y, Z 
   void SetCilindriche(const double RaggioC, const double Phi, const double Z); //! Cilindriche: R, φ, Z
   void SetSferiche(const double RaggioS, const double Theta, const double Phi); //! Sferiche: R, ϑ, φ
@@ -30,10 +30,10 @@ class Punto : public TObject {
   void SetZ(const double Z);
   void SetTheta(const double Theta);
   void SetPhi(const double Phi);
-  void SetRaggioC(const double Raggioc);
+  void SetRaggioC(const double RaggioC);
   void SetRaggioS(const double RaggioS);
   
-  // ----------- Getter -----------
+  // ---------------- Getter ----------------
   double GetX() const;
   double GetY() const;
   double GetZ() const;
@@ -51,7 +51,7 @@ class Punto : public TObject {
   void SfericheCartesiane();
   void CilindricheCartesiane();
 
-  // ----------- Data Member -----------
+  // ------------- Data Member --------------
   double dmX; //! Cartesiane: X
   double dmY; //! Cartesiane: Y
   double dmZ; //! Cartesiane: Z
@@ -62,4 +62,5 @@ class Punto : public TObject {
   
   ClassDef(Punto,1)
 };
+
 #endif
