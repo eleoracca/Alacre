@@ -1,0 +1,3 @@
+//ConfigurazioneRivelatore
+0.0120
+0.003
