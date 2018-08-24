@@ -2,53 +2,81 @@
   ~ Dichiarazione della classe Rivelatore                   ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 23/08/2018                             ~
+  ~ Ultima modifica: 24/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include "TMath.h"
 
 // ------------- Costruttori --------------
-Rivelatore::Rivelatore(): TObject(),
-			  dmRaggioBP(0.),
-			  dmRaggio1L(0.),
-			  dmRaggio2L(0.),
-			  dmSpessoreBP(0.),
-			  dmSpessoreL(0.),
-			  dmLunghezza(0.),
-			  dmEtaMinimo(0.),
-			  dmEtaMassimo(0.),
-			  dmSmearingZ(0.),
-			  dmSmearingRPhi(0.),
-			  dmTaglioPhi(0.),
-			  dmTheta(0.),
-			  dmMaterialeBP(0.)
-{}
+Rivelatore::Rivelatore(): TObject(){
+  dmRaggioBP = 0.;
+  dmRaggio1L = 0.;
+  dmRaggio2L = 0.;
+  dmSpessoreBP = 0.;
+  dmSpessoreL = 0.;
+  dmLunghezza = 0.;
+  dmEtaMinimo = 0.;
+  dmEtaMassimo = 0.;
+  dmSmearingZ = 0.;
+  dmSmearingRPhi = 0.;
+  dmTaglioPhi = 0.;
+  dmTheta = 0.;
+  dmMaterialeBP = 0.;
+  
+  dmXVertice = 0.;
+  dmYVertice = 0.;
+  dmZVertice = 0.;
+  dmXVerticeSigma = 0.;
+  dmXVerticeSigma = 0.;
+  dmXVerticeSigma = 0.;
+}
 
-Rivelatore::Rivelatore(TString Configurazione): TObject(),
-						dmRaggioBP(3.),
-						dmRaggio1L(4.),
-						dmRaggio2L(7.),
-						dmSpessoreBP(0.08),
-						dmSpessoreL(0.02),
-						dmLunghezza(27.),
-						dmEtaMinimo(-1.),
-						dmEtaMassimo(1.),
-						dmTaglioPhi(0.01),
-						dmTheta(TMath::Sqrt(2.)*0.001)
-{
+Rivelatore::Rivelatore(TString Configurazione): TObject(){
+  dmRaggioBP = 3.;
+  dmRaggio1L = 4.;
+  dmRaggio2L = 7.;
+  dmSpessoreBP = 0.08;
+  dmSpessoreL = 0.02;
+  dmLunghezza = 27.;
+  dmEtaMinimo = -2.;
+  dmEtaMassimo = 2.;
+  dmTaglioPhi = 0.01;
+  dmTheta = TMath::Sqrt(2.)*0.001;
+  dmMaterialeBP = TMaterial("dmMaterialeBP", "Be", 8, 4, 1.85, 35.28, 0.08);
+
   TString commento;
-  double SpostamentoSuZ;
-  double SpostamentoSuRPhi;
+  double *SpostamentoSuZ;
+  double *SpostamentoSuRPhi;
+  double *VerticeX;
+  double *VerticeY;
+  double *VerticeZ;
+  double *SVerticeX;
+  double *SVerticeX;
+  double *SVerticeX;
   
   ifstream in(Configurazione);
   if(!in){
     cout << "!! File di configurazione del rivelatore on trovato !!\nLa simulazione terminerà immediatamente." << endl;
   }
-  in >> commento >> SpostamentoSuZ >> SpostamentoSuRPhi;
+  in >> commento >> SpostamentoSuZ >> SpostamentoSuRPhi >> VerticeX >> SVerticeX >> VerticeY >> SVerticeY >> VerticeZ >> SVerticeZ;
   in.close();
 
-  dmSmearingZ = SpostamentoSuZ;
-  dmSmearingRPhi = SpostamentoSuRPhi;
-  dmMaterialeBP = TMaterial("dmMaterialeBP", "Be", 8, 4, 1.85, 35.28, 0.08);
+  dmSmearingZ = &SpostamentoSuZ;
+  dmSmearingRPhi = &SpostamentoSuRPhi;
+  dmXVertice = &VerticeX;
+  dmYVertice = &VerticeY;
+  dmZVertice = &VerticeZ;
+  dmXVerticeSigma = &SVerticeX;
+  dmYVerticeSigma = &SVerticeX;
+  dmZVerticeSigma = &SVerticeX;
+  
+  delete SpostamentoSuZ;
+  delete *SpostamentoSuRPhi;
+  delete *VerticeX;
+  delete *VerticeY;
+  delete *VerticeZ;
+  delete *SVerticeX;
+  delete *SVerticeX;
+  delete *SVerticeX;  
 }
 
 // ------------- Distruttori --------------
@@ -56,36 +84,6 @@ Rivelatore::~Rivelatore()
 {}
 
 // ---------------- Setter ----------------
-void Rivelatore::SetRBP(const double RaggioBP)
-{
-  dmRaggioBP = RaggioBP;
-}
-
-void Rivelatore::SetR1L(const double Raggio1L)
-{
-  dmRaggio1L = Raggio1L;
-}
-
-void Rivelatore::SetR2L(const double Raggio2L)
-{
-  dmRaggio2L = Raggio2L;
-}
-
-void Rivelatore::SetSBP(const double SpessoreBP)
-{
-  dmSpessoreBP = SpessoreBP;
-}
-
-void Rivelatore::SetRBP(const double Spessore1L)
-{
-  dmSpessoreL = Spessore1L;
-}
-
-void Rivelatore::SetLunghezza(const double Lunghezza)
-{
-  dmLunghezza = Lunghezza;
-}
-
 void Rivelatore::SetEtaMin(const double Etamin)
 {
   dmEtaMinimo = Etamin;
@@ -106,42 +104,7 @@ void Rivelatore::SetSmearRPhi(const double SmearRPhi)
   dmSmearingRPhi = SmearRPhi;
 }
 
-void Rivelatore::SetMaterialeBP(const TMaterial Materiale)
-{
-  dmMaterialeBP = Materiale;
-}
-
 // ---------------- Getter ----------------
-double Rivelatore::GetRBP()
-{
-  return dmRaggioBP;
-}
-
-double Rivelatore::GetR1L()
-{
-  return dmRaggio1L;
-}
-
-double Rivelatore::GetR2L()
-{
-  return dmRaggio2L;
-}
-
-double Rivelatore::GetSBP()
-{
-  return dmSpessoreBP;
-}
-
-double Rivelatore::GetS1L()
-{
-  return dmSpessoreL;
-}
-
-double Rivelatore::GetLunghezza()
-{
-  return dmLunghezza;
-}
-
 double Rivelatore::GetEtaMin()
 {
   return dmEtaMinimo;
@@ -161,5 +124,36 @@ double Rivelatore::GetSmearRPhi()
 {
   return dmSmearingRPhi;
 }
+
+double GetVerticeX()
+{
+  return dmXVertice;
+}
+
+double GetVerticeY()
+{
+  return dmYVertice;
+}
+
+double GetVerticeZ()
+{
+  return dmZVertice;
+}
+
+double GetVerticeSX()
+{
+  return dmXVerticeSigma;
+}
+
+double GetVerticeSY()
+{
+  return dmYVerticeSigma;
+}
+
+double GetVerticeSZ()
+{
+  return dmZVerticeSigma;
+}
+
 
 // ----------- Member functions -----------

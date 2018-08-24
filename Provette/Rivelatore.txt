@@ -1,3 +1,9 @@
-//ConfigurazioneRivelatore
+//SmearingZ,SmearingRPhi,VertX,VertSigmaX,VertY,VertSigmaY,VertZ,VertSigmaZ
 0.0120
 0.003
+0.
+0.01
+0.
+0.01
+0.
+5.3
