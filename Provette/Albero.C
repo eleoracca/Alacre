@@ -14,7 +14,7 @@
   ~ Generazione degli eventi                                ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 13/06/2018                             ~
+  ~ Ultima modifica: 24/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 // ******************************************************************************
@@ -29,6 +29,12 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
 
 // Funzione che stampa i parametri della simulazione
 void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &rumore, bool &disteta, TString &distrumore, double &par1rumore, double &par2rumore);
+
+// Funzione che decide la molteplicità
+int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &parametro2);
+
+// Funzione che importa istogrammi
+TH1F* ImportaIstogramma(TString &file, TString &istogramma);
 
 
 
@@ -104,46 +110,44 @@ void Albero(bool fileconfig = kFALSE){
   // Rivelatore
   //Rivelatore Rivelatore = new Rivelatore("Detector.txt");
 
+  // Eventuale caricamento della pseudorapidità
+  double pseudorapidita;
+  if(disteta){
+    TH1F *istogrammapseudorapidita = new TH1F();
+    istogrammapseudorapidita = ImportaIstogramma("kinem.root", "heta");
+    istogrammapseudorapidita -> SetDirectory(0);
+  }
+
   // Loop sugli eventi per creare i dati della simulazione
   for(int i = 0; i < numeroeventi; i++){
 
     // Generazione della molteplicità dell'evento
-    int numeroparticelle = 0;
-
-    if(distmolteplicita == "gaussiana"){
-      while(numeroparticelle == 0){
-	numeroparticelle = (int)(0.5 + gRandom->Gaus(par1molteplicita, par2molteplicita));
-      }
-    }
-    else if(distmolteplicita == "uniforme"){
-      while(numeroparticelle == 0){
-	numeroparticelle = (int)(0.5 + gRandom->Uniform(par1molteplicita, par2molteplicita));
-      }
-    }
-    else{
-      while(numeroparticelle == 0){
-	numeroparticelle = (int)par1molteplicita;
-      }
-    }
+    int numeroparticelle = DecisioneMolteplicita(distmolteplicita, par1molteplicita, par2molteplicita);
         
     // Generazione del vertice dell'evento, rms in centimetri
     //PuntatoreVertice->SetCasuale(0.01, 5.3, numeroparticelle);
     //PuntatoreVertice->SetCasuale(Rivelatore.GetSigmaX, Rivelatore.GetSigmaZ, numeroparticelle);
-    
     /*
     vertice.molteplicita = numeroparticelle;
     vertice.X = gRandom->Gaus(0., 0.01);
     vertice.Y = gRandom->Gaus(0., 0.01);
     vertice.Z = gRandom->Gaus(0., 5.3);
     */
-
-    // Generazione degli hit dell'evento
-    /*
+    
+    // Generazione degli urti dell'evento
     for(j = 0; j < numeroparticelle; j++){
-      new(IndPuntRiv1[j])
+
+      // Generazione della pseudorapidità della particella j
+      if(disteta){
+	pseudorapidita = istogrammapseudorapidita -> GetRandom();
+      }
+      else{
+	pseudorapidita = gRandom -> Uniform(-2, 2);
+      }
+      
+      //new(IndPuntRiv1[j])
 	
     }
-    */
   }
 }
 
@@ -175,7 +179,7 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
   else{
     cout << "uniforme" << endl;
     cout << "  - Minimo:                             -2" << endl;
-    cout << "  - Massimo:                            2" << endl;
+    cout << "  - Massimo:                             2" << endl;
   }
   cout << "+ Scattering multiplo:                " << multiplescattering << endl;
   cout << "+ Rumore                              ";
@@ -300,5 +304,54 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
     }
   }
   else cout << endl << "spento" << endl << endl;
+}
+
+
+int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &parametro2){
+  int numero = 0;
+
+  if(distribuzione == "gaussiana"){
+    while(numero == 0){
+      numero = (int)(0.5 + gRandom->Gaus(parametro1, parametro2));
+    }
+  }
+  else if(distribuzione == "uniforme"){
+    while(numero == 0){
+      numero = (int)(0.5 + gRandom->Uniform(parametro1, parametro2));
+    }
+  }
+  else if(distribuzione == "istogramma"){
+    while(numero == 0){
+      TH1F *istogramma = new TH1F();
+      istogramma = ImportaIstogramma("kinem.root", "hmul");
+      istogramma -> SetDirectory(0);
+      
+      numero = istogramma -> GetRandom();
+      
+      delete istogramma;
+    }
+  }
+  else if(distribuzione == "fissa"){
+    while(numero == 0){
+      numero = (int)parametro1;
+    }
+  }
+  else{
+    cout << "Errore di caricamento della molteplicità. La simulazione si interromperà." << endl;
+    return;
+  }
   
+  return numero;
+}
+
+
+TH1F* ImportaIstogramma(TString &file, TString &istogramma){
+  TFile *fileistogramma = new TFile(file);
+  TH1F *isto = (TH1F*)fileistogramma -> Get(istogramma);
+
+  isto -> SetDirectory(0);
+  fileistogramma -> Close();
+  delete fileistogramma;
+  
+  return isto;
 }
