@@ -2,8 +2,9 @@
   ~ Dichiarazione della classe Rivelatore                   ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 24/08/2018                             ~
+  ~ Ultima modifica: 25/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 #include "TMath.h"
 
 // ------------- Costruttori --------------
@@ -84,74 +85,60 @@ Rivelatore::~Rivelatore()
 {}
 
 // ---------------- Setter ----------------
-void Rivelatore::SetEtaMin(const double Etamin)
-{
+void Rivelatore::SetEtaMin(const double Etamin){
   dmEtaMinimo = Etamin;
 }
 
-void Rivelatore::SetEtaMax(const double Etamax)
-{
+void Rivelatore::SetEtaMax(const double Etamax){
   dmEtaMassimo = Etamax;
 }
 
-void Rivelatore::SetSmearZ(const double SmearZ)
-{
+void Rivelatore::SetSmearZ(const double SmearZ){
   dmSmearingZ = SmearZ;
 }
 
-void Rivelatore::SetSmearRPhi(const double SmearRPhi)
-{
+void Rivelatore::SetSmearRPhi(const double SmearRPhi){
   dmSmearingRPhi = SmearRPhi;
 }
 
 // ---------------- Getter ----------------
-double Rivelatore::GetEtaMin()
-{
+double Rivelatore::GetEtaMin(){
   return dmEtaMinimo;
 }
 
-double Rivelatore::GetEtaMax()
-{
+double Rivelatore::GetEtaMax(){
   return dmEtaMassimo;
 }
 
-double Rivelatore::GetSmearZ()
-{
+double Rivelatore::GetSmearZ(){
   return dmSmearingZ;
 }
 
-double Rivelatore::GetSmearRPhi()
-{
+double Rivelatore::GetSmearRPhi(){
   return dmSmearingRPhi;
 }
 
-double GetVerticeX()
-{
+double GetVerticeX(){
   return dmXVertice;
 }
 
-double GetVerticeY()
-{
+double GetVerticeY(){
   return dmYVertice;
 }
 
-double GetVerticeZ()
-{
+double GetVerticeZ(){
   return dmZVertice;
 }
 
-double GetVerticeSX()
-{
+double GetVerticeSX(){
   return dmXVerticeSigma;
 }
 
-double GetVerticeSY()
-{
+double GetVerticeSY(){
   return dmYVerticeSigma;
 }
 
-double GetVerticeSZ()
-{
+double GetVerticeSZ(){
   return dmZVerticeSigma;
 }
 

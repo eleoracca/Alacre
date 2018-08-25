@@ -2,31 +2,31 @@
   ~ Implementazione della classe Punto                      ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 23/08/2018                             ~
+  ~ Ultima modifica: 25/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-#include "TMath.h"
 #include "Punto.h"
+#include "TMath.h"
 #include "TString.h"
 
 ClassImp(Punto)
 
 // ------------- Costruttori --------------
-Punto::Punto(): TObject(),
-                dmX(0.),
-                dmY(0.),
-                dmZ(0.),
-                dmTheta(0.),
-                dmPhi(0.),
-                dmRaggioC(0.),
-                dmRaggioS(0.) 
-{}
+Punto::Punto(): TObject(){
+  dmX = 0.;
+  dmY = 0.;
+  dmZ = 0.;
+  dmTheta = 0.;
+  dmPhi = 0.;
+  dmRaggioC = 0.;
+  dmRaggioS = 0.; 
+}
 
-Punto::Punto(double X, double Y, double Z): TObject(),
-                                            dmX(X),
-                                            dmY(Y),
-                                            dmZ(Z)
-{
+Punto::Punto(double X, double Y, double Z): TObject(){
+  dmX = X;
+  dmY = Y;
+  dmZ = Z;
+
   CartesianeSferiche(); // Assegna i valori delle coordinate sferiche
   CartesianeCilindriche(); // Assegna i valori delle coordinate cilindriche
 }
@@ -36,8 +36,7 @@ Punto::~Punto()
 {}
 
 // ---------------- Setter ----------------
-void Punto::SetCartesiane(const double X, const double Y, const double Z)
-{
+void Punto::SetCartesiane(const double X, const double Y, const double Z){
   dmX = X;
   dmY = Y;
   dmZ = Z;
@@ -46,8 +45,7 @@ void Punto::SetCartesiane(const double X, const double Y, const double Z)
   CartesianeCilindriche();
 }
 
-void Punto::SetCilindriche(const double RaggioC, const double Phi, const double Z)
-{
+void Punto::SetCilindriche(const double RaggioC, const double Phi, const double Z){
   dmZ = Z;
   dmPhi = Phi;
   dmRaggioC = RaggioC;
@@ -56,8 +54,7 @@ void Punto::SetCilindriche(const double RaggioC, const double Phi, const double 
   CartesianeSferiche();
 }
 
-void Punto::SetSferiche(const double RaggioS, const double Theta, const double Phi)
-{
+void Punto::SetSferiche(const double RaggioS, const double Theta, const double Phi){
   dmTheta = Theta;
   dmPhi = Phi;
   dmRaggioS = RaggioS;
@@ -66,48 +63,42 @@ void Punto::SetSferiche(const double RaggioS, const double Theta, const double P
   CartesianeCilindriche();
 }
 
-void Punto::SetX(const double X)
-{
+void Punto::SetX(const double X){
   dmX = X;
   
   CartesianeSferiche();
   CartesianeCilindriche();
 }
 
-void Punto::SetY(const double Y)
-{
+void Punto::SetY(const double Y){
   dmY = Y;
   
   CartesianeSferiche();
   CartesianeCilindriche();
 }
 
-void Punto::SetZ(const double Z)
-{
+void Punto::SetZ(const double Z){
   dmZ = Z;
   
   CartesianeSferiche();
   CartesianeCilindriche();
 }
 
-void Punto::SetTheta(const double Theta)
-{
+void Punto::SetTheta(const double Theta){
   dmTheta = Theta;
   
   SfericheCartesiane();
   CartesianeCilindriche();
 }
 
-void Punto::SetPhi(const double Phi)
-{
+void Punto::SetPhi(const double Phi){
   dmPhi = Phi;
   
   CilindricheCartesiane();
   CartesianeSferiche();
 }
 
-void Punto::SetRaggioC(const double RaggioC)
-{
+void Punto::SetRaggioC(const double RaggioC){
   dmRaggioC = RaggioC;
   
   CilindricheCartesiane();
@@ -120,8 +111,7 @@ void Punto::SetRaggioC(const double RaggioC)
   }
 }
 
-void Punto::SetRaggioS(const double RaggioS)
-{
+void Punto::SetRaggioS(const double RaggioS){
   dmRaggioS = RaggioS;
   
   SfericheCartesiane();
@@ -136,19 +126,32 @@ void Punto::SetRaggioS(const double RaggioS)
 
 
 // ---------------- Getter ----------------
-double Punto::GetDistanza(Punto &PuntoUno, Punto &PuntoDue)
-{
+double Punto::GetDistanza(Punto &PuntoUno, Punto &PuntoDue){
   return TMath::Sqrt((PuntoUno.GetX() - PuntoDue.GetX()) * (PuntoUno.GetX() - PuntoDue.GetX()) + (PuntoUno.GetY() - PuntoDue.GetY()) * (PuntoUno.GetY() - PuntoDue.GetY()) + (PuntoUno.GetZ() - PuntoDue.GetZ()) * (PuntoUno.GetZ() - PuntoDue.GetZ()));
 }
 
-double Punto::GetDeltaPhi(Punto &PuntoUno, Punto &PuntoDue)
-{
+double Punto::GetDeltaPhi(Punto &PuntoUno, Punto &PuntoDue){
   return TMath::Abs(PuntoUno.GetPhi() - PuntoDue.GetPhi());
 }
 
 
 // ----------- Member functions -----------
-void Punto::CartesianeCilindriche() {   
+double Punto::EtaTheta(bool &distribuzione, const double &inferiore, const double &superiore, TH1F* istogramma){  
+  double eta;
+  
+  do{
+    if(distribuzione){
+      eta = istogramma -> GetRandom();
+    }
+    else{
+      eta = gRandom -> Uniform(inferiore, superiore);
+    }
+  }while((eta<0 && eta<=inferiore) || (eta>0 && eta>=superiore));
+  
+  return 2*TMath::ATan(TMath::Exp(-eta));
+}
+
+void Punto::CartesianeCilindriche(){   
   if (dmX > 0.) {
     if (dmY > 0. || dmY == 0.){
       dmPhi = TMath::ATan(dmY/dmX); // per X > 0. e Y >= 0.
@@ -180,7 +183,7 @@ void Punto::CartesianeCilindriche() {
 void Punto::CartesianeSferiche(){
   if (dmRaggioS != 0.){
     
-    dmTheta = TMath::ACos(dmZ/fSRadius);
+    dmTheta = TMath::ACos(dmZ/dmRaggioS);
     
     if (dmX > 0.){
       if (dmY > 0. || dmY == 0.){
@@ -215,7 +218,6 @@ void Punto::CartesianeSferiche(){
     dmTheta = 0.;   // valore di default per evitare errori
   }
 }
-
 
 void Punto::SfericheCilindriche(){
   dmX = dmRaggioS * TMath::Sin(dmTheta) * TMath::Cos(dmPhi);

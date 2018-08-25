@@ -2,15 +2,15 @@
   ~ Implementazione della classe Urto                       ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 15/11/2017                             ~
+  ~ Ultima modifica: 25/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined (__CINT__) || defined (__MAKECINT__)
-#include "Trasporto.h"
 #include "Punto.h"
 #include "TMaterial.h"
 #include "TMath.h"
 #include "TRandom3.h"
+#include "Trasporto.h"
 #include "TSystem.h"
 #include "Urto.h"
 #include "Vertice.h"
@@ -18,88 +18,74 @@
 
 ClassImp(Urto)
 
-// Costruttori
-Urto::Urto(): TObject(),
-              dmX(0.),
-              dmY(0.),
-              dmZ(0.),
-              dmNumLayer(0.),
-              dmID(0.),
-              dmUrtoReale(kFALSE)
-{}
+// ------------- Costruttori --------------
+Urto::Urto(): Punto(0., 0., 0.){
+  dmNumLayer = 0.;
+  dmID = 0.;
+  dmUrtoReale = kFALSE;
+}
 
-Urto::Urto(double x, double y, double z, double NumLayer, int ID): Punto(x, y, z),
-								   dmNumLayer(NumLayer),
-								   dmID(ID),
-								   dmUrtoReale(kFALSE)
-{}
+Urto::Urto(double x, double y, double z, double NumLayer, int ID): Punto(x, y, z){
+  dmNumLayer = NumLayer;
+  dmID = ID;
+  dmUrtoReale = kFALSE;
+}
 
-// Distruttori
+// ------------- Distruttori --------------
 Urto::~Urto()
 {}
 
-// Setter
-void Urto::SetX(double x)
-{
+// ---------------- Setter ----------------
+void Urto::SetX(double x){
   dmX = x;
 }
 
-void Urto::SetY(double y)
-{
+void Urto::SetY(double y){
   dmY = y;
 }
 
-void Urto::SetZ(double z)
-{
+void Urto::SetZ(double z){
   dmZ = z;
 }
 
-void Urto::OraUrtoReale()
-{
+void Urto::SetUrtoReale(){
   dmUrtoReale = kTRUE;
 }
 
-void Urto::SetIDUrto(in ID)
-{
+void Urto::SetID(in ID){
   dmID = ID;
 }
 
-void Urto::SetNumLayerUrto(int NumLayer)
-{
+void Urto::SetLayer(int NumLayer){
   dmNumLayer = NumLayer;
 }
 
-// Getter
-double Urto::GetX()
-{
+// ---------------- Getter ----------------
+double Urto::GetX(){
   return dmX;
 }
 
-double Urto::GetY()
-{
+double Urto::GetY(){
   return dmY;
 }
 
-double Urto::GetZ()
-{
+double Urto::GetZ(){
   return dmZ;
 }
 
-int Urto::GetNumeroLayer()
-{
+int Urto::GetNumeroLayer(){
   return dmNumLayer;
 }
 
-bool Urto::TestReale()
-{
+bool Urto::TestReale(){
   return dmID;
 }
 
-int Urto::GetIDUrto()
-{
+int Urto::GetID(){
   return dmUrtoReale;
 }
 
+// ----------- Member functions -----------
 double Urto::CalcoloT(double Theta, double Phi, double XO, double YO, double Raggio)
 {
   const double sintheta = TMath::Sin(Theta);
@@ -111,14 +97,14 @@ double Urto::CalcoloT(double Theta, double Phi, double XO, double YO, double Rag
 
 Urto Urto::UrtoSuVertice(Vertice& Origine, Trasporto& Direttrice, double Raggio, int IDe, int NumLayer)
 {
-  // Prende ϑ e phi da "Direzione".
+  // Prende ϑ e phi da "Trasporto".
   const double theta = Direttrice.GetDirTheta();
   const double phi = Direttrice.GetDirPhi();
   
   // Eccezione ϑ = 0
   if( theta == 0.f || theta == TMath::Pi() ) {
     Urto SuRivelatore;
-    //  if (gDebug) Printf("ϑ=0 exception -> no scattering.");
+    
     return SuRivelatore;
   }
   else {
@@ -127,11 +113,8 @@ Urto Urto::UrtoSuVertice(Vertice& Origine, Trasporto& Direttrice, double Raggio,
     const double yO = Origine.GetY();
     const double zO = Origine.GetZ();
     
-    //////////////////////////////////////////////////////////////////////////
-    // Compute the "t" value.
     const double t = CalcoloT(theta,phi,xO,yO,Radius);
     
-    // Build item in return.
     Urto OnCyl = Urto(xO+t*Direct.GetDirCos1(), yO+t*Direct.GetDirCos2(), zO+t*Direct.GetDirCos3(), Layerno, IDe);
     
     return OnCyl;

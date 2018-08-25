@@ -8,18 +8,22 @@
 #ifndef Varie_h
 #define Varie_h
 
+#include "TFile.h"
 #include "TMath.h"
+#include "TString.h"
 
 // ******************************************************************************
 // ************************ Dichiarazione delle funzioni ************************
 // ******************************************************************************
 
+/*
 // Funzione che trasforma pseudorapidità in theta
 double EtaTheta(double inferiore, double superiore);
 double EtaTheta(double inferiore, double superiore, TH1F* istogramma);
+*/
 
 // Funzione che importa istogrammi
-TH1F* ImportaIstogramma(TString &file, TString &istogramma);
+TH1F* ImportaIstogramma(TString file, TString istogramma);
 
 
 
@@ -27,6 +31,7 @@ TH1F* ImportaIstogramma(TString &file, TString &istogramma);
 // *********************** Implementazione delle funzioni ***********************
 // ******************************************************************************
 
+/*
 double EtaTheta(double inferiore, double superiore, TH1F* istogramma){  
   double eta;
   
@@ -47,9 +52,10 @@ double EtaTheta(double inferiore, double superiore){
   
   return 2*TMath::ATan(TMath::Exp(-eta));
 }
+*/
 
 
-TH1F* ImportaIstogramma(TString &file, TString &istogramma){
+TH1F* ImportaIstogramma(TString file, TString istogramma){
   TFile *fileistogramma = new TFile(file);
   TH1F *isto = (TH1F*)fileistogramma -> Get(istogramma);
 

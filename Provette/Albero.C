@@ -7,14 +7,18 @@
 #include "TString.h"
 #include "TTree.h"
 
+#include "Punto.h"
+#include "Rivelatore.h"
+#include "Trasporto.h"
 #include "Urto.h"
 #include "Varie.h"
+#include "Vertice.h"
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Generazione degli eventi                                ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 24/08/2018                             ~
+  ~ Ultima modifica: 25/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 // ******************************************************************************
@@ -102,15 +106,15 @@ void Albero(bool fileconfig = kFALSE){
   alberello->Branch("VerticeMolteplicita", &PuntatoreVertice);
   alberello->Branch("UrtiBeamPipe", &PuntatoreBP);
   alberello->Branch("UrtiRivelatore1", &PuntatoreRiv1);
-  alberello->Branch("UrtiRivelatore2", &RuntatoreRiv2);
+  alberello->Branch("UrtiRivelatore2", &PuntatoreRiv2);
 
   // Rivelatore
-  Rivelatore rivelatore = new Rivelatore("Rivelatore.txt");
+  Rivelatore *detector = new Rivelatore("Rivelatore.txt");
 
   // Dichiarazione di theta ed eventuale caricamento della distribuzione di pseudorapidità
   double theta;
+  TH1F *istogrammapseudorapidita = new TH1F();
   if(disteta){
-    TH1F *istogrammapseudorapidita = new TH1F();
     istogrammapseudorapidita = ImportaIstogramma("kinem.root", "heta");
     istogrammapseudorapidita -> SetDirectory(0);
   }
@@ -126,7 +130,7 @@ void Albero(bool fileconfig = kFALSE){
         
     // Generazione del vertice dell'evento, rms in centimetri
     //PuntatoreVertice->SetCasuale(0.01, 5.3, numeroparticelle);
-    //PuntatoreVertice->SetCasuale(Rivelatore.GetSigmaX, Rivelatore.GetSigmaZ, numeroparticelle);
+    //PuntatoreVertice->SetCasuale(detector.GetSigmaX, detector.GetSigmaZ, numeroparticelle);
     /*
     vertice.molteplicita = numeroparticelle;
     vertice.X = gRandom->Gaus(0., 0.01);
@@ -135,16 +139,10 @@ void Albero(bool fileconfig = kFALSE){
     */
     
     // Generazione degli urti dell'evento
-    for(j = 0; j < numeroparticelle; j++){
+    for(int j = 0; j < numeroparticelle; j++){
 
       // Generazione della direzione della particella j
-      if(disteta){
-	theta = EtaTheta(rivelatore.GetEtaMin(), rivelatore.GetEtaMax(), istogrammapseudorapidita);
-      }
-      else{
-	theta = EtaTheta(rivelatore.GetEtaMin(), rivelatore.GetEtaMax());
-      }
-
+      theta = Punto::EtaTheta(disteta, detector->GetEtaMin(), detector->GetEtaMax(), istogrammapseudorapidita);
       phi = gRandom -> Uniform(0., 2*TMath::Pi());
       
       //new(IndPuntRiv1[j])
@@ -224,7 +222,7 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
   }
   else if(distmolteplicita == "fissa"){
     cout << endl << "  - Valore:                           ";
-    cin << par1molteplicita;
+    cin >> par1molteplicita;
   }
   else{
     cout << "Inizializzazione sbagliata per la distribuzione di molteplicità." << endl;
@@ -245,7 +243,7 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
     }
     else if(distmolteplicita == "fissa"){
       cout << endl << "  - Valore:                           ";
-      cin << par1molteplicita;
+      cin >> par1molteplicita;
     }
     else{
       cout << "Inizializzazione sbagliata: la simulazione si interromperà.";
@@ -278,11 +276,11 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
       cout << endl << "    * Media:                          ";
       cin >> par1rumore;
       cout << endl << "    * Deviazione standard:            ";
-      cin >> par2rumore << endl;
+      cin >> par2rumore;
     }
     else if(distrumore == "fissa"){
       cout << endl << "    * Numero di rivelazioni:          ";
-      cin >> par1rumore << endl;
+      cin >> par1rumore;
     }
     else{
       cout << "Inizializzazione sbagliata per la distribuzione di rumore." << endl;
@@ -297,7 +295,7 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
       }
       else if(distrumore == "fissa"){
 	cout << endl << "    * Valore:                           ";
-	cin << par1rumore;
+	cin >> par1rumore;
       }
       else{
 	cout << "Inizializzazione sbagliata: la simulazione si interromperà.";
@@ -337,10 +335,6 @@ int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &pa
     while(numero == 0){
       numero = (int)parametro1;
     }
-  }
-  else{
-    cout << "Errore di caricamento della molteplicità. La simulazione si interromperà." << endl;
-    return;
   }
   
   return numero;

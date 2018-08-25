@@ -2,7 +2,7 @@
   ~ Dichiarazione della classe Punto                        ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 23/08/2018                             ~
+  ~ Ultima modifica: 25/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #ifndef PUNTO_H
@@ -10,7 +10,7 @@
 
 #include "TObject.h"
 
-class Punto : public TObject {
+class Punto : public TObject{
 
  public:
    
@@ -43,8 +43,12 @@ class Punto : public TObject {
   double GetRaggioS() const;
   static double GetDistanza(Punto &PuntoUno, Punto &PuntoDue);
   static double GetDeltaPhi(Punto &PuntoUno, Punto &PuntoDue);
+
+  // ----------- Member functions -----------
+  static double EtaTheta(bool &distribuzione, const double &inferiore, const double &superiore, TH1F* istogramma);
   
  private:
+
   // ----------- Member functions -----------
   void CartesianeCilindriche();
   void CartesianeSferiche();

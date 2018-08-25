@@ -41,6 +41,7 @@ class Rivelatore : public TObject{
   double GetVerticeSZ() const;
   
  private:
+
   // ----------- Member functions -----------
 
   // ------------- Data Member --------------

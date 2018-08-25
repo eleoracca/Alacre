@@ -1,6 +1,8 @@
 #include "Riostream.h"
 #include "TStopwatch.h"
 
+#include "Albero.C"
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Macro per l'esecuzione della simulazione d'esame        ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
@@ -9,7 +11,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 // ************************ Dichiarazione delle funzioni ************************
-void EsecuzioneEsame(bool fileconfig = kFalse, TString myopt = "fast");
+void EsecuzioneEsame(bool fileconfig = kFALSE, TString myopt = "fast");
 
 
 
@@ -21,7 +23,7 @@ void EsecuzioneEsame(bool fileconfig, TString myopt){
   TStopwatch temporicostruzione;
   TStopwatch tempoanalisi;
 
-  char *opt;
+  TString opt;
   if(myopt.Contains("force")){
     opt = "kfg";
   }
@@ -31,6 +33,11 @@ void EsecuzioneEsame(bool fileconfig, TString myopt){
 
   // Caricamento delle macro necessarie
   gSystem->CompileMacro("Albero.C", opt);
+  gSystem->CompileMacro("Punto.cxx", opt);
+  gSystem->CompileMacro("Rivelatore.cxx", opt);
+  gSystem->CompileMacro("Trasporto.cxx", opt);
+  gSystem->CompileMacro("Urto.cxx", opt);
+  gSystem->CompileMacro("Vertice.cxx", opt);
   
   // --------- Simulazione e analisi ---------
   tempototale.Start(kTRUE);
@@ -57,10 +64,10 @@ void EsecuzioneEsame(bool fileconfig, TString myopt){
   tempototale.Stop();
   cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" << endl;
   cout << "Simulazione completata" << endl;
-  cout << "La durata totale è:                     " << tempototale.Print() << endl;
-  cout << "La generazione degli eventi è durata:   " << tempogenerazione.Print() << endl;
-  cout << "La ricostruzione degli eventi è durata: " << temporicostruzione.Print() << endl;
-  cout << "L'analisi degli eventi è durata:        " << tempoanalisi.Print() << endl;
+  cout << "La durata totale è:                     "; tempototale.Print(); cout << endl;
+  cout << "La generazione degli eventi è durata:   "; tempogenerazione.Print(); cout << endl;
+  cout << "La ricostruzione degli eventi è durata: "; temporicostruzione.Print(); cout << endl;
+  cout << "L'analisi degli eventi è durata:        "; tempoanalisi.Print(); cout << endl;
   cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" << endl;
   
 }
