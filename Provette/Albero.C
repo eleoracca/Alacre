@@ -33,9 +33,6 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
 // Funzione che decide la molteplicità
 int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &parametro2);
 
-// Funzione che importa istogrammi
-TH1F* ImportaIstogramma(TString &file, TString &istogramma);
-
 
 
 // ******************************************************************************
@@ -108,15 +105,18 @@ void Albero(bool fileconfig = kFALSE){
   alberello->Branch("UrtiRivelatore2", &RuntatoreRiv2);
 
   // Rivelatore
-  //Rivelatore Rivelatore = new Rivelatore("Detector.txt");
+  Rivelatore rivelatore = new Rivelatore("Rivelatore.txt");
 
-  // Eventuale caricamento della pseudorapidità
-  double pseudorapidita;
+  // Dichiarazione di theta ed eventuale caricamento della distribuzione di pseudorapidità
+  double theta;
   if(disteta){
     TH1F *istogrammapseudorapidita = new TH1F();
     istogrammapseudorapidita = ImportaIstogramma("kinem.root", "heta");
     istogrammapseudorapidita -> SetDirectory(0);
   }
+
+  // Dichiarazione dell'azimut
+  double phi;
 
   // Loop sugli eventi per creare i dati della simulazione
   for(int i = 0; i < numeroeventi; i++){
@@ -137,13 +137,15 @@ void Albero(bool fileconfig = kFALSE){
     // Generazione degli urti dell'evento
     for(j = 0; j < numeroparticelle; j++){
 
-      // Generazione della pseudorapidità della particella j
+      // Generazione della direzione della particella j
       if(disteta){
-	pseudorapidita = istogrammapseudorapidita -> GetRandom();
+	theta = EtaTheta(rivelatore.GetEtaMin(), rivelatore.GetEtaMax(), istogrammapseudorapidita);
       }
       else{
-	pseudorapidita = gRandom -> Uniform(-2, 2);
+	theta = EtaTheta(rivelatore.GetEtaMin(), rivelatore.GetEtaMax());
       }
+
+      phi = gRandom -> Uniform(0., 2*TMath::Pi());
       
       //new(IndPuntRiv1[j])
 	
@@ -342,16 +344,4 @@ int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &pa
   }
   
   return numero;
-}
-
-
-TH1F* ImportaIstogramma(TString &file, TString &istogramma){
-  TFile *fileistogramma = new TFile(file);
-  TH1F *isto = (TH1F*)fileistogramma -> Get(istogramma);
-
-  isto -> SetDirectory(0);
-  fileistogramma -> Close();
-  delete fileistogramma;
-  
-  return isto;
 }
