@@ -2,12 +2,15 @@
   ~ Implementazione della classe Punto                      ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 25/08/2018                             ~
+  ~ Ultima modifica: 26/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+#if !defined (__CINT__) || defined (__MAKECINT__)
 #include "Punto.h"
 #include "TMath.h"
+#include "TRandom3.h"
 #include "TString.h"
+#endif
 
 ClassImp(Punto)
 
@@ -32,8 +35,7 @@ Punto::Punto(double X, double Y, double Z): TObject(){
 }
 
 // ------------- Distruttori --------------
-Punto::~Punto()
-{}
+Punto::~Punto(){}
 
 // ---------------- Setter ----------------
 void Punto::SetCartesiane(const double X, const double Y, const double Z){
@@ -126,6 +128,34 @@ void Punto::SetRaggioS(const double RaggioS){
 
 
 // ---------------- Getter ----------------
+double Punto::GetX(){
+  return dmX;
+}
+
+double Punto::GetY(){
+  return dmY;
+}
+
+double Punto::GetZ(){
+  return dmZ;
+}
+
+double Punto::GetTheta(){
+  return dmTheta;
+}
+
+double Punto::GetPhi(){
+  return dmPhi;
+}
+
+double Punto::GetRaggioC(){
+  return dmRaggioC;
+}
+
+double Punto::GetRaggioS(){
+  return dmRaggioS;
+}
+
 double Punto::GetDistanza(Punto &PuntoUno, Punto &PuntoDue){
   return TMath::Sqrt((PuntoUno.GetX() - PuntoDue.GetX()) * (PuntoUno.GetX() - PuntoDue.GetX()) + (PuntoUno.GetY() - PuntoDue.GetY()) * (PuntoUno.GetY() - PuntoDue.GetY()) + (PuntoUno.GetZ() - PuntoDue.GetZ()) * (PuntoUno.GetZ() - PuntoDue.GetZ()));
 }
@@ -136,6 +166,7 @@ double Punto::GetDeltaPhi(Punto &PuntoUno, Punto &PuntoDue){
 
 
 // ----------- Member functions -----------
+/*
 double Punto::EtaTheta(bool &distribuzione, const double &inferiore, const double &superiore, TH1F* istogramma){  
   double eta;
   
@@ -150,6 +181,7 @@ double Punto::EtaTheta(bool &distribuzione, const double &inferiore, const doubl
   
   return 2*TMath::ATan(TMath::Exp(-eta));
 }
+*/
 
 void Punto::CartesianeCilindriche(){   
   if (dmX > 0.) {
@@ -219,7 +251,7 @@ void Punto::CartesianeSferiche(){
   }
 }
 
-void Punto::SfericheCilindriche(){
+void Punto::SfericheCartesiane(){
   dmX = dmRaggioS * TMath::Sin(dmTheta) * TMath::Cos(dmPhi);
   dmY = dmRaggioS * TMath::Sin(dmTheta) * TMath::Sin(dmPhi);
   dmZ = dmRaggioS * TMath::Cos(dmTheta);

@@ -1,4 +1,4 @@
-//numeroeventi,distmolteplicita,par1molteplicita,par2molteplicita,multiplescattering,rumore,disteta,par1rumore,par2rumore
+//numeroeventi,distmolteplicita,par1molteplicita,par2molteplicita,multiplescattering,rumore,disteta,distrumore,par1rumore,par2rumore
 10
 fissa
 2.

@@ -2,10 +2,17 @@
   ~ Dichiarazione della classe Rivelatore                   ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 25/08/2018                             ~
+  ~ Ultima modifica: 26/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+#if !defined (__CINT__) || defined (__MAKECINT__)
+#include "Riostream.h"
+#include "Rivelatore.h"
 #include "TMath.h"
+#include "TString.h"
+#endif
+
+ClassImp(Rivelatore)
 
 // ------------- Costruttori --------------
 Rivelatore::Rivelatore(): TObject(){
@@ -21,7 +28,7 @@ Rivelatore::Rivelatore(): TObject(){
   dmSmearingRPhi = 0.;
   dmTaglioPhi = 0.;
   dmTheta = 0.;
-  dmMaterialeBP = 0.;
+  dmMaterialeBP = TMaterial();
   
   dmXVertice = 0.;
   dmYVertice = 0.;
@@ -45,39 +52,13 @@ Rivelatore::Rivelatore(TString Configurazione): TObject(){
   dmMaterialeBP = TMaterial("dmMaterialeBP", "Be", 8, 4, 1.85, 35.28, 0.08);
 
   TString commento;
-  double *SpostamentoSuZ;
-  double *SpostamentoSuRPhi;
-  double *VerticeX;
-  double *VerticeY;
-  double *VerticeZ;
-  double *SVerticeX;
-  double *SVerticeX;
-  double *SVerticeX;
   
   ifstream in(Configurazione);
   if(!in){
     cout << "!! File di configurazione del rivelatore on trovato !!\nLa simulazione terminerà immediatamente." << endl;
-  }
-  in >> commento >> SpostamentoSuZ >> SpostamentoSuRPhi >> VerticeX >> SVerticeX >> VerticeY >> SVerticeY >> VerticeZ >> SVerticeZ;
+  }  
+  in >> commento >> dmSmearingZ >> dmSmearingRPhi >> dmXVertice >> dmXVerticeSigma >> dmYVertice >> dmYVerticeSigma >> dmZVertice >> dmZVerticeSigma;
   in.close();
-
-  dmSmearingZ = &SpostamentoSuZ;
-  dmSmearingRPhi = &SpostamentoSuRPhi;
-  dmXVertice = &VerticeX;
-  dmYVertice = &VerticeY;
-  dmZVertice = &VerticeZ;
-  dmXVerticeSigma = &SVerticeX;
-  dmYVerticeSigma = &SVerticeX;
-  dmZVerticeSigma = &SVerticeX;
-  
-  delete SpostamentoSuZ;
-  delete *SpostamentoSuRPhi;
-  delete *VerticeX;
-  delete *VerticeY;
-  delete *VerticeZ;
-  delete *SVerticeX;
-  delete *SVerticeX;
-  delete *SVerticeX;  
 }
 
 // ------------- Distruttori --------------
@@ -118,27 +99,27 @@ double Rivelatore::GetSmearRPhi(){
   return dmSmearingRPhi;
 }
 
-double GetVerticeX(){
+double Rivelatore::GetVerticeX(){
   return dmXVertice;
 }
 
-double GetVerticeY(){
+double Rivelatore::GetVerticeY(){
   return dmYVertice;
 }
 
-double GetVerticeZ(){
+double Rivelatore::GetVerticeZ(){
   return dmZVertice;
 }
 
-double GetVerticeSX(){
+double Rivelatore::GetVerticeSX(){
   return dmXVerticeSigma;
 }
 
-double GetVerticeSY(){
+double Rivelatore::GetVerticeSY(){
   return dmYVerticeSigma;
 }
 
-double GetVerticeSZ(){
+double Rivelatore::GetVerticeSZ(){
   return dmZVerticeSigma;
 }
 

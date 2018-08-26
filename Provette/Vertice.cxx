@@ -2,7 +2,7 @@
   ~ Implementazione della classe Vertice                    ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 25/08/2018                             ~
+  ~ Ultima modifica: 26/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined (__CINT__) || defined (__MAKECINT__)
@@ -20,8 +20,9 @@ Vertice::Vertice(): Punto(){
   dmRumore = 0;
 }
 
-//Vertice::Vertice(double X,double Y,double Z,int Mult,int IDnumber,double Noiselvl)
-Vertice::Vertice(double X,double Y,double Z,int Molteplicita, double Rumore): Punto(X,Y,Z){
+//Vertice::Vertice(double X, double Y, double Z, int Molteplicita, int Rumore, int ID)
+Vertice::Vertice(double X, double Y, double Z, int Molteplicita, int Rumore): Punto(){
+  Punto(X, Y, Z);
   dmMolteplicita = Molteplicita;
   //dmID = ID;
   dmRumore = Rumore;

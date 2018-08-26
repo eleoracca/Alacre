@@ -2,7 +2,7 @@
   ~ Dichiarazione della classe Vertice                        ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 12/06/2018                             ~
+  ~ Ultima modifica: 26/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #ifndef VERTICE_H
@@ -16,7 +16,7 @@ class Vertice : public Punto{
 
   // ------------- Costruttori --------------
   Vertice();
-  //Vertice(double X, double Y, double Z, int Molteplicita, int ID, int Rumore = 0);
+  //Vertice(double X, double Y, double Z, int Molteplicita, int Rumore = 0, int ID);
   Vertice(double X, double Y, double Z, int Molteplicita, int Rumore = 0);
 
   // ------------- Distruttori --------------
@@ -28,16 +28,17 @@ class Vertice : public Punto{
   void SetRumore(double Rumore);
   
   // ---------------- Getter ----------------
-  int GetMolteplicita() const;
-  //int GetID() const;
-  double GetRumore() const;
+  int GetMolteplicita();
+  //int GetID();
+  double GetRumore();
     
  private:
 
-  int dmMolteplicita;   // Numero di tracce da generare
-  //int dmID;       // Etichetta utile
-  double dmRumore;  // Assegna il livello del rumore  
+  int dmMolteplicita; //! Numero di tracce da generare
+  //int dmID; //! Etichetta utile
+  double dmRumore; //! Numero di particelle di rumore da generare  
   
   ClassDef(Vertice,1)
 };
+
 #endif

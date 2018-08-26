@@ -1,28 +1,27 @@
-#include "Riostream.h"
-#include "TStopwatch.h"
-
-#include "Albero.C"
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Macro per l'esecuzione della simulazione d'esame        ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 13/06/2018                             ~
+  ~ Ultima modifica: 26/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-// ************************ Dichiarazione delle funzioni ************************
-void EsecuzioneEsame(bool fileconfig = kFALSE, TString myopt = "fast");
+#if !defined(__CINT__) || defined(__MAKECINT__)
+#include "Riostream.h"
+#include "TStopwatch.h"
+#include "TSystem.h"
 
+#include "Albero.C"
+#endif
 
-
-// *********************** Implementazione delle funzioni ***********************
-void EsecuzioneEsame(bool fileconfig, TString myopt){
+void EsecuzioneEsame(bool fileconfig = kFALSE, TString myopt = "force"){
+  
   // Dichiarazione dei timer
   TStopwatch tempototale;
   TStopwatch tempogenerazione;
   TStopwatch temporicostruzione;
   TStopwatch tempoanalisi;
 
+  /*
   TString opt;
   if(myopt.Contains("force")){
     opt = "kfg";
@@ -32,12 +31,11 @@ void EsecuzioneEsame(bool fileconfig, TString myopt){
   }
 
   // Caricamento delle macro necessarie
-  gSystem->CompileMacro("Albero.C", opt);
   gSystem->CompileMacro("Punto.cxx", opt);
-  gSystem->CompileMacro("Rivelatore.cxx", opt);
-  gSystem->CompileMacro("Trasporto.cxx", opt);
-  gSystem->CompileMacro("Urto.cxx", opt);
   gSystem->CompileMacro("Vertice.cxx", opt);
+  gSystem->CompileMacro("Rivelatore.cxx", opt);
+  gSystem->CompileMacro("Albero.C", opt);
+  */
   
   // --------- Simulazione e analisi ---------
   tempototale.Start(kTRUE);

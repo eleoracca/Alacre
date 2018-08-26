@@ -1,25 +1,29 @@
-#include "Riostream.h"
-#include "TBranch.h"
-#include "TClonesArray.h"
-#include "TFile.h"
-#include "TMath.h"
-#include "TRandom3.h"
-#include "TString.h"
-#include "TTree.h"
-
-#include "Punto.h"
-#include "Rivelatore.h"
-#include "Trasporto.h"
-#include "Urto.h"
-#include "Varie.h"
-#include "Vertice.h"
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Generazione degli eventi                                ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 25/08/2018                             ~
+  ~ Ultima modifica: 26/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+#if !defined(__CINT__) || defined(__MAKECINT__)
+#include "Riostream.h"
+#include "TBranch.h"
+#include "TClonesArray.h"
+#include "TFile.h"
+#include "TH1F.h"
+#include "TMath.h"
+#include "TRandom3.h"
+#include "TString.h"
+#include "TTree.h"
+#include "TSystem.h"
+
+#include "Punto.h"
+#include "Rivelatore.h"
+//#include "Trasporto.h"
+//#include "Urto.h"
+#include "Varie.h"
+#include "Vertice.h"
+#endif
 
 // ******************************************************************************
 // ************************ Dichiarazione delle funzioni ************************
@@ -68,8 +72,10 @@ void Albero(bool fileconfig = kFALSE){
       cout << "!! File di configurazione non trovato !!" << endl << "La simulazione ripartirà automaticamente chiedendo di inserire a mano i parametri.";
       Albero(kFALSE);
     }  
-    in >> commento >> numeroeventi >> numeroeventi >> distmolteplicita >> par1molteplicita >> par2molteplicita >> multiplescattering >> rumore >> disteta >> distrumore >> par1rumore >> par2rumore;
+    in >> commento >> numeroeventi >> distmolteplicita >> par1molteplicita >> par2molteplicita >> multiplescattering >> rumore >> disteta >> distrumore >> par1rumore >> par2rumore;
     in.close();
+
+    cout << commento << endl;
     
     StampaInformazioni(numeroeventi, distmolteplicita, par1molteplicita, par2molteplicita, multiplescattering, rumore, disteta, distrumore, par1rumore, par2rumore);
   }
@@ -87,6 +93,7 @@ void Albero(bool fileconfig = kFALSE){
   // Vertice della collisione e direzione
   Vertice *PuntatoreVertice = new Vertice();
   Vertice &IndPuntVertice = *PuntatoreVertice;
+  /*
   Trasporto *PuntatoreDirezione = new Trasporto();
   Trasporto &IndPuntDirezione = *PuntatoreDirezione;
 
@@ -101,12 +108,15 @@ void Albero(bool fileconfig = kFALSE){
   // Urti sul secondo rivelatore
   TClonesArray *PuntatoreRiv2 = new TClonesArray("Urto", numeroeventi);
   TClonesArray &IndPuntRiv2 = *PuntatoreRiv2;
+  */
 
   // Dichiaro i branch del tree
   alberello->Branch("VerticeMolteplicita", &PuntatoreVertice);
+  /*
   alberello->Branch("UrtiBeamPipe", &PuntatoreBP);
   alberello->Branch("UrtiRivelatore1", &PuntatoreRiv1);
   alberello->Branch("UrtiRivelatore2", &PuntatoreRiv2);
+  */
 
   // Rivelatore
   Rivelatore *detector = new Rivelatore("Rivelatore.txt");
@@ -123,7 +133,7 @@ void Albero(bool fileconfig = kFALSE){
   double phi;
 
   // Loop sugli eventi per creare i dati della simulazione
-  for(int i = 0; i < numeroeventi; i++){
+  for(int i = 0; i < (int)numeroeventi; i++){
 
     // Generazione della molteplicità dell'evento
     int numeroparticelle = DecisioneMolteplicita(distmolteplicita, par1molteplicita, par2molteplicita);
@@ -142,13 +152,15 @@ void Albero(bool fileconfig = kFALSE){
     for(int j = 0; j < numeroparticelle; j++){
 
       // Generazione della direzione della particella j
-      theta = Punto::EtaTheta(disteta, detector->GetEtaMin(), detector->GetEtaMax(), istogrammapseudorapidita);
+      theta = EtaTheta(disteta, detector->GetEtaMin(), detector->GetEtaMax(), istogrammapseudorapidita);
       phi = gRandom -> Uniform(0., 2*TMath::Pi());
       
       //new(IndPuntRiv1[j])
 	
     }
   }
+
+  cout << "fine" << endl;
 }
 
 
@@ -156,43 +168,43 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
 
   cout << "------- Parametri per la generazione degli eventi --------" << endl;
   cout << "I parametri vengono letti dal file Configurazione.txt" << endl;
-  cout << "+ Numero di eventi:                   " << numeroeventi << endl;
-  cout << "+ Distribuzione della molteplicità:   " << distmolteplicita << endl;
+  cout << "+ Numero di eventi:                    " << numeroeventi << endl;
+  cout << "+ Distribuzione della molteplicità:    " << distmolteplicita << endl;
   
   if(distmolteplicita == "gaussiana"){
-    cout << "  - Media:                            " << par1molteplicita << endl;
-    cout << "  - Deviazione standard:              " << par2molteplicita << endl;
+    cout << "  - Media:                             " << par1molteplicita << endl;
+    cout << "  - Deviazione standard:               " << par2molteplicita << endl;
   }
   else if(distmolteplicita == "uniforme"){
-    cout << "  - Minimo:                           " << par1molteplicita << endl;
-    cout << "  - Massimo:                          " << par2molteplicita << endl;
+    cout << "  - Minimo:                            " << par1molteplicita << endl;
+    cout << "  - Massimo:                           " << par2molteplicita << endl;
   }
   else if(distmolteplicita == "fissa"){
-    cout << "  - Valore:                           " << par1molteplicita << endl;
+    cout << "  - Valore:                            " << par1molteplicita << endl;
   }
   
-  cout << "+ Distribuzione della pseudorapidità: ";
+  cout << "+ Distribuzione della pseudorapidità:  ";
   
   if(disteta){
     cout << "distribuzione assegnata" << endl;
   }
   else{
     cout << "uniforme" << endl;
-    cout << "  - Minimo:                             -2" << endl;
-    cout << "  - Massimo:                             2" << endl;
+    cout << "  - Minimo:                            -2" << endl;
+    cout << "  - Massimo:                            2" << endl;
   }
-  cout << "+ Scattering multiplo:                " << multiplescattering << endl;
-  cout << "+ Rumore                              ";
+  cout << "+ Scattering multiplo:                  " << multiplescattering << endl;
+  cout << "+ Rumore                               ";
   
-  if(distrumore){
+  if(rumore){
     cout << "acceso"  << endl;
-    cout << "  - Distribuzione:                    " << distrumore << endl;
+    cout << "  - Distribuzione:                     " << distrumore << endl;
     if(distrumore == "gaussiana"){
-      cout << "    * Media:                          " << par1rumore << endl;
-      cout << "    * Deviazione standard:            " << par2rumore << endl;
+      cout << "    * Media:                           " << par1rumore << endl;
+      cout << "    * Deviazione standard:             " << par2rumore << endl;
     }
     else if(distrumore == "fissa"){
-      cout << "    * Numero di rivelazioni:          " << par1rumore << endl;
+      cout << "    * Numero di rivelazioni:           " << par1rumore << endl;
     }
   }
   else cout << "spento" << endl << endl;
@@ -203,25 +215,25 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
 
     cout << "------- Parametri per la generazione degli eventi --------" << endl;
     cout << "Inserire i parametri per la simulazione" << endl;
-    cout << "+ Numero di eventi:                   ";
+    cout << "+ Numero di eventi:                    ";
     cin >> numeroeventi;
-    cout << endl << "+ Distribuzione della molteplicità:   ";
+    cout << endl << "+ Distribuzione della molteplicità:    ";
     cin >> distmolteplicita;
   
   if(distmolteplicita == "gaussiana"){
-    cout << endl << "  - Media:                            ";
+    cout << endl << "  - Media:                             ";
     cin >> par1molteplicita;
-    cout << endl << "  - Deviazione standard:              ";
+    cout << endl << "  - Deviazione standard:               ";
     cin >> par2molteplicita;
   }
   else if(distmolteplicita == "uniforme"){
-    cout << endl << "  - Minimo:                           ";
+    cout << endl << "  - Minimo:                            ";
     cin >> par1molteplicita;
-    cout << endl << "  - Massimo:                          ";
+    cout << endl << "  - Massimo:                           ";
     cin >> par2molteplicita;
   }
   else if(distmolteplicita == "fissa"){
-    cout << endl << "  - Valore:                           ";
+    cout << endl << "  - Valore:                            ";
     cin >> par1molteplicita;
   }
   else{
@@ -251,7 +263,7 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
     }
   }
   
-  cout << endl << "+ Distribuzione della pseudorapidità: ";
+  cout << endl << "+ Distribuzione della pseudorapidità:  ";
   cin >> disteta;
   
   if(disteta){
@@ -259,27 +271,27 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
   }
   else{
     cout << "uniforme" << endl;
-    cout << "  - Minimo:                             -2" << endl;
-    cout << "  - Massimo:                             2" << endl;
+    cout << "  - Minimo:                              -2" << endl;
+    cout << "  - Massimo:                              2" << endl;
   }
-  cout << endl << "+ Scattering multiplo:                ";
+  cout << endl << "+ Scattering multiplo:                 ";
   cin >> multiplescattering;
-  cout << endl << "+ Rumore                              ";
+  cout << endl << "+ Rumore                               ";
   cin >> distrumore;
   
   if(distrumore){
     cout << endl << "acceso"  << endl;
-    cout << endl << "  - Distribuzione:                    ";
+    cout << endl << "  - Distribuzione:                     ";
     cin >> distrumore;
     
     if(distrumore == "gaussiana"){
-      cout << endl << "    * Media:                          ";
+      cout << endl << "    * Media:                           ";
       cin >> par1rumore;
-      cout << endl << "    * Deviazione standard:            ";
+      cout << endl << "    * Deviazione standard:             ";
       cin >> par2rumore;
     }
     else if(distrumore == "fissa"){
-      cout << endl << "    * Numero di rivelazioni:          ";
+      cout << endl << "    * Numero di rivelazioni:           ";
       cin >> par1rumore;
     }
     else{
@@ -288,13 +300,13 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
       cin >> distrumore;
       
       if(distrumore == "gaussiana"){
-	cout << endl << "    * Media:                            ";
+	cout << endl << "    * Media:                             ";
 	cin >> par1rumore;
-	cout << endl << "    * Deviazione standard:              ";
+	cout << endl << "    * Deviazione standard:               ";
 	cin >> par2rumore;
       }
       else if(distrumore == "fissa"){
-	cout << endl << "    * Valore:                           ";
+	cout << endl << "    * Valore:                            ";
 	cin >> par1rumore;
       }
       else{
