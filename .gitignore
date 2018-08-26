@@ -34,5 +34,5 @@
 # ignore file ending with...
 *~
 *.root
-*.pmc
+*.pcm
 *.pdf
