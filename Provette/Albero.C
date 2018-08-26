@@ -74,8 +74,6 @@ void Albero(bool fileconfig = kFALSE){
     }  
     in >> commento >> numeroeventi >> distmolteplicita >> par1molteplicita >> par2molteplicita >> multiplescattering >> rumore >> disteta >> distrumore >> par1rumore >> par2rumore;
     in.close();
-
-    cout << commento << endl;
     
     StampaInformazioni(numeroeventi, distmolteplicita, par1molteplicita, par2molteplicita, multiplescattering, rumore, disteta, distrumore, par1rumore, par2rumore);
   }
@@ -132,21 +130,17 @@ void Albero(bool fileconfig = kFALSE){
   // Dichiarazione dell'azimut
   double phi;
 
+  // Generazione del rumore nell'evento
+  //int numerorumore = 0;
+
   // Loop sugli eventi per creare i dati della simulazione
   for(int i = 0; i < (int)numeroeventi; i++){
 
     // Generazione della molteplicità dell'evento
     int numeroparticelle = DecisioneMolteplicita(distmolteplicita, par1molteplicita, par2molteplicita);
-        
+    
     // Generazione del vertice dell'evento, rms in centimetri
-    //PuntatoreVertice->SetCasuale(0.01, 5.3, numeroparticelle);
-    //PuntatoreVertice->SetCasuale(detector.GetSigmaX, detector.GetSigmaZ, numeroparticelle);
-    /*
-    vertice.molteplicita = numeroparticelle;
-    vertice.X = gRandom->Gaus(0., 0.01);
-    vertice.Y = gRandom->Gaus(0., 0.01);
-    vertice.Z = gRandom->Gaus(0., 5.3);
-    */
+    PuntatoreVertice = new Vertice(detector->GetVerticeX(), detector->GetVerticeSX(), detector->GetVerticeY(), detector->GetVerticeSX(), detector->GetVerticeZ(), detector->GetVerticeSZ(), numeroparticelle);
     
     // Generazione degli urti dell'evento
     for(int j = 0; j < numeroparticelle; j++){

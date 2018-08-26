@@ -8,6 +8,7 @@
 #if !defined (__CINT__) || defined (__MAKECINT__)
 #include "Punto.h"
 #include "TMath.h"
+#include "TRandom3.h"
 #include "Vertice.h"
 #endif
 
@@ -25,6 +26,12 @@ Vertice::Vertice(double X, double Y, double Z, int Molteplicita, int Rumore): Pu
   Punto(X, Y, Z);
   dmMolteplicita = Molteplicita;
   //dmID = ID;
+  dmRumore = Rumore;
+}
+
+Vertice::Vertice(double X, double  sX, double  Y, double  sY, double  Z, double  sZ, int  Molteplicita, int  Rumore): Punto(){
+  Punto(gRandom->Gaus(X, sX), gRandom->Gaus(Y, sY), gRandom->Gaus(Z, sZ));
+  dmMolteplicita = Molteplicita;
   dmRumore = Rumore;
 }
 
