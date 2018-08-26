@@ -52,7 +52,7 @@ void Urto::SetUrtoReale(){
   dmUrtoReale = kTRUE;
 }
 
-void Urto::SetID(in ID){
+void Urto::SetID(int ID){
   dmID = ID;
 }
 
