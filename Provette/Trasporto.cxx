@@ -2,7 +2,7 @@
   ~ Dichiarazione della classe Trasporto                    ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 13/06/2018                             ~
+  ~ Ultima modifica: 27/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined (__CINT__) || defined (__MAKECINT__)
@@ -15,22 +15,21 @@
 ClassImp(Trasporto)
 
 // ----------- Costruttori -----------
-Trasporto::Trasporto(): TObject(),
-                        dmID(0),
-                        dmTheta(0.),
-                        dmPhi(0.),
-                        dmCDx(0.),
-                        dmCDy(0.),
-                        dmCDz(0.),
-                        dmIsrotated(kFALSE)
-{};
+Trasporto::Trasporto(): TObject(){
+  dmID = 0;
+  dmTheta = 0.;
+  dmPhi = 0.;
+  dmCDx = 0.;
+  dmCDy = 0.;
+  dmCDz = 0.;
+  dmIsrotated = kFALSE;
+};
 
-Trasporto::Trasporto(double Theta, double Phi, int ID): TObject(),
-							dmID(ID),
-							dmTheta(Theta),
-							dmPhi(Phi),
-							dmIsrotated(kFALSE)
-{
+Trasporto::Trasporto(double Theta, double Phi, int ID): TObject(){  
+  dmID = ID;
+  dmTheta = Theta;
+  dmPhi = Phi;
+  dmIsrotated = kFALSE;
   dmCDx = TMath::Sin(Theta) * TMath::Cos(Phi);
   dmCDy = TMath::Sin(Theta) * TMath::Sin(Phi);
   dmCDz = TMath::Cos(Theta);
@@ -41,134 +40,114 @@ Trasporto::~Trasporto()
 {}
 
 // ----------- Setter -----------
-void Trasporto::SetDirTheta(const double Theta)
-{
+void Trasporto::SetDirTheta(const double Theta){
   dmTheta = Theta;
 }
 
-void Trasporto::SetDirPhi(const double Phi)
-{
+void Trasporto::SetDirPhi(const double Phi){
   dmPhi = Phi;
 }
 
-void Trasporto::SetCosDirx(const double Cx)
-{
+void Trasporto::SetCosDirX(const double Cx){
   dmCDx = Cx;
 }
 
-void Tasporto::SetCosDiry(const double Cy)
-{
+void Trasporto::SetCosDirY(const double Cy){
   dmCDy = Cy;
 }
 
-void Trasporto::SetCosDirz(const double Cz)
-{
+void Trasporto::SetCosDirZ(const double Cz){
   dmCDz = Cz;
 }
 
-void Trasporto::SetAllCos(const double Cx, const double Cy, const double Cz)
-{
+void Trasporto::SetCosDir(const double Cx, const double Cy, const double Cz){
   dmCDx = Cx;
   dmCDy = Cy;
   dmCDz = Cz;
-  UpdateAng();
+  AggiornaAng();
 }
 
-void Trasporto::SetAllAngles(const double Theta, const double Phi)
-{
+void Trasporto::SetAngoli(const double Theta, const double Phi){
   dmTheta = Theta;
   dmPhi = Phi;
-  UpdateDirCos();
+  AggiornaDirCos();
 }
 
-void Trasporto::SetDirID(const double id)
-{
-  dmID = id;
+void Trasporto::SetDirID(const double ID){
+  dmID = ID;
 }
 
 // ----------- Getter -----------
 
-int Trasporto::GetDirectID()
-{
+int Trasporto::GetID(){
   return dmID;
 }
 
-double Trasporto::GetDirectTheta()
-{
+double Trasporto::GetDirTheta(){
   return dmTheta;
 }
 
-double Trasporto::GetDirectPhi()
-{
+double Trasporto::GetDirPhi(){
   return dmPhi;
 }
 
-double Trasporto::GetDirCos1()
-{
+double Trasporto::GetDirCosX(){
   return dmCDx;
 }
 
-double Trasporto::GetDirCos2()
-{
+double Trasporto::GetDirCosY(){
   return dmCDy;
 }
 
-double Trasporto::GetDirCos3()
-{
+double Trasporto::GetDirCosZ(){
   return dmCDz;
 }
 
-bool Trasporto::GetRotStatus()
-{
+bool Trasporto::GetRotStatus(){
   return dmIsrotated;
 }
 
-void Trasporto::UpdateAng()
-{
+void Trasporto::AggiornaAng(){
   
-  ///////////////////////////////////////////////////////////////////
-  // Since D[ATan(x)] = [-Pi,+Pi] -> One have to discuss the cosines
-  // directors values in order to find the true value of Phi.
-  ///////////////////////////////////////////////////////////////////
+  // Siccome D[ATan(x)] = [-Pi,+Pi], bisogna discutere i valori dei coseni direttori per trovare il valore vero di Phi.
   
   dmTheta = TMath::ACos(dmCDz);
-  if(dmCDx > 0) {
-    if(dmCDy >= 0) {
+  
+  if(dmCDx > 0){
+    if(dmCDy >= 0){
       dmPhi = TMath::ATan(dmCDy/dmCDx);
     }
-    else {
+    else{
       dmPhi = 2*TMath::Pi() + TMath::ATan(dmCDy/dmCDx);
     }
   } 
-  else {
-    if(dmCDx != 0) { // CDx < 0
-      if(dmCDy >= 0) {
+  else{
+    if(dmCDx != 0){ // CDx < 0
+      if(dmCDy >= 0){
 	dmPhi = TMath::Pi() + TMath::ATan(dmCDy/dmCDx);
       }
-      else {
+      else{
 	dmPhi = TMath::Pi() + TMath::ATan(dmCDy/dmCDx);
       }
     }
-    else { // CDx = 0
-      if(dmCDx >= 0) {
+    else{ // CDx = 0
+      if(dmCDx >= 0){
 	dmPhi = 0.5 * TMath::Pi();
       }
-      else {
+      else{
 	dmPhi = 1.5 * TMath::Pi();
       }
     }
   }
 }
 
-void Trasporto::UpdateDirCos()
-{
+void Trasporto::AggiornaDirCos(){
   dmCDx = TMath::Sin(dmTheta) * TMath::Cos(dmPhi);
   dmCDy = TMath::Sin(dmTheta) * TMath::Sin(dmPhi);
   dmCDz = TMath::Cos(dmTheta);
 }
 
-void Trasporto::FlipBit()
-{
+void Trasporto::FlipBit(){
   if(dmIsrotated) {
     dmIsrotated = kFALSE;
   }
@@ -177,10 +156,9 @@ void Trasporto::FlipBit()
   }
 }
 
-void Trasporto::Rotate(double Theta, double Phi)
-{
-  // Definizione della matrice di Rotazione 2D
+void Trasporto::Rotazione(double Theta, double Phi){
   
+  // Definizione della matrice di Rotazione 2D
   double mr[3][3];
   mr[0][0] = -TMath::Sin(dmPhi);
   mr[1][0] = TMath::Cos(dmPhi);
@@ -202,7 +180,7 @@ void Trasporto::Rotate(double Theta, double Phi)
   double Cd[3];
   
   // Risultato
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i < 3; i++){
     Cd[i] = 0;
     for(int j  =0; j < 3; j++){
       Cd[i] = Cd[i] + mr[i][j] * cdp[j];
@@ -214,6 +192,6 @@ void Trasporto::Rotate(double Theta, double Phi)
   dmCDz = Cd[2];
   this->FlipBit();
   
-  // Update Theta and Phi
-  this->UpdateAng();
+  // Aggiorna Theta and Phi
+  this->AggiornaAng();
 }

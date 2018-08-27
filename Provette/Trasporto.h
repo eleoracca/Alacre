@@ -2,8 +2,9 @@
   ~ Dichiarazione della classe Trasporto                    ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 13/06/2018                             ~
+  ~ Ultima modifica: 27/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 #ifndef TRASPORTO_H
 #define TRASPORTO_H
 
@@ -18,42 +19,42 @@ class Trasporto : public TObject {
   Trasporto(double Theta, double Phi, int ID);
   
   // ----------- Distruttori -----------
-  virtual ~Trasporto(){}
+  virtual ~Trasporto();
   
   // ----------- Setter -----------
   void SetDirTheta(const double Theta);
   void SetDirPhi(const double Phi);
-  void SetCosDirx(const double Cx);
-  void SetCosDiry(const double Cy);
-  void SetCosDirz(const double Cz);
-  void SetAllCos(const double Cx, const double Cy, const double Cz);
-  void SetAllAngles(const double Theta, const double Phi);
-  void SetDirectID(const double id);
+  void SetCosDirX(const double Cx);
+  void SetCosDirY(const double Cy);
+  void SetCosDirZ(const double Cz);
+  void SetCosDir(const double Cx, const double Cy, const double Cz);
+  void SetAngoli(const double Theta, const double Phi);
+  void SetDirID(const double ID);
   void FlipBit();
-  void Rotate(double Theta, double Phi);
+  void Rotazione(double Theta, double Phi);
   
   // ----------- Getter -----------
-  int    GetDirectID()     const;
-  double GetDirectTheta()  const;
-  double GetDirectPhi()    const;
-  double GetDirCos1()      const;
-  double GetDirCos2()      const;
-  double GetDirCos3()      const;
-  bool   GetRotStatus()    const;
+  int GetID();
+  double GetDirTheta();
+  double GetDirPhi();
+  double GetDirCosX();
+  double GetDirCosY();
+  double GetDirCosZ();
+  bool GetRotStatus();
   
  private:
   
-  void UpdateAng();
-  void UpdateDirCos();
+  void AggiornaAng();
+  void AggiornaDirCos();
   
   // ----------- Data Member -----------
-  int    dmID;    			//! Numero identificativo
-  double dmTheta;       //! Angolo ϑ
-  double dmPhi;         //! Angolo φ
-  double dmCDx;         //! Coseno Direttore x.
-  double dmCDy;         //! Coseno Direttore y.
-  double dmCDz;         //! Coseno Direttore z.
-  bool   dmIsrotated;   //! Debug flag.
+  int dmID; //! Numero identificativo
+  double dmTheta; //! Angolo #theta
+  double dmPhi; //! Angolo #phi
+  double dmCDx; //! Coseno Direttore x.
+  double dmCDy; //! Coseno Direttore y.
+  double dmCDz; //! Coseno Direttore z.
+  bool dmIsrotated; //! Debug flag.
   
   ClassDef(Trasporto, 1)
     
