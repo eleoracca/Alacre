@@ -14,5 +14,8 @@ void compile(TString myopt="fast"){
   gSystem->CompileMacro("Punto.cxx", opt.Data());
   gSystem->CompileMacro("Vertice.cxx", opt.Data());
   gSystem->CompileMacro("Rivelatore.cxx", opt.Data());
+  gSystem->CompileMacro("Trasporto.cxx", opt.Data());
+  gSystem->CompileMacro("Urto.cxx", opt.Data());
+  
   gSystem->CompileMacro("Albero.C", opt.Data());
 }

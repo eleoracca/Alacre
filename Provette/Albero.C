@@ -2,7 +2,7 @@
   ~ Generazione degli eventi                                ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 26/08/2018                             ~
+  ~ Ultima modifica: 27/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -19,7 +19,7 @@
 
 #include "Punto.h"
 #include "Rivelatore.h"
-//#include "Trasporto.h"
+#include "Trasporto.h"
 //#include "Urto.h"
 #include "Varie.h"
 #include "Vertice.h"

@@ -6,9 +6,9 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined (__CINT__) || defined (__MAKECINT__)
-#include "Punto.h"
 #include "TMath.h"
 #include "TRandom3.h"
+#include "Punto.h"
 #include "Vertice.h"
 #endif
 
