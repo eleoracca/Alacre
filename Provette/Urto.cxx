@@ -2,7 +2,7 @@
   ~ Implementazione della classe Urto                       ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 28/08/2018                             ~
+  ~ Ultima modifica: 31/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined (__CINT__) || defined (__MAKECINT__)
@@ -35,19 +35,6 @@ Urto::~Urto()
 {}
 
 // ---------------- Setter ----------------
-/*
-void Urto::SetX(double x){
-  dmX = x;
-}
-
-void Urto::SetY(double y){
-  dmY = y;
-}
-
-void Urto::SetZ(double z){
-  dmZ = z;
-}
-*/
 void Urto::SetUrtoReale(){
   dmUrtoReale = kTRUE;
 }
@@ -61,19 +48,6 @@ void Urto::SetLayer(int NumLayer){
 }
 
 // ---------------- Getter ----------------
-/*
-double Urto::GetX(){
-  return dmX;
-}
-
-double Urto::GetY(){
-  return dmY;
-}
-
-double Urto::GetZ(){
-  return dmZ;
-}
-*/
 int Urto::GetNumeroLayer(){
   return dmNumLayer;
 }
