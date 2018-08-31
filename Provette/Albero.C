@@ -2,7 +2,7 @@
   ~ Generazione degli eventi                                ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 27/08/2018                             ~
+  ~ Ultima modifica: 31/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -17,12 +17,12 @@
 #include "TTree.h"
 #include "TSystem.h"
 
-#include "Punto.h"
+#include "Interface/Punto.h"
 #include "Interface/Rivelatore.h"
-#include "Trasporto.h"
-#include "Urto.h"
-#include "Varie.h"
-#include "Vertice.h"
+#include "Interface/Trasporto.h"
+#include "Interface/Urto.h"
+#include "Interface/Varie.h"
+#include "Interface/Vertice.h"
 #endif
 
 // ******************************************************************************
@@ -129,13 +129,10 @@ void Albero(bool fileconfig = kFALSE){
   // Dichiarazione dell'azimut
   double phi;
 
-  // Generazione del rumore nell'evento
-  //int numerorumore = 0;
-
   // Loop sugli eventi per creare i dati della simulazione
   for(int i = 0; i < (int)numeroeventi; i++){
 
-    // Generazione della molteplicità dell'evento
+    // Generazione della molteplicità dell'evento, ovvero il numero di particelle generato
     int numeroparticelle = DecisioneMolteplicita(distmolteplicita, par1molteplicita, par2molteplicita);
     
     // Generazione del vertice dell'evento, rms in centimetri
@@ -147,10 +144,17 @@ void Albero(bool fileconfig = kFALSE){
       // Generazione della direzione della particella j
       theta = EtaTheta(disteta, detector->GetEtaMin(), detector->GetEtaMax(), istogrammapseudorapidita);
       phi = gRandom -> Uniform(0., 2*TMath::Pi());
+      PuntatoreDirezione -> SetAngoli(theta, phi)
       
-      //new(IndPuntRiv1[j])
+      // Generazione dell'urto sulla beam pipe
+      //new(IndPuntBP[j]) Urto::UrtoSuVertice(&PuntatoreDirezione, )
 	
     }
+    
+    
+
+    // Generazione del rumore nell'evento
+    //int numerorumore = 0;
 
     alberello -> Fill();
     PuntatoreVertice -> Clear();
