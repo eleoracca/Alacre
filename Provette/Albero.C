@@ -20,7 +20,7 @@
 #include "Punto.h"
 #include "Rivelatore.h"
 #include "Trasporto.h"
-//#include "Urto.h"
+#include "Urto.h"
 #include "Varie.h"
 #include "Vertice.h"
 #endif
@@ -67,7 +67,7 @@ void Albero(bool fileconfig = kFALSE){
     RichiestaInformazioni(numeroeventi, distmolteplicita, par1molteplicita, par2molteplicita, multiplescattering, rumore, disteta, distrumore, par1rumore, par2rumore);
   }
   else{
-    ifstream in("Configurazione.txt");
+    ifstream in("Configurazioni/Configurazione.txt");
     if(!in){
       cout << "!! File di configurazione non trovato !!" << endl << "La simulazione ripartirà automaticamente chiedendo di inserire a mano i parametri.";
       Albero(kFALSE);
@@ -79,11 +79,12 @@ void Albero(bool fileconfig = kFALSE){
   }
   
   // File di output per i dati generati dal Monte Carlo
-  TFile fileoutput("Simulazione.root", "RECREATE");
-  if(fileoutput.IsZombie()){
-    cout << "C'è stato un problema nel creare il file Simulazione.root" << endl;
+  TFile *fileoutput = new TFile("Output/Simulazione.root", "RECREATE");
+  if(fileoutput->IsZombie()){
+    cout << "C'è stato un problema nel creare il file Simulazione.root. \nLa simulazione si interrompe." << endl;
     return;
   }
+  fileoutput -> cd();
 
   // Tree della simulazione
   TTree *alberello = new TTree("alberello", "Tree della simulazione di Racca e Sauda");
@@ -91,39 +92,37 @@ void Albero(bool fileconfig = kFALSE){
   // Vertice della collisione e direzione
   Vertice *PuntatoreVertice = new Vertice();
   Vertice &IndPuntVertice = *PuntatoreVertice;
-  /*
+  
   Trasporto *PuntatoreDirezione = new Trasporto();
   Trasporto &IndPuntDirezione = *PuntatoreDirezione;
 
   // Urti sulla beam pipe
-  TClonesArray *PuntatoreBP = new TClonesArray("Urto", numeroeventi);
+  TClonesArray *PuntatoreBP = new TClonesArray("Urto", 100);
   TClonesArray &IndPuntBP = *PuntatoreBP;
 
   // Urti sul primo rivelatore
-  TClonesArray *PuntatoreRiv1 = new TClonesArray("Urto", numeroeventi);
+  TClonesArray *PuntatoreRiv1 = new TClonesArray("Urto", 100);
   TClonesArray &IndPuntRiv1 = *PuntatoreRiv1;
   
   // Urti sul secondo rivelatore
-  TClonesArray *PuntatoreRiv2 = new TClonesArray("Urto", numeroeventi);
+  TClonesArray *PuntatoreRiv2 = new TClonesArray("Urto", 100);
   TClonesArray &IndPuntRiv2 = *PuntatoreRiv2;
-  */
+  
 
   // Dichiaro i branch del tree
-  alberello->Branch("VerticeMolteplicita", &PuntatoreVertice);
-  /*
-  alberello->Branch("UrtiBeamPipe", &PuntatoreBP);
-  alberello->Branch("UrtiRivelatore1", &PuntatoreRiv1);
-  alberello->Branch("UrtiRivelatore2", &PuntatoreRiv2);
-  */
+  alberello -> Branch("VerticeMolteplicita", &PuntatoreVertice);
+  alberello -> Branch("UrtiBeamPipe", &PuntatoreBP);
+  alberello -> Branch("UrtiRivelatore1", &PuntatoreRiv1);
+  alberello -> Branch("UrtiRivelatore2", &PuntatoreRiv2);
 
   // Rivelatore
-  Rivelatore *detector = new Rivelatore("Rivelatore.txt");
+  Rivelatore *detector = new Rivelatore("Configurazioni/Rivelatore.txt");
 
   // Dichiarazione di theta ed eventuale caricamento della distribuzione di pseudorapidità
   double theta;
   TH1F *istogrammapseudorapidita = new TH1F();
   if(disteta){
-    istogrammapseudorapidita = ImportaIstogramma("kinem.root", "heta");
+    istogrammapseudorapidita = ImportaIstogramma("Configurazioni/kinem.root", "heta");
     istogrammapseudorapidita -> SetDirectory(0);
   }
 
@@ -152,13 +151,31 @@ void Albero(bool fileconfig = kFALSE){
       //new(IndPuntRiv1[j])
 	
     }
-  }
 
+    alberello -> Fill();
+    PuntatoreVertice -> Clear();
+    PuntatoreBP -> Clear();
+    PuntatoreRiv1 -> Clear();
+    PuntatoreRiv2 -> Clear();
+    
+  }
+  
+  fileoutput -> Write();
+  fileoutput -> Close();
+  
   cout << "fine" << endl;
 }
 
 
 void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &rumore, bool &disteta, TString &distrumore, double &par1rumore, double &par2rumore){
+
+  TString scattering = "\0";
+  if(multiplescattering){
+    scattering = "acceso";
+  }
+  else{
+    scattering = "spento";
+  }
 
   cout << "------- Parametri per la generazione degli eventi --------" << endl;
   cout << "I parametri vengono letti dal file Configurazione.txt" << endl;
@@ -187,7 +204,7 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
     cout << "  - Minimo:                            -2" << endl;
     cout << "  - Massimo:                            2" << endl;
   }
-  cout << "+ Scattering multiplo:                  " << multiplescattering << endl;
+  cout << "+ Scattering multiplo:                 " << scattering << endl;
   cout << "+ Rumore                               ";
   
   if(rumore){
@@ -207,6 +224,8 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
 
 void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &rumore, bool &disteta, TString &distrumore, double &par1rumore, double &par2rumore){
 
+  TString scattering = "\0"
+  
     cout << "------- Parametri per la generazione degli eventi --------" << endl;
     cout << "Inserire i parametri per la simulazione" << endl;
     cout << "+ Numero di eventi:                    ";
@@ -269,7 +288,24 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
     cout << "  - Massimo:                              2" << endl;
   }
   cout << endl << "+ Scattering multiplo:                 ";
-  cin >> multiplescattering;
+  cin >> scattering;
+  if(scattering == "acceso"){
+    multiplescattering = kTRUE;
+  }
+  else if(scattering == "spento"){
+    multiplescattering = kFALSE;
+  }
+  else{
+    cout << "Inizializzazione sbagliata; inserire acceso o spento: ";
+    cin >> scattering;
+    if(scattering == "acceso"){
+      multiplescattering = kTRUE;
+    }
+    else if(scattering == "spento"){
+      multiplescattering = kFALSE;
+    }
+  }
+  
   cout << endl << "+ Rumore                               ";
   cin >> distrumore;
   
@@ -329,7 +365,7 @@ int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &pa
   else if(distribuzione == "istogramma"){
     while(numero == 0){
       TH1F *istogramma = new TH1F();
-      istogramma = ImportaIstogramma("kinem.root", "hmul");
+      istogramma = ImportaIstogramma("Configurazioni/kinem.root", "hmul");
       istogramma -> SetDirectory(0);
       
       numero = istogramma -> GetRandom();
