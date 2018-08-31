@@ -18,7 +18,7 @@
 #include "TSystem.h"
 
 #include "Punto.h"
-#include "Rivelatore.h"
+#include "Interface/Rivelatore.h"
 #include "Trasporto.h"
 #include "Urto.h"
 #include "Varie.h"
@@ -224,7 +224,7 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
 
 void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &rumore, bool &disteta, TString &distrumore, double &par1rumore, double &par2rumore){
 
-  TString scattering = "\0"
+  TString scattering = "\0";
   
     cout << "------- Parametri per la generazione degli eventi --------" << endl;
     cout << "Inserire i parametri per la simulazione" << endl;

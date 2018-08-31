@@ -11,11 +11,13 @@ void compile(TString myopt="fast"){
     opt = "kg";
   }
 
-  gSystem->CompileMacro("Punto.cxx", opt.Data());
-  gSystem->CompileMacro("Vertice.cxx", opt.Data());
-  gSystem->CompileMacro("Rivelatore.cxx", opt.Data());
-  gSystem->CompileMacro("Trasporto.cxx", opt.Data());
-  gSystem->CompileMacro("Urto.cxx", opt.Data());
+  gSystem->AddIncludePath("-I./Interface");
+  
+  gSystem->CompileMacro("Sources/Punto.cxx", opt.Data());
+  gSystem->CompileMacro("Sources/Vertice.cxx", opt.Data());
+  gSystem->CompileMacro("Sources/Rivelatore.cxx", opt.Data());
+  gSystem->CompileMacro("Sources/Trasporto.cxx", opt.Data());
+  gSystem->CompileMacro("Sources/Urto.cxx", opt.Data());
   
   gSystem->CompileMacro("Albero.C", opt.Data());
 }
