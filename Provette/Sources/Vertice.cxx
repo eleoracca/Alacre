@@ -29,8 +29,8 @@ Vertice::Vertice(double X, double Y, double Z, int Molteplicita, int Rumore): Pu
   dmRumore = Rumore;
 }
 
-Vertice::Vertice(double X, double  sX, double  Y, double  sY, double  Z, double  sZ, int  Molteplicita, int  Rumore): Punto(){
-  Punto(gRandom->Gaus(X, sX), gRandom->Gaus(Y, sY), gRandom->Gaus(Z, sZ));
+Vertice::Vertice(Rivelatore *Detector, int  Molteplicita, int  Rumore): Punto(){
+  Punto(gRandom->Gaus(Detector->GetVerticeX(), Detector->GetVerticeSX()), gRandom->Gaus(Detector->GetVerticeY(), Detector->GetVerticeSY()), gRandom->Gaus(Detector->GetVerticeZ(), Detector->GetVerticeSZ()));
   dmMolteplicita = Molteplicita;
   dmRumore = Rumore;
 }

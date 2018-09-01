@@ -9,6 +9,7 @@
 #define VERTICE_H
 
 #include "Punto.h"
+#include "Rivelatore.h"
 
 class Vertice : public Punto{
 
@@ -18,7 +19,7 @@ class Vertice : public Punto{
   Vertice();
   //Vertice(double X, double Y, double Z, int Molteplicita, int Rumore = 0, int ID);
   Vertice(double X, double Y, double Z, int Molteplicita, int Rumore = 0);
-  Vertice(double  X, double  sX, double  Y, double  sY, double  Z, double  sZ, int  Molteplicita, int  Rumore = 0);
+  Vertice(Rivelatore *Detector, int  Molteplicita, int  Rumore = 0);
 
   // ------------- Distruttori --------------
   virtual ~Vertice();
