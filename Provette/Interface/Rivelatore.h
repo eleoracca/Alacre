@@ -2,7 +2,7 @@
   ~ Dichiarazione della classe Rivelatore                   ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 26/08/2018                             ~
+  ~ Ultima modifica: 01/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #ifndef RIVELATORE_H
@@ -29,10 +29,20 @@ class Rivelatore : public TObject{
   void SetSmearRPhi(const double SmearRPhi);
   
   // ---------------- Getter ----------------
+  double GetRaggioBP();
+  double GetRaggio1L();
+  double GetRaggio2L();
+  double GetSpessoreBP();
+  double GetSpessoreL();
+  double GetLunghezza();
+  TMaterial GetMaterialeBP();
+  TMaterial GetMaterialeL();
+  
   double GetEtaMin();
   double GetEtaMax();
   double GetSmearZ();
   double GetSmearRPhi();
+  
   double GetVerticeX();
   double GetVerticeY();
   double GetVerticeZ();
@@ -51,13 +61,14 @@ class Rivelatore : public TObject{
   double dmSpessoreBP; //! Spessore della Beam Pipe in cm
   double dmSpessoreL; //! Spessore del primo strato in cm
   double dmLunghezza; //! Lunghezza del rivelatore in cm
+  TMaterial dmMaterialeBP; //! Materiale della Beam Pipe
+  TMaterial dmMaterialeL; //! Materiale degli strati
+  
   double dmEtaMinimo; //! Pseudorapidità minima rilevabile
   double dmEtaMassimo; //! Pseudorapidità massima rilevabile
   double dmSmearingZ; //! Smearing nella direzione Z in cm
   double dmSmearingRPhi; //! Smearing nelle direzioni R e #phi in cm
   double dmTaglioPhi; //! Taglio su #phi in mrad
-  double dmTheta; //! #theta del multiple scattering nella RMS della generazione gaussiana in rad
-  TMaterial dmMaterialeBP; //! Materiale della Beam Pipe
   
   double dmXVertice; //! Coordinata X del vertice generato
   double dmYVertice; //! Coordinata Y del vertice generato
@@ -70,5 +81,3 @@ class Rivelatore : public TObject{
 };
 
 #endif
-
-
