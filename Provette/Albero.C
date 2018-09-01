@@ -69,7 +69,7 @@ void Albero(bool fileconfig = kFALSE){
   else{
     ifstream in("Configurazioni/Configurazione.txt");
     if(!in){
-      cout << "!! File di configurazione non trovato !!" << endl << "La simulazione ripartirà automaticamente chiedendo di inserire a mano i parametri.";
+      cout << "!! File di configurazione non trovato !!" << endl << "La simulazione riparte automaticamente chiedendo di inserire a mano i parametri.";
       Albero(kFALSE);
     }  
     in >> commento >> numeroeventi >> distmolteplicita >> par1molteplicita >> par2molteplicita >> multiplescattering >> rumore >> disteta >> distrumore >> par1rumore >> par2rumore;
@@ -81,7 +81,7 @@ void Albero(bool fileconfig = kFALSE){
   // File di output per i dati generati dal Monte Carlo
   TFile *fileoutput = new TFile("Output/Simulazione.root", "RECREATE");
   if(fileoutput->IsZombie()){
-    cout << "C'è stato un problema nel creare il file Simulazione.root. \nLa simulazione si interrompe." << endl;
+    cout << "Problema nel creare il file Simulazione.root. \nLa simulazione si interrompe." << endl;
     return;
   }
   fileoutput -> cd();
@@ -99,14 +99,17 @@ void Albero(bool fileconfig = kFALSE){
   // Urti sulla beam pipe
   TClonesArray *PuntatoreBP = new TClonesArray("Urto", 100);
   TClonesArray &IndPuntBP = *PuntatoreBP;
+  Urto UrtoBP;
 
   // Urti sul primo rivelatore
   TClonesArray *PuntatoreRiv1 = new TClonesArray("Urto", 100);
   TClonesArray &IndPuntRiv1 = *PuntatoreRiv1;
+  Urto Urto1L;
   
   // Urti sul secondo rivelatore
   TClonesArray *PuntatoreRiv2 = new TClonesArray("Urto", 100);
   TClonesArray &IndPuntRiv2 = *PuntatoreRiv2;
+  Urto Urto2L;
   
 
   // Dichiaro i branch del tree
@@ -129,6 +132,9 @@ void Albero(bool fileconfig = kFALSE){
   // Dichiarazione dell'azimut
   double phi;
 
+  // Dichiarazione del rumore
+  int numerorumore = 0;
+
   // Loop sugli eventi per creare i dati della simulazione
   for(int i = 0; i < (int)numeroeventi; i++){
 
@@ -136,7 +142,7 @@ void Albero(bool fileconfig = kFALSE){
     int numeroparticelle = DecisioneMolteplicita(distmolteplicita, par1molteplicita, par2molteplicita);
     
     // Generazione del vertice dell'evento, rms in centimetri
-    PuntatoreVertice = new Vertice(detector->GetVerticeX(), detector->GetVerticeSX(), detector->GetVerticeY(), detector->GetVerticeSX(), detector->GetVerticeZ(), detector->GetVerticeSZ(), numeroparticelle);
+    PuntatoreVertice = new Vertice(detector, numeroparticelle, numerorumore);
     
     // Generazione degli urti dell'evento
     for(int j = 0; j < numeroparticelle; j++){
@@ -144,17 +150,21 @@ void Albero(bool fileconfig = kFALSE){
       // Generazione della direzione della particella j
       theta = EtaTheta(disteta, detector->GetEtaMin(), detector->GetEtaMax(), istogrammapseudorapidita);
       phi = gRandom -> Uniform(0., 2*TMath::Pi());
-      PuntatoreDirezione -> SetAngoli(theta, phi)
+      PuntatoreDirezione -> SetAngoli(theta, phi);
       
       // Generazione dell'urto sulla beam pipe
-      //new(IndPuntBP[j]) Urto::UrtoSuVertice(&PuntatoreDirezione, )
+      UrtoBP = Urto::UrtodaVertice(PuntatoreVertice, PuntatoreDirezione, detector->GetRaggioBP(), j, 0);
+      new(IndPuntBP[j]) Urto(UrtoBP);
+      
+      // Generazione dell'urto sul primo strato
+      Urto1L = UrtoBP.UrtodaUrto(PuntatoreDirezione, detector, multiplescattering, 1);
+      new(IndPuntRiv1[j]) Urto(Urto1L);
+      
+      // Generazione dell'urto sul secondo strato
+      Urto2L = Urto1L.UrtodaUrto(PuntatoreDirezione, detector, multiplescattering, 2);
+      new(IndPuntRiv2[j]) Urto(Urto2L);
 	
     }
-    
-    
-
-    // Generazione del rumore nell'evento
-    //int numerorumore = 0;
 
     alberello -> Fill();
     PuntatoreVertice -> Clear();
@@ -163,6 +173,17 @@ void Albero(bool fileconfig = kFALSE){
     PuntatoreRiv2 -> Clear();
     
   }
+
+  istogrammapseudorapidita->~TH1F();
+  detector->~Rivelatore();
+  PuntatoreVertice->~Vertice();
+  PuntatoreDirezione->~Trasporto();
+  PuntatoreBP->~Urto();
+  PuntatoreRiv1->~Urto();
+  PuntatoreRiv2->~Urto();
+  UrtoBP.~Urto();
+  Urto1L.~Urto();
+  Urto2L.~Urto();
   
   fileoutput -> Write();
   fileoutput -> Close();
@@ -184,7 +205,7 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
   cout << "------- Parametri per la generazione degli eventi --------" << endl;
   cout << "I parametri vengono letti dal file Configurazione.txt" << endl;
   cout << "+ Numero di eventi:                    " << numeroeventi << endl;
-  cout << "+ Distribuzione della molteplicità:    " << distmolteplicita << endl;
+  cout << "+ Distribuzione della molteplicita:    " << distmolteplicita << endl;
   
   if(distmolteplicita == "gaussiana"){
     cout << "  - Media:                             " << par1molteplicita << endl;
@@ -198,7 +219,7 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
     cout << "  - Valore:                            " << par1molteplicita << endl;
   }
   
-  cout << "+ Distribuzione della pseudorapidità:  ";
+  cout << "+ Distribuzione della pseudorapidita:  ";
   
   if(disteta){
     cout << "distribuzione assegnata" << endl;
@@ -234,7 +255,7 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
     cout << "Inserire i parametri per la simulazione" << endl;
     cout << "+ Numero di eventi:                    ";
     cin >> numeroeventi;
-    cout << endl << "+ Distribuzione della molteplicità:    ";
+    cout << endl << "+ Distribuzione della molteplicita:    ";
     cin >> distmolteplicita;
   
   if(distmolteplicita == "gaussiana"){
@@ -254,7 +275,7 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
     cin >> par1molteplicita;
   }
   else{
-    cout << "Inizializzazione sbagliata per la distribuzione di molteplicità." << endl;
+    cout << "Inizializzazione sbagliata per la distribuzione di molteplicita." << endl;
     cout << "Scrivere gaussiana, uniforme o fissa: " << endl;
     cin >> distmolteplicita;
     
@@ -275,12 +296,12 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
       cin >> par1molteplicita;
     }
     else{
-      cout << "Inizializzazione sbagliata: la simulazione si interromperà.";
+      cout << "Inizializzazione sbagliata: la simulazione si interrompe ora.";
       return;
     }
   }
   
-  cout << endl << "+ Distribuzione della pseudorapidità:  ";
+  cout << endl << "+ Distribuzione della pseudorapidita:  ";
   cin >> disteta;
   
   if(disteta){
@@ -344,7 +365,7 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
 	cin >> par1rumore;
       }
       else{
-	cout << "Inizializzazione sbagliata: la simulazione si interromperà.";
+	cout << "Inizializzazione sbagliata: la simulazione si interrompe ora.";
 	return;
       }
     }
