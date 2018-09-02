@@ -178,9 +178,6 @@ void Albero(bool fileconfig = kFALSE){
   detector->~Rivelatore();
   PuntatoreVertice->~Vertice();
   PuntatoreDirezione->~Trasporto();
-  PuntatoreBP->~Urto();
-  PuntatoreRiv1->~Urto();
-  PuntatoreRiv2->~Urto();
   UrtoBP.~Urto();
   Urto1L.~Urto();
   Urto2L.~Urto();

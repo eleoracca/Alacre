@@ -40,22 +40,22 @@ class Urto : public Punto{
   static double CalcoloT(double Theta, double Phi, double XO, double YO, double Raggio);
   
   // Genera un urto partendo da un vertice
-  static Urto UrtoSuVertice(Vertice &Origine, Trasporto &Direttrice, double Raggio, int ID, int NumLayer = -1);
+  static Urto UrtodaVertice(Vertice *Origine, Trasporto *Direttrice, double Raggio, int IDe, int NumLayer = -1);
   
   // Genera un urto partendo dall'urto, contemplando anche lo cattering multiplo con il materiale lungo la traiettoria
-  Urto UrtodaUrto(Trasporto &Direttrice, double Raggio, TMaterial &Materiale, double Larghezza, bool ScatteringMult = kTRUE, int NumLayer = 0, double P = 750, int Z = 1, double Beta = 1);
+  Urto UrtodaUrto(Trasporto *Direttrice, Rivelatore *Detector, bool ScatteringMult = kTRUE, int NumLayer = -1, double P = 750, int Z = 1, double Beta = 1);
   
   // Smearing: modifica delle coordinate a causa della risoluzione definita
-  void SmearingGaussiano(double RaggioDetector, double ZDeviazioneStandard, double RPhiDeviazioneStandard);
+  void SmearingGaussiano(Rivelatore *Detector, int NumLayer);
   
-  // Rumore: il primo generatore crea una distribuzione uniforme di urti sul rivelatore
-  static Urto RumoreRivelatore(double RaggioC, double Zmin, double Zmax);
+  // Rumore: crea una distribuzione uniforme di urti sul rivelatore
+  static Urto RumoreRivelatore(Rivelatore *Detector, int NumLayer);
   
  private:
 
   // ------------- Data Member --------------
   int  dmNumLayer; //! Layer su cui avviene l'urto
-  int  dmID; //! Label per ricordare a quale simulazione MC appartiene
+  int  dmID; //! Label per ricordare a quale particella della simulazione MC appartiene
   bool dmUrtoReale; //! Permette di decidere se l'urto reale oppure no
   
   ClassDef(Urto,1)
