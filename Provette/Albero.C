@@ -132,9 +132,6 @@ void Albero(bool fileconfig = kFALSE){
   // Dichiarazione dell'azimut
   double phi;
 
-  // Dichiarazione del rumore
-  int numerorumore = 0;
-
   // Loop sugli eventi per creare i dati della simulazione
   for(int i = 0; i < (int)numeroeventi; i++){
 
@@ -142,7 +139,7 @@ void Albero(bool fileconfig = kFALSE){
     int numeroparticelle = DecisioneMolteplicita(distmolteplicita, par1molteplicita, par2molteplicita);
     
     // Generazione del vertice dell'evento, rms in centimetri
-    PuntatoreVertice = new Vertice(detector, numeroparticelle, numerorumore);
+    PuntatoreVertice = new Vertice(detector, numeroparticelle, distrumore);
     
     // Generazione degli urti dell'evento
     for(int j = 0; j < numeroparticelle; j++){

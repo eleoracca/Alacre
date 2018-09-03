@@ -18,8 +18,8 @@ class Vertice : public Punto{
   // ------------- Costruttori --------------
   Vertice();
   //Vertice(double X, double Y, double Z, int Molteplicita, int Rumore = 0, int ID);
-  Vertice(double X, double Y, double Z, int Molteplicita, int Rumore = 0);
-  Vertice(Rivelatore *Detector, int  Molteplicita, int  Rumore = 0);
+  Vertice(double X, double Y, double Z, int Molteplicita, TString DistRumore, int Rumore = 0);
+  Vertice(Rivelatore *Detector, int  Molteplicita, TString DistRumore, int  Rumore = 0);
 
   // ------------- Distruttori --------------
   virtual ~Vertice();
@@ -28,17 +28,20 @@ class Vertice : public Punto{
   void SetMolteplicita(int Molteplicita);
   //void SetID(int ID);
   void SetRumore(double Rumore);
+  void SetDistRumore(TString DistRumore);
   
   // ---------------- Getter ----------------
   int GetMolteplicita();
   //int GetID();
   double GetRumore();
+  TString GetDistRumore();
     
  private:
 
   int dmMolteplicita; //! Numero di tracce da generare
   //int dmID; //! Etichetta utile
-  double dmRumore; //! Numero di particelle di rumore da generare  
+  double dmRumore; //! Numero di particelle di rumore da generare
+  TString dmDistRumore; //! Distribuzione del rumore da generare
   
   ClassDef(Vertice,1)
 };

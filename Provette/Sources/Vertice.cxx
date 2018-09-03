@@ -19,20 +19,23 @@ Vertice::Vertice(): Punto(){
   dmMolteplicita = 0;
   //dmID = 0;
   dmRumore = 0;
+  dmDistRumore = "\0";
 }
 
 //Vertice::Vertice(double X, double Y, double Z, int Molteplicita, int Rumore, int ID)
-Vertice::Vertice(double X, double Y, double Z, int Molteplicita, int Rumore): Punto(){
+Vertice::Vertice(double X, double Y, double Z, int Molteplicita, TString DistRumore, int Rumore): Punto(){
   Punto(X, Y, Z);
   dmMolteplicita = Molteplicita;
   //dmID = ID;
   dmRumore = Rumore;
+  dmDistRumore = DistRumore;
 }
 
-Vertice::Vertice(Rivelatore *Detector, int  Molteplicita, int  Rumore): Punto(){
+Vertice::Vertice(Rivelatore *Detector, int  Molteplicita, TString DistRumore, int  Rumore): Punto(){
   Punto(gRandom->Gaus(Detector->GetVerticeX(), Detector->GetVerticeSX()), gRandom->Gaus(Detector->GetVerticeY(), Detector->GetVerticeSY()), gRandom->Gaus(Detector->GetVerticeZ(), Detector->GetVerticeSZ()));
   dmMolteplicita = Molteplicita;
   dmRumore = Rumore;
+  dmDistRumore = DistRumore;
 }
 
 // ------------- Distruttori --------------
@@ -52,6 +55,10 @@ void Vertice::SetRumore(double Rumore){
   dmRumore = Rumore;
 }
 
+void Vertice::SetDistRumore(TString DistRumore){
+  dmDistRumore = DistRumore;
+}
+
 // ---------------- Getter ----------------
 int Vertice::GetMolteplicita(){
   return dmMolteplicita;
@@ -63,4 +70,8 @@ int Vertice::GetMolteplicita(){
 
 double Vertice::GetRumore(){
   return dmRumore;
+}
+
+TString Vertice::GetDistRumore(){
+  return dmDistRumore;
 }
