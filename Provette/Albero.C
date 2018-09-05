@@ -2,7 +2,7 @@
   ~ Generazione degli eventi                                ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 31/08/2018                             ~
+  ~ Ultima modifica: 05/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
   
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -15,8 +15,8 @@
 #include "TMath.h"
 #include "TRandom3.h"
 #include "TString.h"
-#include "TTree.h"
 #include "TSystem.h"
+#include "TTree.h"
 
 #include "Punto.h"
 #include "Rivelatore.h"
@@ -40,7 +40,7 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
 void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &rumore, bool &disteta, TString &distrumore, double &par1rumore, double &par2rumore);
 
 // Funzione che decide la molteplicità
-int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &parametro2);
+int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &parametro2, TH1F *istogramma);
 
 
 
@@ -92,8 +92,7 @@ void Albero(bool fileconfig = kFALSE){
 
   // Vertice della collisione e direzione
   Vertice *PuntatoreVertice = new Vertice();
-  Vertice& IndPuntVertice = *PuntatoreVertice;
-  
+  Vertice& IndPuntVertice = *PuntatoreVertice;  
   Trasporto *PuntatoreDirezione = new Trasporto();
   Trasporto& IndPuntDirezione = *PuntatoreDirezione;
 
@@ -110,8 +109,7 @@ void Albero(bool fileconfig = kFALSE){
   // Urti sul secondo rivelatore
   TClonesArray *PuntatoreRiv2 = new TClonesArray("Urto", 100);
   TClonesArray& IndPuntRiv2 = *PuntatoreRiv2;
-  Urto Urto2L;  
-  
+  Urto Urto2L;    
 
   // Dichiaro i branch del tree
   alberello -> Branch("Vertice", &PuntatoreVertice);
@@ -122,7 +120,16 @@ void Albero(bool fileconfig = kFALSE){
   // Rivelatore
   Rivelatore *detector = new Rivelatore("Configurazioni/Rivelatore.txt");
 
-  // Dichiarazione di theta ed eventuale caricamento della distribuzione di pseudorapidità
+  // Dichiarazione della molteplicità ed eventuale caricamento della distribuzione da istogramma
+  int numeroparticelle = 0;
+  TH1F *istogrammamolteplicita = new TH1F();
+  if(distmolteplicita == "istogramma"){
+    istogrammamolteplicita = ImportaIstogramma("Configurazioni/kinem.root", "hmul");
+    istogrammamolteplicita -> SetDirectory(0);
+  }
+
+  // Dichiarazione degli angoli ed eventuale caricamento della distribuzione di pseudorapidità da istogramma
+  double phi;
   double theta;
   TH1F *istogrammapseudorapidita = new TH1F();
   if(disteta){
@@ -130,14 +137,11 @@ void Albero(bool fileconfig = kFALSE){
     istogrammapseudorapidita -> SetDirectory(0);
   }
 
-  // Dichiarazione dell'azimut
-  double phi;
-
   // Loop sugli eventi per creare i dati della simulazione
   for(int i = 0; i < (int)numeroeventi; i++){
 
     // Generazione della molteplicità dell'evento, ovvero il numero di particelle generato
-    int numeroparticelle = DecisioneMolteplicita(distmolteplicita, par1molteplicita, par2molteplicita);
+    numeroparticelle = DecisioneMolteplicita(distmolteplicita, par1molteplicita, par2molteplicita, istogrammamolteplicita);
     
     // Generazione del vertice dell'evento, rms in centimetri
     PuntatoreVertice = new Vertice(detector, numeroparticelle, distrumore);
@@ -169,17 +173,21 @@ void Albero(bool fileconfig = kFALSE){
       new(IndPuntRiv2[j]) Urto(Urto2L);	
     }
 
+    // Si riempie il tree e si cancellano gli array per il nuovo ciclo
     alberello -> Fill();
     PuntatoreVertice -> Clear();
     PuntatoreBP -> Clear();
     PuntatoreRiv1 -> Clear();
     PuntatoreRiv2 -> Clear();
   }
-  
+
+  // Finisce la scrittura del file e viene chiuso
   fileoutput -> Write();
   fileoutput -> Close();
-  
+
+  // Distruzione delle variabili nello heap
   istogrammapseudorapidita->~TH1F();
+  istogrammamolteplicita->~TH1F();
   detector->~Rivelatore();
   PuntatoreVertice->~Vertice();
   PuntatoreDirezione->~Trasporto();
@@ -218,8 +226,7 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
     cout << "  - Valore:                            " << par1molteplicita << endl;
   }
   
-  cout << "+ Distribuzione della pseudorapidita:  ";
-  
+  cout << "+ Distribuzione della pseudorapidita:  ";  
   if(disteta){
     cout << "distribuzione assegnata" << endl;
   }
@@ -228,9 +235,10 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
     cout << "  - Minimo:                            -2" << endl;
     cout << "  - Massimo:                            2" << endl;
   }
-  cout << "+ Scattering multiplo:                 " << scattering << endl;
-  cout << "+ Rumore                               ";
   
+  cout << "+ Scattering multiplo:                 " << scattering << endl;
+  
+  cout << "+ Rumore                               ";
   if(rumore){
     cout << "acceso"  << endl;
     cout << "  - Distribuzione:                     " << distrumore << endl;
@@ -304,13 +312,14 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
   cin >> disteta;
   
   if(disteta){
-    cout << "distribuzione assegnata" << endl;
+    cout << "distribuzione assegnata dall'istogramma" << endl;
   }
   else{
     cout << "uniforme" << endl;
     cout << "  - Minimo:                              -2" << endl;
     cout << "  - Massimo:                              2" << endl;
   }
+  
   cout << endl << "+ Scattering multiplo:                 ";
   cin >> scattering;
   if(scattering == "acceso"){
@@ -327,6 +336,10 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
     }
     else if(scattering == "spento"){
       multiplescattering = kFALSE;
+    }
+    else{
+      cout << "Inizializzazione sbagliata: la simulazione si interrompe ora.";
+      return;
     }
   }
   
@@ -373,7 +386,7 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
 }
 
 
-int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &parametro2){
+int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &parametro2, TH1F *istogramma){
   int numero = 0;
 
   if(distribuzione == "gaussiana"){
@@ -387,14 +400,8 @@ int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &pa
     }
   }
   else if(distribuzione == "istogramma"){
-    while(numero == 0){
-      TH1F *istogramma = new TH1F();
-      istogramma = ImportaIstogramma("Configurazioni/kinem.root", "hmul");
-      istogramma -> SetDirectory(0);
-      
+    while(numero == 0){      
       numero = istogramma -> GetRandom();
-      
-      delete istogramma;
     }
   }
   else if(distribuzione == "fissa"){
