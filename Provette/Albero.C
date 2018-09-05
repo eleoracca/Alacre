@@ -87,7 +87,7 @@ void Albero(bool fileconfig = kFALSE){
   fileoutput -> cd();
 
   // Tree della simulazione
-  TTree *alberello = new TTree("alberello", "Tree della simulazione");
+  TTree *gaggia = new TTree("gaggia", "Tree della simulazione");
 
   // Vertice della collisione e direzione
   Vertice *PuntatoreVertice = new Vertice();
@@ -111,10 +111,10 @@ void Albero(bool fileconfig = kFALSE){
   Urto Urto2L;    
 
   // Dichiaro i branch del tree
-  alberello -> Branch("Vertice", &PuntatoreVertice);
-  alberello -> Branch("UrtiBeamPipe", &PuntatoreBP);
-  alberello -> Branch("UrtiRivelatore1", &PuntatoreRiv1);
-  alberello -> Branch("UrtiRivelatore2", &PuntatoreRiv2);
+  gaggia -> Branch("Vertice", &PuntatoreVertice);
+  gaggia -> Branch("UrtiBeamPipe", &PuntatoreBP);
+  gaggia -> Branch("UrtiRivelatore1", &PuntatoreRiv1);
+  gaggia -> Branch("UrtiRivelatore2", &PuntatoreRiv2);
 
   // Rivelatore
   Rivelatore *detector = new Rivelatore("Configurazioni/Rivelatore.txt");
@@ -173,7 +173,7 @@ void Albero(bool fileconfig = kFALSE){
     }
 
     // Si riempie il tree e si cancellano gli array per il nuovo ciclo
-    alberello -> Fill();
+    gaggia -> Fill();
     PuntatoreVertice -> Clear();
     PuntatoreBP -> Clear();
     PuntatoreRiv1 -> Clear();
@@ -193,6 +193,7 @@ void Albero(bool fileconfig = kFALSE){
   UrtoBP.~Urto();
   Urto1L.~Urto();
   Urto2L.~Urto();
+  gaggia->~TTree();
   
   cout << "fine" << endl;
 }

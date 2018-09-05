@@ -15,7 +15,6 @@
 #include "TMath.h"
 #include "TRandom3.h"
 #include "TString.h"
-#include "TSystem.h"
 #include "TTree.h"
 
 #include "Punto.h"
@@ -45,8 +44,24 @@ void Ricostruzione(){
   TFile *fileinput = new TFile("Output/Simulazione.root");
   TFile *fileoutput = new TFile("Output/Ricostruzione.root", "RECREATE");
 
+  if(fileinput->IsZombie()){
+    cout << "Problema nel leggere il file Simulazione.root \nLa simulazione si interrompe." << endl;
+    return;
+  }
+  if(fileoutput->IsZombie()){
+    cout << "Problema nel leggere il file Simulazione.root \nLa simulazione si interrompe." << endl;
+    return;
+  }
+  fileoutput -> cd();
+
+  // Tree della ricostruzione
+  TTree *rovere = new TTree("rovere", "Tree della ricostruzione");
+  
   // Smearing dei punti perché ricostruiti da un rivelatore reale
 
   // Aggiunta del rumore, se richiesto
-  
+
+  fileinput -> Close();
+  fileoutput -> Close();
+  rovere->~TTree();
 }
