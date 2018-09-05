@@ -2,15 +2,15 @@
   ~ Macro per l'esecuzione della simulazione d'esame        ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 26/08/2018                             ~
+  ~ Ultima modifica: 05/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
 #include "Riostream.h"
 #include "TStopwatch.h"
-#include "TSystem.h"
 
 #include "Albero.C"
+#include "Ricostruzione.C"
 #endif
 
 void EsecuzioneEsame(bool fileconfig = kFALSE, TString myopt = "force"){
@@ -49,7 +49,7 @@ void EsecuzioneEsame(bool fileconfig = kFALSE, TString myopt = "force"){
   // Ricostruzione degli eventi
   cout << "~~~~~~~~~~~~~~~ Ricostruzione degli eventi ~~~~~~~~~~~~~~~" << endl;
   temporicostruzione.Start(kTRUE);
-  
+  Ricostruzione();
   temporicostruzione.Stop();
 
   // Ricostruzione degli eventi
