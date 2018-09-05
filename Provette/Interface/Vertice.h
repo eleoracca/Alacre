@@ -38,10 +38,10 @@ class Vertice : public Punto{
     
  private:
 
-  int dmMolteplicita; //! Numero di tracce da generare
-  //int dmID; //! Etichetta utile
-  double dmRumore; //! Numero di particelle di rumore da generare
-  TString dmDistRumore; //! Distribuzione del rumore da generare
+  int dmMolteplicita; // Numero di tracce da generare
+  //int dmID; // Etichetta utile
+  double dmRumore; // Numero di particelle di rumore da generare
+  TString dmDistRumore; // Distribuzione del rumore da generare
   
   ClassDef(Vertice,1)
 };

@@ -59,13 +59,13 @@ class Punto : public TObject{
  protected:
 
   // ------------- Data Member --------------
-  double dmX; //! Cartesiane: X
-  double dmY; //! Cartesiane: Y
-  double dmZ; //! Cartesiane: Z
-  double dmRaggioC; //! Cilindriche: #rho raggio
-  double dmRaggioS; //! Sferiche: #rho raggio
-  double dmTheta; //! Sferiche: #theta angolo assiale
-  double dmPhi; //! Cilindriche e sferiche: #phi angolo azimutale
+  double dmX; // Cartesiane: X
+  double dmY; // Cartesiane: Y
+  double dmZ; // Cartesiane: Z
+  double dmRaggioC; // Cilindriche: #rho raggio
+  double dmRaggioS; // Sferiche: #rho raggio
+  double dmTheta; // Sferiche: #theta angolo assiale
+  double dmPhi; // Cilindriche e sferiche: #phi angolo azimutale
   
   ClassDef(Punto,1)
 };

@@ -54,9 +54,9 @@ class Urto : public Punto{
  private:
 
   // ------------- Data Member --------------
-  int  dmNumLayer; //! Layer su cui avviene l'urto
-  int  dmID; //! Label per ricordare a quale particella della simulazione MC appartiene
-  bool dmUrtoReale; //! Permette di decidere se l'urto reale oppure no
+  int  dmNumLayer; // Layer su cui avviene l'urto
+  int  dmID; // Label per ricordare a quale particella della simulazione MC appartiene
+  bool dmUrtoReale; // Permette di decidere se l'urto reale oppure no
   
   ClassDef(Urto,1)
 };

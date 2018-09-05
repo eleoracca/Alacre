@@ -48,13 +48,13 @@ class Trasporto : public TObject {
   void AggiornaDirCos();
   
   // ----------- Data Member -----------
-  int dmID; //! Numero identificativo
-  double dmTheta; //! Angolo #theta
-  double dmPhi; //! Angolo #phi
-  double dmCDx; //! Coseno Direttore x.
-  double dmCDy; //! Coseno Direttore y.
-  double dmCDz; //! Coseno Direttore z.
-  bool dmIsrotated; //! Debug flag.
+  int dmID; // Numero identificativo
+  double dmTheta; // Angolo #theta
+  double dmPhi; // Angolo #phi
+  double dmCDx; // Coseno Direttore x.
+  double dmCDy; // Coseno Direttore y.
+  double dmCDz; // Coseno Direttore z.
+  bool dmIsrotated; // Debug flag.
   
   ClassDef(Trasporto, 1)
     
