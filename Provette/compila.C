@@ -1,8 +1,15 @@
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Macro per la compilazione                               ~
+  ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
+  ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
+  ~ Ultima modifica: 05/09/2018                             ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 //da eseguire in ~/TANS/Alacre/Provette/$
 //$root -l
-//.x compile.C("force");
+//.x compila.C("force");
 
-void compile(TString myopt="fast"){
+void compila(TString myopt="fast"){
   TString opt;
   if(myopt.Contains("force")){
     opt = "kfg";
@@ -20,4 +27,5 @@ void compile(TString myopt="fast"){
   gSystem->CompileMacro("Sources/Urto.cxx", opt.Data());
   
   gSystem->CompileMacro("Albero.C", opt.Data());
+  gSystem->CompileMacro("Ricostruzione.C", opt.Data());
 }
