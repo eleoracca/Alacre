@@ -15,7 +15,7 @@
 ClassImp(Punto)
 
 // ------------- Costruttori --------------
-Punto::Punto(): TObject(){
+Punto::Punto(): TObject() {
   dmX = 0.;
   dmY = 0.;
   dmZ = 0.;
@@ -25,7 +25,7 @@ Punto::Punto(): TObject(){
   dmRaggioS = 0.; 
 }
 
-Punto::Punto(double X, double Y, double Z): TObject(){
+Punto::Punto(double X, double Y, double Z): TObject() {
   dmX = X;
   dmY = Y;
   dmZ = Z;

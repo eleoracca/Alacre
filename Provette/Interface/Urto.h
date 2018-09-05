@@ -1,12 +1,12 @@
+#ifndef URTO_H
+#define URTO_H
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Dichiarazione della classe Urto                         ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
   ~ Ultima modifica: 31/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
- 
-#ifndef URTO_H
-#define URTO_H
 
 #include "Punto.h"
 #include "Vertice.h"

@@ -1,5 +1,5 @@
 //numeroeventi,distmolteplicita,par1molteplicita,par2molteplicita,multiplescattering,rumore,disteta,distrumore,par1rumore,par2rumore
-10000
+10
 fissa
 5.
 0.

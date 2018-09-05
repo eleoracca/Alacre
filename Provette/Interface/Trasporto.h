@@ -1,12 +1,12 @@
+#ifndef TRASPORTO_H
+#define TRASPORTO_H
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Dichiarazione della classe Trasporto                    ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
   ~ Ultima modifica: 27/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-#ifndef TRASPORTO_H
-#define TRASPORTO_H
 
 #include "TObject.h"
 #include "TString.h"

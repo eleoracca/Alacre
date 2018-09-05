@@ -1,12 +1,12 @@
+#ifndef PUNTO_H
+#define PUNTO_H
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Dichiarazione della classe Punto                        ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
   ~ Ultima modifica: 26/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-#ifndef PUNTO_H
-#define PUNTO_H
 
 #include "TObject.h"
 #include "TH1F.h"

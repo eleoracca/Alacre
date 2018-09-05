@@ -4,8 +4,9 @@
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
   ~ Ultima modifica: 31/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
+  
 #if !defined(__CINT__) || defined(__MAKECINT__)
+
 #include "Riostream.h"
 #include "TBranch.h"
 #include "TClonesArray.h"
@@ -17,12 +18,12 @@
 #include "TTree.h"
 #include "TSystem.h"
 
-#include "Interface/Punto.h"
-#include "Interface/Rivelatore.h"
-#include "Interface/Trasporto.h"
-#include "Interface/Urto.h"
-#include "Interface/Varie.h"
-#include "Interface/Vertice.h"
+#include "Punto.h"
+#include "Rivelatore.h"
+#include "Trasporto.h"
+#include "Urto.h"
+#include "Varie.h"
+#include "Vertice.h"
 #endif
 
 // ******************************************************************************
@@ -87,33 +88,33 @@ void Albero(bool fileconfig = kFALSE){
   fileoutput -> cd();
 
   // Tree della simulazione
-  TTree *alberello = new TTree("alberello", "Tree della simulazione di Racca e Sauda");
+  TTree *alberello = new TTree("alberello", "Tree della simulazione");
 
   // Vertice della collisione e direzione
   Vertice *PuntatoreVertice = new Vertice();
-  Vertice &IndPuntVertice = *PuntatoreVertice;
+  Vertice& IndPuntVertice = *PuntatoreVertice;
   
   Trasporto *PuntatoreDirezione = new Trasporto();
-  Trasporto &IndPuntDirezione = *PuntatoreDirezione;
+  Trasporto& IndPuntDirezione = *PuntatoreDirezione;
 
   // Urti sulla beam pipe
   TClonesArray *PuntatoreBP = new TClonesArray("Urto", 100);
-  TClonesArray &IndPuntBP = *PuntatoreBP;
+  TClonesArray& IndPuntBP = *PuntatoreBP;
   Urto UrtoBP;
 
   // Urti sul primo rivelatore
   TClonesArray *PuntatoreRiv1 = new TClonesArray("Urto", 100);
-  TClonesArray &IndPuntRiv1 = *PuntatoreRiv1;
+  TClonesArray& IndPuntRiv1 = *PuntatoreRiv1;
   Urto Urto1L;
   
   // Urti sul secondo rivelatore
   TClonesArray *PuntatoreRiv2 = new TClonesArray("Urto", 100);
-  TClonesArray &IndPuntRiv2 = *PuntatoreRiv2;
-  Urto Urto2L;
+  TClonesArray& IndPuntRiv2 = *PuntatoreRiv2;
+  Urto Urto2L;  
   
 
   // Dichiaro i branch del tree
-  alberello -> Branch("VerticeMolteplicita", &PuntatoreVertice);
+  alberello -> Branch("Vertice", &PuntatoreVertice);
   alberello -> Branch("UrtiBeamPipe", &PuntatoreBP);
   alberello -> Branch("UrtiRivelatore1", &PuntatoreRiv1);
   alberello -> Branch("UrtiRivelatore2", &PuntatoreRiv2);
@@ -151,16 +152,21 @@ void Albero(bool fileconfig = kFALSE){
       
       // Generazione dell'urto sulla beam pipe
       UrtoBP = Urto::UrtodaVertice(PuntatoreVertice, PuntatoreDirezione, detector->GetRaggioBP(), j, 0);
-      new(IndPuntBP[j]) Urto(UrtoBP);
       
       // Generazione dell'urto sul primo strato
       Urto1L = UrtoBP.UrtodaUrto(PuntatoreDirezione, detector, multiplescattering, 1);
-      new(IndPuntRiv1[j]) Urto(Urto1L);
+      
+      if(multiplescattering){
+        PuntatoreDirezione->FlipBit();
+      }
       
       // Generazione dell'urto sul secondo strato
       Urto2L = Urto1L.UrtodaUrto(PuntatoreDirezione, detector, multiplescattering, 2);
-      new(IndPuntRiv2[j]) Urto(Urto2L);
-	
+      
+      // Registrazione dei dati sul Tree
+      new(IndPuntBP[j]) Urto(UrtoBP);
+      new(IndPuntRiv1[j]) Urto(Urto1L);
+      new(IndPuntRiv2[j]) Urto(Urto2L);	
     }
 
     alberello -> Fill();
@@ -168,9 +174,11 @@ void Albero(bool fileconfig = kFALSE){
     PuntatoreBP -> Clear();
     PuntatoreRiv1 -> Clear();
     PuntatoreRiv2 -> Clear();
-    
   }
-
+  
+  fileoutput -> Write();
+  fileoutput -> Close();
+  
   istogrammapseudorapidita->~TH1F();
   detector->~Rivelatore();
   PuntatoreVertice->~Vertice();
@@ -178,9 +186,6 @@ void Albero(bool fileconfig = kFALSE){
   UrtoBP.~Urto();
   Urto1L.~Urto();
   Urto2L.~Urto();
-  
-  fileoutput -> Write();
-  fileoutput -> Close();
   
   cout << "fine" << endl;
 }

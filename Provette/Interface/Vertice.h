@@ -1,12 +1,12 @@
+#ifndef VERTICE_H
+#define VERTICE_H
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Dichiarazione della classe Vertice                        ~
+  ~ Dichiarazione della classe Vertice                      ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
   ~ Ultima modifica: 26/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-#ifndef VERTICE_H
-#define VERTICE_H
 
 #include "Punto.h"
 #include "Rivelatore.h"

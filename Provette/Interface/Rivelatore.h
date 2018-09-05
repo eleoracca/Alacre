@@ -1,12 +1,12 @@
+#ifndef RIVELATORE_H
+#define RIVELATORE_H
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Dichiarazione della classe Rivelatore                   ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
   ~ Ultima modifica: 01/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-#ifndef RIVELATORE_H
-#define RIVELATORE_H
 
 #include "TMaterial.h"
 #include "TObject.h"
