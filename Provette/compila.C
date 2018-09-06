@@ -26,6 +26,12 @@ void compila(TString myopt="fast"){
   gSystem->CompileMacro("Sources/Trasporto.cxx", opt.Data());
   gSystem->CompileMacro("Sources/Urto.cxx", opt.Data());
   
-  gSystem->CompileMacro("Albero.C", opt.Data());
-  gSystem->CompileMacro("Ricostruzione.C", opt.Data());
+  gSystem->CompileMacro("EsecuzioneEsame.C", opt.Data());
 }
+
+/*
+Per eseguire EsecuzioneEsame:
+- Avviare Root
+- Compilare le classi e le macro come scritto alle righe 8-10
+- Chiamare dentro Root EsecuzioneEsame()
+*/

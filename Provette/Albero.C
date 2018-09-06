@@ -2,7 +2,7 @@
   ~ Generazione degli eventi                                ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 05/09/2018                             ~
+  ~ Ultima modifica: 06/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
   
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -30,10 +30,10 @@
 // ******************************************************************************
 
 // Funzione da chiamare per effettuare la simulazione
-void Albero(bool fileconfig);
+bool Albero(Rivelatore* detector, bool fileconfig);
 
 // Funzione che richiede all'utente i parametri per effettuare la simulazione
-void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &rumore, bool &disteta, TString &distrumore, double &par1rumore, double &par2rumore);
+bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &rumore, bool &disteta, TString &distrumore, double &par1rumore, double &par2rumore);
 
 // Funzione che stampa i parametri della simulazione
 void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &rumore, bool &disteta, TString &distrumore, double &par1rumore, double &par2rumore);
@@ -47,7 +47,7 @@ int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &pa
 // *********************** Implementazione delle funzioni ***********************
 // ******************************************************************************
 
-void Albero(bool fileconfig = kFALSE){
+bool Albero(Rivelatore* detector, bool fileconfig = kFALSE){
   
   // Inizializzazione e dichiazione dei parametri a zero
   TString commento = "\0";
@@ -61,16 +61,21 @@ void Albero(bool fileconfig = kFALSE){
   TString distrumore = "\0";
   double par1rumore = 0.;
   double par2rumore = 0.;
+  bool richiesta = kTRUE;
   
   // Inserimento dei parametri della simulazione
   if(!fileconfig){
-    RichiestaInformazioni(numeroeventi, distmolteplicita, par1molteplicita, par2molteplicita, multiplescattering, rumore, disteta, distrumore, par1rumore, par2rumore);
+    richiesta = RichiestaInformazioni(numeroeventi, distmolteplicita, par1molteplicita, par2molteplicita, multiplescattering, rumore, disteta, distrumore, par1rumore, par2rumore);
+  
+    if(!richiesta){
+      return kFALSE;
+    }
   }
   else{
     ifstream in("Configurazioni/Configurazione.txt");
     if(!in){
       cout << "!! File di configurazione non trovato !!" << endl << "La simulazione riparte automaticamente chiedendo di inserire a mano i parametri.";
-      Albero(kFALSE);
+      Albero(detector, kFALSE);
     }  
     in >> commento >> numeroeventi >> distmolteplicita >> par1molteplicita >> par2molteplicita >> multiplescattering >> rumore >> disteta >> distrumore >> par1rumore >> par2rumore;
     in.close();
@@ -82,7 +87,7 @@ void Albero(bool fileconfig = kFALSE){
   TFile *fileoutput = new TFile("Output/Simulazione.root", "RECREATE");
   if(fileoutput->IsZombie()){
     cout << "Problema nel creare il file Simulazione.root. \nLa simulazione si interrompe." << endl;
-    return;
+    return kFALSE;
   }
   fileoutput -> cd();
 
@@ -115,9 +120,6 @@ void Albero(bool fileconfig = kFALSE){
   gaggia -> Branch("UrtiBeamPipe", &PuntatoreBP);
   gaggia -> Branch("UrtiRivelatore1", &PuntatoreRiv1);
   gaggia -> Branch("UrtiRivelatore2", &PuntatoreRiv2);
-
-  // Rivelatore
-  Rivelatore *detector = new Rivelatore("Configurazioni/Rivelatore.txt");
 
   // Dichiarazione della molteplicità ed eventuale caricamento della distribuzione da istogramma
   int numeroparticelle = 0;
@@ -193,9 +195,8 @@ void Albero(bool fileconfig = kFALSE){
   UrtoBP.~Urto();
   Urto1L.~Urto();
   Urto2L.~Urto();
-  gaggia->~TTree();
   
-  cout << "fine" << endl;
+  return kTRUE;
 }
 
 
@@ -209,7 +210,7 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
     scattering = "spento";
   }
 
-  cout << "------- Parametri per la generazione degli eventi --------" << endl;
+  cout << "-------------- Parametri per la generazione degli eventi ---------------" << endl;
   cout << "I parametri vengono letti dal file Configurazione.txt" << endl;
   cout << "+ Numero di eventi:                    " << numeroeventi << endl;
   cout << "+ Distribuzione della molteplicita:    " << distmolteplicita << endl;
@@ -254,11 +255,11 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
 }
 
 
-void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &rumore, bool &disteta, TString &distrumore, double &par1rumore, double &par2rumore){
+bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &rumore, bool &disteta, TString &distrumore, double &par1rumore, double &par2rumore){
 
   TString scattering = "\0";
   
-    cout << "------- Parametri per la generazione degli eventi --------" << endl;
+    cout << "-------------- Parametri per la generazione degli eventi ---------------" << endl;
     cout << "Inserire i parametri per la simulazione" << endl;
     cout << "+ Numero di eventi:                    ";
     cin >> numeroeventi;
@@ -304,7 +305,7 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
     }
     else{
       cout << "Inizializzazione sbagliata: la simulazione si interrompe ora.";
-      return;
+      return kFALSE;
     }
   }
   
@@ -339,7 +340,7 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
     }
     else{
       cout << "Inizializzazione sbagliata: la simulazione si interrompe ora.";
-      return;
+      return kFALSE;
     }
   }
   
@@ -378,11 +379,13 @@ void RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
       }
       else{
 	cout << "Inizializzazione sbagliata: la simulazione si interrompe ora.";
-	return;
+	return kFALSE;
       }
     }
   }
   else cout << endl << "spento" << endl << endl;
+  
+  return kTRUE;
 }
 
 

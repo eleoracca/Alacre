@@ -2,7 +2,7 @@
   ~ Ricostruzione degli eventi                              ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 05/09/2018                             ~
+  ~ Ultima modifica: 06/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -30,7 +30,13 @@
 // ******************************************************************************
 
 // Funzione da chiamare per effettuare la ricostruzione
-void Ricostruzione();
+bool Ricostruzione(Rivelatore* detector);
+
+// Funzione per fare lo smearing dei punti ed eventualmente aggiungere il rumore
+void SmearingRumore(TTree *originale, TTree *modificato, Rivelatore *detector);
+
+// Funzione per ricostruire il vertice
+void RicostruzioneVertice(TTree *modificato);
 
 
 
@@ -38,7 +44,7 @@ void Ricostruzione();
 // *********************** Implementazione delle funzioni ***********************
 // ******************************************************************************
 
-void Ricostruzione(){
+bool Ricostruzione(Rivelatore* detector){
 
   // File della simulazione e della ricostruzione
   TFile *fileinput = new TFile("Output/Simulazione.root");
@@ -46,22 +52,22 @@ void Ricostruzione(){
 
   if(fileinput->IsZombie()){
     cout << "Problema nel leggere il file Simulazione.root \nLa simulazione si interrompe." << endl;
-    return;
+    return kFALSE;
   }
   if(fileoutput->IsZombie()){
     cout << "Problema nel leggere il file Simulazione.root \nLa simulazione si interrompe." << endl;
-    return;
+    return kFALSE;
   }
   fileoutput -> cd();
 
   // Tree della ricostruzione
   TTree *rovere = new TTree("rovere", "Tree della ricostruzione");
   
-  // Smearing dei punti perché ricostruiti da un rivelatore reale
-
-  // Aggiunta del rumore, se richiesto
+  // Smearing dei punti e aggiunta del rumore
+  //void SmearingRumore();
 
   fileinput -> Close();
   fileoutput -> Close();
-  rovere->~TTree();
+  
+  return kTRUE;
 }
