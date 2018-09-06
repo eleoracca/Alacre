@@ -2,7 +2,7 @@
   ~ Dichiarazione della classe Rivelatore                   ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 01/09/2018                             ~
+  ~ Ultima modifica: 06/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined (__CINT__) || defined (__MAKECINT__)
@@ -29,7 +29,7 @@ Rivelatore::Rivelatore(): TObject(){
   dmEtaMassimo = 0.;
   dmSmearingZ = 0.;
   dmSmearingRPhi = 0.;
-  dmTaglioPhi = 0.;
+  dmPhiLimite = 0.;
   
   dmXVertice = 0.;
   dmYVertice = 0.;
@@ -51,7 +51,7 @@ Rivelatore::Rivelatore(TString Configurazione): TObject(){
   
   dmEtaMinimo = -2.;
   dmEtaMassimo = 2.;
-  dmTaglioPhi = 0.01;
+  dmPhiLimite = 0.005;
 
   TString commento;
   
@@ -127,6 +127,10 @@ double Rivelatore::GetSmearZ(){
 
 double Rivelatore::GetSmearRPhi(){
   return dmSmearingRPhi;
+}
+
+double Rivelatore::GetPhiLimite(){
+  return dmPhiLimite;
 }
 
 double Rivelatore::GetVerticeX(){
