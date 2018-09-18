@@ -2,7 +2,7 @@
   ~ Generazione degli eventi                                ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 06/09/2018                             ~
+  ~ Ultima modifica: 18/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
   
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -33,10 +33,10 @@
 bool Albero(Rivelatore* detector, bool fileconfig);
 
 // Funzione che richiede all'utente i parametri per effettuare la simulazione
-bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &rumore, bool &disteta, TString &distrumore, double &par1rumore, double &par2rumore);
+bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &disteta);
 
 // Funzione che stampa i parametri della simulazione
-void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &rumore, bool &disteta, TString &distrumore, double &par1rumore, double &par2rumore);
+void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &disteta);
 
 // Funzione che decide la molteplicità
 int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &parametro2, TH1F *istogramma);
@@ -50,37 +50,33 @@ int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &pa
 bool Albero(Rivelatore* detector, bool fileconfig = kFALSE){
   
   // Inizializzazione e dichiazione dei parametri a zero
-  TString commento = "\0";
-  unsigned int numeroeventi = 1;
-  TString distmolteplicita = "\0";
+  bool multiplescattering = kFALSE;
+  bool disteta = kFALSE;
+  bool richiesta = kTRUE;
   double par1molteplicita = 0.;
   double par2molteplicita = 0.;
-  bool multiplescattering = kFALSE;
-  bool rumore = kFALSE;
-  bool disteta = kFALSE;
-  TString distrumore = "\0";
-  double par1rumore = 0.;
-  double par2rumore = 0.;
-  bool richiesta = kTRUE;
+  TString commento = "\0";
+  TString distmolteplicita = "\0";
+  unsigned int numeroeventi = 1;
   
   // Inserimento dei parametri della simulazione
   if(!fileconfig){
-    richiesta = RichiestaInformazioni(numeroeventi, distmolteplicita, par1molteplicita, par2molteplicita, multiplescattering, rumore, disteta, distrumore, par1rumore, par2rumore);
+    richiesta = RichiestaInformazioni(numeroeventi, distmolteplicita, par1molteplicita, par2molteplicita, multiplescattering, disteta);
   
     if(!richiesta){
       return kFALSE;
     }
   }
   else{
-    ifstream in("Configurazioni/Configurazione.txt");
+    ifstream in("Configurazioni/Generazione.txt");
     if(!in){
       cout << "!! File di configurazione non trovato !!" << endl << "La simulazione riparte automaticamente chiedendo di inserire a mano i parametri.";
       Albero(detector, kFALSE);
     }  
-    in >> commento >> numeroeventi >> distmolteplicita >> par1molteplicita >> par2molteplicita >> multiplescattering >> rumore >> disteta >> distrumore >> par1rumore >> par2rumore;
+    in >> commento >> numeroeventi >> distmolteplicita >> par1molteplicita >> par2molteplicita >> multiplescattering >> disteta;
     in.close();
     
-    StampaInformazioni(numeroeventi, distmolteplicita, par1molteplicita, par2molteplicita, multiplescattering, rumore, disteta, distrumore, par1rumore, par2rumore);
+    StampaInformazioni(numeroeventi, distmolteplicita, par1molteplicita, par2molteplicita, multiplescattering, disteta);
   }
   
   // File di output per i dati generati dal Monte Carlo
@@ -145,7 +141,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kFALSE){
     numeroparticelle = DecisioneMolteplicita(distmolteplicita, par1molteplicita, par2molteplicita, istogrammamolteplicita);
     
     // Generazione del vertice dell'evento, rms in centimetri
-    PuntatoreVertice = new Vertice(detector, numeroparticelle, distrumore);
+    PuntatoreVertice = new Vertice(detector, numeroparticelle);
     
     // Generazione degli urti dell'evento
     for(int j = 0; j < numeroparticelle; j++){
@@ -211,7 +207,7 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
   }
 
   cout << "-------------- Parametri per la generazione degli eventi ---------------" << endl;
-  cout << "I parametri vengono letti dal file Configurazione.txt" << endl;
+  cout << "I parametri per la generazione vengono letti dal file Generazione.txt" << endl;
   cout << "+ Numero di eventi:                    " << numeroeventi << endl;
   cout << "+ Distribuzione della molteplicita:    " << distmolteplicita << endl;
   

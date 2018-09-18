@@ -15,7 +15,7 @@
 #endif
 
 
-void EsecuzioneEsame(bool fileconfig = kTRUE){
+void EsecuzioneEsame(bool filegenerazione = kTRUE, bool filerumore = kTRUE){
   
   // Dichiarazione dei timer
   TStopwatch tempototale;
@@ -39,7 +39,7 @@ void EsecuzioneEsame(bool fileconfig = kTRUE){
   cout << "~~~~~~~~~~~~~~~~~~~~~~~ Generazione degli eventi ~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   tempogenerazione.Start(kTRUE);
-  generazione = Albero(detector, fileconfig);
+  generazione = Albero(detector, filegenerazione);
   tempogenerazione.Stop();
 
   // Ricostruzione degli eventi
@@ -48,7 +48,7 @@ void EsecuzioneEsame(bool fileconfig = kTRUE){
   cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   temporicostruzione.Start(kTRUE);
   if(generazione){
-    ricostruzione = Ricostruzione(detector);
+    ricostruzione = Ricostruzione(detector, filerumore);
   }
   temporicostruzione.Stop();
 
