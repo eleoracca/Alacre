@@ -39,7 +39,7 @@ bool RichiestaInformazioni(bool &onoff, TString &distribuzione, double &parametr
 void StampaInformazioni(bool &onoff, TString &distribuzione, double &parametro1, double &parametro2);
 
 // Funzione per fare lo smearing dei punti ed eventualmente aggiungere il rumore
-void SmearingRumore(TTree *originale, TTree *modificato, Rivelatore *detector);
+void SmearingRumore(TTree *originale, TTree *modificato, Rivelatore *detector, bool rumore);
 
 // Funzione per ricostruire il vertice
 void RicostruzioneVertice(TTree *modificato);
@@ -52,6 +52,7 @@ void RicostruzioneVertice(TTree *modificato);
 
 bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
 
+  // ----------------------------------------------------------------------------
   // Inizializzazione e dichiarazione dei parametri a zero
   bool onoff = kFALSE;
   bool richiesta = kFALSE;
@@ -80,6 +81,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
     StampaInformazioni(onoff, distribuzione, parametro1, parametro2);
   }
 
+  // ----------------------------------------------------------------------------
   // File della simulazione e della ricostruzione
   TFile *fileinput = new TFile("Output/Simulazione.root");
   TFile *fileoutput = new TFile("Output/Ricostruzione.root", "RECREATE");
@@ -94,11 +96,37 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
   }
   fileoutput -> cd();
 
+  // ----------------------------------------------------------------------------
+  // Tree della simulazione
+  TTree *gelso = (TTree*)fileinput->Get("gaggia");
+
+  // Branch della simulazione
+  TClonesArray *UrtiRiv1Gen = new TClonesArray("Urto", 100);
+  TBranch *Branch1LGen = gelso -> GetBranch("UrtiRivelatore1");
+  Branch1LGen -> SetAddress(&UrtiRiv1Gen);
+  TClonesArray *UrtiRiv2Gen = new TClonesArray("Urto", 100);
+  TBranch *Branch2LGen = gelso -> GetBranch("UrtiRivelatore2");
+  Branch2LGen -> SetAddress(&UrtiRiv2Gen);
+
+  int numeroeventi = gelso -> GetEntries();
+
+  // ----------------------------------------------------------------------------
   // Tree della ricostruzione
   TTree *rovere = new TTree("rovere", "Tree della ricostruzione");
+
+  // Urti sul primo rivelatore - ricostruzione
+  TClonesArray *PuntatoreRiv1Reco = new TClonesArray("Urto", 100);
+  TClonesArray& IndPuntRiv1Reco = *PuntatoreRiv1Reco;
+
+  // Urti sul secondo rivelatore - ricostruzione
+  TClonesArray *PuntatoreRiv2Reco = new TClonesArray("Urto", 100);
+  TClonesArray& IndPuntRiv2Reco = *PuntatoreRiv2Reco;
+
+  rovere -> Branch("UrtiRivelatore1Reco", &PuntatoreRiv1Reco);
+  rovere -> Branch("UrtiRivelatore2Reco", &PuntatoreRiv2Reco);
   
   // Smearing dei punti e aggiunta del rumore
-  //void SmearingRumore();
+  //void SmearingRumore(boh, rovere, detector, onoff);
 
   fileinput -> Close();
   fileoutput -> Close();
@@ -114,11 +142,11 @@ void StampaInformazioni(bool &onoff, TString &distribuzione, double &parametro1,
   if(onoff){
     cout << "acceso"  << endl;
     cout << "  - Distribuzione:                     " << distribuzione << endl;
-    if(distrumore == "gaussiana"){
+    if(distribuzione == "gaussiana"){
       cout << "    * Media:                           " << parametro1 << endl;
       cout << "    * Deviazione standard:             " << parametro2 << endl;
     }
-    else if(distrumore == "fissa"){
+    else if(distribuzione == "fissa"){
       cout << "    * Numero di rivelazioni:           " << parametro1 << endl;
     }
   }
@@ -171,4 +199,9 @@ bool RichiestaInformazioni(bool &onoff, TString &distribuzione, double &parametr
   else cout << "Simulazione del rumore disattivata." << endl << endl;
   
   return kTRUE;
+}
+
+
+void SmearingRumore(TTree *originale, TTree *modificato, Rivelatore *detector, bool rumore){
+  cout << "pernacchia" << endl;
 }

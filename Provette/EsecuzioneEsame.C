@@ -2,7 +2,7 @@
   ~ Macro per l'esecuzione della simulazione d'esame        ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 06/09/2018                             ~
+  ~ Ultima modifica: 18/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -72,6 +72,9 @@ void EsecuzioneEsame(bool filegenerazione = kTRUE, bool filerumore = kTRUE){
   }
   else{
     cout << "Simulazione completata con errori." << endl;
+    if(!generazione) cout << "- Problemi con la generazione degli eventi." << endl;
+    if(!ricostruzione) cout << "- Problemi con la ricostruzione degli eventi." << endl;
+    if(!analisi) cout << "- Problemi con l'analisi degli eventi." << endl;
   }
   cout << "La durata totale e:                     "; tempototale.Print();
   cout << "La generazione degli eventi e durata:   "; tempogenerazione.Print();

@@ -1,11 +1,7 @@
-//numeroeventi,distmolteplicita,par1molteplicita,par2molteplicita,multiplescattering,rumore,disteta,distrumore,par1rumore,par2rumore
+//numeroeventi,distmolteplicita,par1molteplicita,par2molteplicita,multiplescattering,disteta
 1000
 fissa
 5.
 0.
 kFALSE
 kFALSE
-kFALSE
-fissa
-2.
-0.
