@@ -47,7 +47,7 @@ int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &pa
 // *********************** Implementazione delle funzioni ***********************
 // ******************************************************************************
 
-bool Albero(Rivelatore* detector, bool fileconfig = kFALSE){
+bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
   
   // Inizializzazione e dichiazione dei parametri a zero
   bool multiplescattering = kFALSE;
@@ -196,7 +196,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kFALSE){
 }
 
 
-void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &rumore, bool &disteta, TString &distrumore, double &par1rumore, double &par2rumore){
+void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &disteta){
 
   TString scattering = "\0";
   if(multiplescattering){
@@ -234,24 +234,10 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
   }
   
   cout << "+ Scattering multiplo:                 " << scattering << endl;
-  
-  cout << "+ Rumore                               ";
-  if(rumore){
-    cout << "acceso"  << endl;
-    cout << "  - Distribuzione:                     " << distrumore << endl;
-    if(distrumore == "gaussiana"){
-      cout << "    * Media:                           " << par1rumore << endl;
-      cout << "    * Deviazione standard:             " << par2rumore << endl;
-    }
-    else if(distrumore == "fissa"){
-      cout << "    * Numero di rivelazioni:           " << par1rumore << endl;
-    }
-  }
-  else cout << "spento" << endl << endl;
 }
 
 
-bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &rumore, bool &disteta, TString &distrumore, double &par1rumore, double &par2rumore){
+bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &disteta){
 
   TString scattering = "\0";
   
@@ -339,47 +325,6 @@ bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
       return kFALSE;
     }
   }
-  
-  cout << endl << "+ Rumore                               ";
-  cin >> distrumore;
-  
-  if(distrumore){
-    cout << endl << "acceso"  << endl;
-    cout << endl << "  - Distribuzione:                     ";
-    cin >> distrumore;
-    
-    if(distrumore == "gaussiana"){
-      cout << endl << "    * Media:                           ";
-      cin >> par1rumore;
-      cout << endl << "    * Deviazione standard:             ";
-      cin >> par2rumore;
-    }
-    else if(distrumore == "fissa"){
-      cout << endl << "    * Numero di rivelazioni:           ";
-      cin >> par1rumore;
-    }
-    else{
-      cout << "Inizializzazione sbagliata per la distribuzione di rumore." << endl;
-      cout << "Scrivere gaussiana o fissa: " << endl;
-      cin >> distrumore;
-      
-      if(distrumore == "gaussiana"){
-	cout << endl << "    * Media:                             ";
-	cin >> par1rumore;
-	cout << endl << "    * Deviazione standard:               ";
-	cin >> par2rumore;
-      }
-      else if(distrumore == "fissa"){
-	cout << endl << "    * Valore:                            ";
-	cin >> par1rumore;
-      }
-      else{
-	cout << "Inizializzazione sbagliata: la simulazione si interrompe ora.";
-	return kFALSE;
-      }
-    }
-  }
-  else cout << endl << "spento" << endl << endl;
   
   return kTRUE;
 }
