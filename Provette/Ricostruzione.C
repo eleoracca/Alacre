@@ -39,7 +39,7 @@ bool RichiestaInformazioni(bool &onoff, TString &distribuzione, double &parametr
 void StampaInformazioni(bool &onoff, TString &distribuzione, double &parametro1, double &parametro2);
 
 // Funzione per fare lo smearing dei punti ed eventualmente aggiungere il rumore
-void SmearingRumore(unsigned int evento, TClonesArray *strato1Gen, TClonesArray *strato2Gen, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, bool rumore);
+void SmearingRumore(unsigned int evento, TClonesArray *strato1Gen, TClonesArray *strato2Gen, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, bool rumore, Urto *urto1L, Urto *urto2L);
 
 // Funzione per ricostruire il vertice
 void RicostruzioneVertice(TTree *modificato);
@@ -60,6 +60,8 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
   double parametro2 = 0.;
   TString commento = "\0";
   TString distribuzione = "\0";
+  Urto *urto1L;
+  Urto *urto2L;
 
   // Inserimento dei parametri per il rumore
   if(!fileconfig){
@@ -131,7 +133,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
   
   // Smearing dei punti e aggiunta del rumore
   for(int i = 0; i < (int)numeroEventi; i++){
-    SmearingRumore(i, UrtiRiv1Gen, UrtiRiv2Gen, PuntatoreRiv1Reco, PuntatoreRiv2Reco, detector, onoff);
+    SmearingRumore(i, UrtiRiv1Gen, UrtiRiv2Gen, PuntatoreRiv1Reco, PuntatoreRiv2Reco, detector, onoff, urto1L, urto2L);
   }
   
   rovere -> Write();
@@ -158,7 +160,7 @@ void StampaInformazioni(bool &onoff, TString &distribuzione, double &parametro1,
       cout << "    * Numero di rivelazioni:           " << parametro1 << endl;
     }
   }
-  else cout << "spento" << endl << endl;
+  else cout << "spento" << endl;
 }
 
 
@@ -210,4 +212,30 @@ bool RichiestaInformazioni(bool &onoff, TString &distribuzione, double &parametr
 }
 
 
-void SmearingRumore(unsigned int evento, TClonesArray *strato1Gen, TClonesArray *strato2Gen, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, bool rumore){}
+void SmearingRumore(unsigned int evento, TClonesArray *strato1Gen, TClonesArray *strato2Gen, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, bool rumore, Urto *urto1L, Urto *urto2L){
+  
+  unsigned int numeroUrti1LGen = strato1Gen -> GetEntries();
+  unsigned int numeroUrti2LGen = strato2Gen -> GetEntries();
+  int u = 0;
+  int v = 0;
+  
+  // Smearing degli urti generati - Layer 1
+  for(int i = 0; i < (int)numeroUrti1LGen; i++){
+    urto1L = ((Urto*)strato1Gen->At(i));
+    if(TMath::Abs(urto1L -> GetZ()) <= (detector -> GetLunghezza())/2.){ //se non vale, il rivelatore non vede il passaggio
+      urto1L -> SmearingGaussiano(detector, 1);
+      //new((strato1Reco)[u]) Urto(urto1L); //->Mettere l'indirizzo nella funzione, provare con Urto(&(urto1L))
+      u += 1;
+    }
+  }
+  
+  // Smearing degli urti generati - Layer 2
+  for(int j = 0; (int)j < (int)numeroUrti2LGen; j++){
+    urto2L = ((Urto*)strato2Gen->At(j));
+    if(TMath::Abs(urto2L -> GetZ()) <= (detector -> GetLunghezza())/2.){
+      urto2L -> SmearingGaussiano(detector, 1);
+      //new((strato2Reco)[v]) Urto(urto2L);
+      v += 1;
+    }
+  }
+}
