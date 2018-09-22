@@ -12,7 +12,11 @@
 #include "Rivelatore.h"
 #include "Albero.C"
 #include "Ricostruzione.C"
+#include "Colori.h"
 #endif
+
+using namespace std;
+using namespace colore;
 
 
 void EsecuzioneEsame(bool filegenerazione = kTRUE, bool filerumore = kTRUE){
@@ -36,7 +40,7 @@ void EsecuzioneEsame(bool filegenerazione = kTRUE, bool filerumore = kTRUE){
 
   // Generazione degli eventi
   cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  cout << "~~~~~~~~~~~~~~~~~~~~~~~ Generazione degli eventi ~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  cout << "~~~~~~~~~~~~~~~~~~~~~~~ " << Rosso("Generazione degli eventi") << " ~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   tempogenerazione.Start(kTRUE);
   generazione = Albero(detector, filegenerazione);
@@ -44,7 +48,7 @@ void EsecuzioneEsame(bool filegenerazione = kTRUE, bool filerumore = kTRUE){
 
   // Ricostruzione degli eventi
   cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  cout << "~~~~~~~~~~~~~~~~~~~~~~ Ricostruzione degli eventi ~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  cout << "~~~~~~~~~~~~~~~~~~~~~~ " << Rosso("Ricostruzione degli eventi") << " ~~~~~~~~~~~~~~~~~~~~~~" << endl;
   cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   temporicostruzione.Start(kTRUE);
   if(generazione){
@@ -54,7 +58,7 @@ void EsecuzioneEsame(bool filegenerazione = kTRUE, bool filerumore = kTRUE){
 
   // Ricostruzione degli eventi
   cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~ Analisi degli eventi ~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~ " << Rosso("Analisi degli eventi") << " ~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   tempoanalisi.Start(kTRUE);
   if(generazione && ricostruzione){
@@ -65,13 +69,13 @@ void EsecuzioneEsame(bool filegenerazione = kTRUE, bool filerumore = kTRUE){
   // Dati finali TEMPO IMPIEGATO
   tempototale.Stop();
   cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tempo impiegato ~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~ " << Rosso("Tempo impiegato") << " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   if(generazione && ricostruzione && analisi){
-    cout << "Simulazione completata con successo." << endl;
+    cout << Verde("Simulazione completata con successo.") << endl;
   }
   else{
-    cout << "Simulazione completata con errori." << endl;
+    cout << Errore("Simulazione completata con errori.") << endl;
     if(!generazione) cout << "- Problemi con la generazione degli eventi." << endl;
     if(!ricostruzione) cout << "- Problemi con la ricostruzione degli eventi." << endl;
     if(!analisi) cout << "- Problemi con l'analisi degli eventi." << endl;
@@ -83,5 +87,4 @@ void EsecuzioneEsame(bool filegenerazione = kTRUE, bool filerumore = kTRUE){
   cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" << endl;
-  
 }

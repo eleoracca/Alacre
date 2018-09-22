@@ -17,6 +17,7 @@
 #include "TString.h"
 #include "TTree.h"
 
+#include "Colori.h"
 #include "Punto.h"
 #include "Rivelatore.h"
 #include "Trasporto.h"
@@ -24,6 +25,9 @@
 #include "Varie.h"
 #include "Vertice.h"
 #endif
+
+using namespace std;
+using namespace colore;
 
 // ******************************************************************************
 // ************************ Dichiarazione delle funzioni ************************
@@ -70,7 +74,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
   else{
     ifstream in("Configurazioni/Generazione.txt");
     if(!in){
-      cout << "!! File di configurazione non trovato !!" << endl << "La simulazione riparte automaticamente chiedendo di inserire a mano i parametri.";
+      cout << Violetto("!! File di configurazione non trovato !!") << endl << "La simulazione riparte automaticamente chiedendo di inserire a mano i parametri.";
       Albero(detector, kFALSE);
     }  
     in >> commento >> numeroeventi >> distmolteplicita >> par1molteplicita >> par2molteplicita >> multiplescattering >> disteta;
@@ -82,7 +86,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
   // File di output per i dati generati dal Monte Carlo
   TFile *fileoutput = new TFile("Output/Simulazione.root", "RECREATE");
   if(fileoutput->IsZombie()){
-    cout << "Problema nel creare il file Simulazione.root. \nLa simulazione si interrompe." << endl;
+    cout << Avvertimento("Problema nel creare il file Simulazione.root. \nLa simulazione si interrompe.") << endl;
     return kFALSE;
   }
   fileoutput -> cd();
@@ -153,9 +157,11 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
       
       // Generazione dell'urto sulla beam pipe
       UrtoBP = Urto::UrtodaVertice(PuntatoreVertice, PuntatoreDirezione, detector->GetRaggioBP(), j, 0);
+      UrtoBP.SetUrtoReale();
       
       // Generazione dell'urto sul primo strato
       Urto1L = UrtoBP.UrtodaUrto(PuntatoreDirezione, detector, multiplescattering, 1);
+      Urto1L.SetUrtoReale();
       
       if(multiplescattering){
         PuntatoreDirezione->FlipBit();
@@ -163,6 +169,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
       
       // Generazione dell'urto sul secondo strato
       Urto2L = Urto1L.UrtodaUrto(PuntatoreDirezione, detector, multiplescattering, 2);
+      Urto2L.SetUrtoReale();
       
       // Registrazione dei dati sul Tree
       new(IndPuntBP[j]) Urto(UrtoBP);
@@ -206,8 +213,8 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
     scattering = "spento";
   }
 
-  cout << "-------------- Parametri per la generazione degli eventi ---------------" << endl;
-  cout << "I parametri per la generazione vengono letti dal file Generazione.txt" << endl;
+  cout << "-------------- " << Arancione("Parametri per la generazione degli eventi") << " ---------------" << endl;
+  cout << "I parametri per la generazione vengono letti dal file " << Azzurro("Generazione.txt") << endl;
   cout << "+ Numero di eventi:                    " << numeroeventi << endl;
   cout << "+ Distribuzione della molteplicita:    " << distmolteplicita << endl;
   
@@ -241,12 +248,12 @@ bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
 
   TString scattering = "\0";
   
-    cout << "-------------- Parametri per la generazione degli eventi ---------------" << endl;
-    cout << "Inserire i parametri per la simulazione" << endl;
-    cout << "+ Numero di eventi:                    ";
-    cin >> numeroeventi;
-    cout << endl << "+ Distribuzione della molteplicita:    ";
-    cin >> distmolteplicita;
+  cout << "-------------- " << Arancione("Parametri per la generazione degli eventi") << " ---------------" << endl;
+  cout << "Inserire i parametri per la simulazione della generazione" << endl;
+  cout << "+ Numero di eventi:                    ";
+  cin >> numeroeventi;
+  cout << endl << "+ Distribuzione della molteplicita:    ";
+  cin >> distmolteplicita;
   
   if(distmolteplicita == "gaussiana"){
     cout << endl << "  - Media:                             ";
@@ -265,7 +272,7 @@ bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
     cin >> par1molteplicita;
   }
   else{
-    cout << "Inizializzazione sbagliata per la distribuzione di molteplicita." << endl;
+    cout << Violetto("Inizializzazione sbagliata per la distribuzione di molteplicita.") << endl;
     cout << "Scrivere gaussiana, uniforme o fissa: " << endl;
     cin >> distmolteplicita;
     
@@ -286,7 +293,7 @@ bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
       cin >> par1molteplicita;
     }
     else{
-      cout << "Inizializzazione sbagliata: la simulazione si interrompe ora.";
+      cout << Avvertimento("Inizializzazione sbagliata: la simulazione si interrompe ora.");
       return kFALSE;
     }
   }
@@ -312,7 +319,7 @@ bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
     multiplescattering = kFALSE;
   }
   else{
-    cout << "Inizializzazione sbagliata; inserire acceso o spento: ";
+    cout << Violetto("Inizializzazione sbagliata per lo scattering multiplo inserire acceso o spento: ");
     cin >> scattering;
     if(scattering == "acceso"){
       multiplescattering = kTRUE;
@@ -321,7 +328,7 @@ bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
       multiplescattering = kFALSE;
     }
     else{
-      cout << "Inizializzazione sbagliata: la simulazione si interrompe ora.";
+      cout << Avvertimento("Inizializzazione sbagliata: la simulazione si interrompe ora.");
       return kFALSE;
     }
   }

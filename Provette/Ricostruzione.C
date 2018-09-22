@@ -17,6 +17,7 @@
 #include "TString.h"
 #include "TTree.h"
 
+#include "Colori.h"
 #include "Punto.h"
 #include "Rivelatore.h"
 #include "Trasporto.h"
@@ -24,6 +25,9 @@
 #include "Varie.h"
 #include "Vertice.h"
 #endif
+
+using namespace std;
+using namespace colore;
 
 // ******************************************************************************
 // ************************ Dichiarazione delle funzioni ************************
@@ -74,7 +78,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
   else{
     ifstream in("Configurazioni/Ricostruzione.txt");
     if(!in){
-      cout << "!! File di configurazione non trovato !!" << endl << "La simulazione riparte automaticamente chiedendo di inserire a mano i parametri.";
+      cout << Violetto("!! File di configurazione non trovato !!") << endl << "La simulazione riparte automaticamente chiedendo di inserire a mano i parametri.";
       Ricostruzione(detector, kFALSE);
     }  
     in >> commento >> onoff >> distribuzione >> parametro1 >> parametro2;
@@ -89,11 +93,11 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
   TFile *fileoutput = new TFile("Output/Ricostruzione.root", "RECREATE");
 
   if(fileinput->IsZombie()){
-    cout << "Problema nel leggere il file Simulazione.root \nLa simulazione si interrompe." << endl;
+    cout << Avvertimento("Problema nel leggere il file Simulazione.root \nLa ricostruzione si interrompe.") << endl;
     return kFALSE;
   }
   if(fileoutput->IsZombie()){
-    cout << "Problema nel creare il file Ricostruzione.root \nLa simulazione si interrompe." << endl;
+    cout << Avvertimento("Problema nel creare il file Ricostruzione.root \nLa ricostruzione si interrompe.") << endl;
     return kFALSE;
   }
 
@@ -146,18 +150,18 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
 
 
 void StampaInformazioni(bool &onoff, TString &distribuzione, double &parametro1, double &parametro2){
-  cout << "------------- Parametri per la ricostruzione degli eventi --------------" << endl;
-  cout << "I parametri per il rumore vengono letti dal file Ricostruzione.txt" << endl;
-  cout << "Rumore:                              ";
+  cout << "------------- " << Arancione("Parametri per la ricostruzione degli eventi") << " --------------" << endl;
+  cout << "I parametri per il rumore vengono letti dal file " << Azzurro("Ricostruzione.txt") << endl;
+  cout << "Rumore:                                ";
   if(onoff){
     cout << "acceso"  << endl;
-    cout << "  - Distribuzione:                     " << distribuzione << endl;
+    cout << "  - Distribuzione:                       " << distribuzione << endl;
     if(distribuzione == "gaussiana"){
-      cout << "    * Media:                           " << parametro1 << endl;
-      cout << "    * Deviazione standard:             " << parametro2 << endl;
+      cout << "    * Media:                             " << parametro1 << endl;
+      cout << "    * Deviazione standard:               " << parametro2 << endl;
     }
     else if(distribuzione == "fissa"){
-      cout << "    * Numero di rivelazioni:           " << parametro1 << endl;
+      cout << "    * Numero di rivelazioni:             " << parametro1 << endl;
     }
   }
   else cout << "spento" << endl;
@@ -165,10 +169,10 @@ void StampaInformazioni(bool &onoff, TString &distribuzione, double &parametro1,
 
 
 bool RichiestaInformazioni(bool &onoff, TString &distribuzione, double &parametro1, double &parametro2){
-    cout << "-------------- Parametri per la generazione degli eventi ---------------" << endl;
-    cout << "Inserire i parametri per la simulazione del rumore" << endl;
-    cout << "Rumore (0 o 1):                              ";
-    cin >> onoff;
+  cout << "-------------- " << Arancione("Parametri per la ricostruzione degli eventi") << " ---------------" << endl;
+  cout << "Inserire i parametri per la simulazione del rumore" << endl;
+  cout << "Rumore (0 o 1):                              ";
+  cin >> onoff;
   
   if(onoff){
     cout << "Simulazione del rumore attivata.";
@@ -186,7 +190,7 @@ bool RichiestaInformazioni(bool &onoff, TString &distribuzione, double &parametr
       cin >> parametro1;
     }
     else{
-      cout << "Inizializzazione sbagliata." << endl;
+      cout << Violetto("Inizializzazione sbagliata della distribuzione del rumore.") << endl;
       cout << "Scrivere gaussiana o fissa: " << endl;
       cin >> distribuzione;
       
@@ -201,12 +205,12 @@ bool RichiestaInformazioni(bool &onoff, TString &distribuzione, double &parametr
 	cin >> parametro1;
       }
       else{
-	cout << "Inizializzazione sbagliata: la ricostruzione si interrompe ora.";
+	cout << Avvertimento("Inizializzazione sbagliata: la ricostruzione si interrompe ora.");
 	return kFALSE;
       }
     }
   }
-  else cout << "Simulazione del rumore disattivata." << endl << endl;
+  else cout << "Simulazione del rumore disattivata." << endl;
   
   return kTRUE;
 }
@@ -218,13 +222,15 @@ void SmearingRumore(unsigned int evento, TClonesArray *strato1Gen, TClonesArray 
   unsigned int numeroUrti2LGen = strato2Gen -> GetEntries();
   int u = 0;
   int v = 0;
+  TClonesArray &strato1RecoInd = *strato1Reco;
+  TClonesArray &strato2RecoInd = *strato2Reco;
   
   // Smearing degli urti generati - Layer 1
   for(int i = 0; i < (int)numeroUrti1LGen; i++){
     urto1L = ((Urto*)strato1Gen->At(i));
     if(TMath::Abs(urto1L -> GetZ()) <= (detector -> GetLunghezza())/2.){ //se non vale, il rivelatore non vede il passaggio
       urto1L -> SmearingGaussiano(detector, 1);
-      //new((strato1Reco)[u]) Urto(urto1L); //->Mettere l'indirizzo nella funzione, provare con Urto(&(urto1L))
+      new(strato1RecoInd[u]) Urto(urto1L); // come si fa senza fare il costruttore Urto(Urto *urto)???
       u += 1;
     }
   }
@@ -234,7 +240,7 @@ void SmearingRumore(unsigned int evento, TClonesArray *strato1Gen, TClonesArray 
     urto2L = ((Urto*)strato2Gen->At(j));
     if(TMath::Abs(urto2L -> GetZ()) <= (detector -> GetLunghezza())/2.){
       urto2L -> SmearingGaussiano(detector, 1);
-      //new((strato2Reco)[v]) Urto(urto2L);
+      new(strato2RecoInd[v]) Urto(urto2L);
       v += 1;
     }
   }
