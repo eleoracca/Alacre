@@ -2,7 +2,7 @@
   ~ Dichiarazione della classe Rivelatore                   ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 06/09/2018                             ~
+  ~ Ultima modifica: 22/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined (__CINT__) || defined (__MAKECINT__)
@@ -111,6 +111,10 @@ double Rivelatore::GetLunghezza(){
 
 TMaterial Rivelatore::GetMaterialeBP(){
   return dmMaterialeBP;
+}
+
+TMaterial Rivelatore::GetMaterialeL(){
+  return dmMaterialeL;
 }
 
 double Rivelatore::GetEtaMin(){

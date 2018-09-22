@@ -2,7 +2,7 @@
   ~ Generazione degli eventi                                ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 18/09/2018                             ~
+  ~ Ultima modifica: 22/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
   
 #if !defined(__CINT__) || defined(__MAKECINT__)
