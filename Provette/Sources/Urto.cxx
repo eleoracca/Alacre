@@ -2,7 +2,7 @@
   ~ Implementazione della classe Urto                       ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 31/08/2018                             ~
+  ~ Ultima modifica: 22/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined (__CINT__) || defined (__MAKECINT__)
@@ -32,6 +32,15 @@ Urto::Urto(double x, double y, double z, int NumLayer, int ID): Punto(x, y, z){
   dmUrtoReale = kFALSE;
 }
 
+Urto::Urto(Urto *urto){
+  dmX = urto -> GetX();
+  dmY = urto -> GetY();
+  dmZ = urto -> GetZ();
+  dmNumLayer = urto -> GetNumeroLayer();
+  dmID = urto -> GetID();
+  dmUrtoReale = urto -> TestReale();
+}
+
 // ------------- Distruttori --------------
 Urto::~Urto()
 {}
@@ -55,11 +64,11 @@ int Urto::GetNumeroLayer(){
 }
 
 bool Urto::TestReale(){
-  return dmID;
+  return dmUrtoReale;
 }
 
 int Urto::GetID(){
-  return dmUrtoReale;
+  return dmID;
 }
 
 // ----------- Member functions -----------

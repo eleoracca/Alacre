@@ -5,7 +5,7 @@
   ~ Dichiarazione della classe Urto                         ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 31/08/2018                             ~
+  ~ Ultima modifica: 22/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #include "Punto.h"
@@ -21,6 +21,7 @@ class Urto : public Punto{
   // ------------- Costruttori --------------
   Urto();
   Urto(double x, double y, double z, int NumLayer, int ID = -2);
+  Urto(Urto *urto);
   
   // ------------- Distruttori --------------
   virtual ~Urto();
