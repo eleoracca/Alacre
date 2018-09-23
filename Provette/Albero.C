@@ -2,7 +2,7 @@
   ~ Generazione degli eventi                                ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 22/09/2018                             ~
+  ~ Ultima modifica: 23/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
   
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -53,6 +53,7 @@ int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &pa
 
 bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
   
+  // ----------------------------------------------------------------------------
   // Inizializzazione e dichiazione dei parametri a zero
   bool multiplescattering = kFALSE;
   bool disteta = kFALSE;
@@ -89,6 +90,8 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
     cout << Avvertimento("Problema nel creare il file Simulazione.root. \nLa simulazione si interrompe.") << endl;
     return kFALSE;
   }
+  
+  // ----------------------------------------------------------------------------
   fileoutput -> cd();
 
   // Tree della simulazione
@@ -121,6 +124,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
   gaggia -> Branch("UrtiRivelatore1", &PuntatoreRiv1);
   gaggia -> Branch("UrtiRivelatore2", &PuntatoreRiv2);
 
+  // ----------------------------------------------------------------------------
   // Dichiarazione della molteplicità ed eventuale caricamento della distribuzione da istogramma
   int numeroparticelle = 0;
   TH1F *istogrammamolteplicita = new TH1F();
@@ -138,6 +142,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
     istogrammapseudorapidita -> SetDirectory(0);
   }
 
+  // ----------------------------------------------------------------------------
   // Loop sugli eventi per creare i dati della simulazione
   for(int i = 0; i < (int)numeroeventi; i++){
 
@@ -177,6 +182,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
       new(IndPuntRiv2[j]) Urto(Urto2L);	
     }
 
+  // ----------------------------------------------------------------------------
     // Si riempie il tree e si cancellano gli array per il nuovo ciclo
     gaggia -> Fill();
     PuntatoreVertice -> Clear();

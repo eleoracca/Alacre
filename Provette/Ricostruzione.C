@@ -2,7 +2,7 @@
   ~ Ricostruzione degli eventi                              ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 22/09/2018                             ~
+  ~ Ultima modifica: 23/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
@@ -111,6 +111,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
 
   // ----------------------------------------------------------------------------
   fileinput -> cd();
+  
   // Tree della simulazione
   TTree *gelso = (TTree*)fileinput->Get("gaggia");
 
@@ -129,6 +130,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
 
   // ----------------------------------------------------------------------------
   fileoutput -> cd();
+  
   // Tree della ricostruzione
   TTree *rovere = new TTree("rovere", "Tree della ricostruzione");
 
@@ -142,7 +144,8 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
 
   rovere -> Branch("UrtiRivelatore1Reco", &PuntatoreRiv1Reco);
   rovere -> Branch("UrtiRivelatore2Reco", &PuntatoreRiv2Reco);
-  
+
+  // ----------------------------------------------------------------------------
   // Smearing degli urti generati e aggiunta del rumore
   for(int i = 0; i < (int)numeroEventi; i++){
     gelso -> GetEntry(i);
@@ -159,14 +162,20 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
       rovere -> Fill();
     }
     else if(onoff && distribuzione != "fissa" && distribuzione != "gaussiana"){
-      cout << Avvertimento("Problema con la istribuzione del rumore") << endl;
+      cout << Avvertimento("Problema con la distribuzione del rumore") << endl;
     }
     
     u = 0;
     v = 0;
+    UrtiRiv1Gen -> Clear();
+    UrtiRiv2Gen -> Clear();
   }
+
+  // ----------------------------------------------------------------------------
+  // Ricostruzione del vertice
   
-  rovere -> Write();
+  // ----------------------------------------------------------------------------
+  fileoutput -> Write();
 
   fileinput -> Close();
   fileoutput -> Close();
@@ -276,10 +285,29 @@ void Smearing(unsigned int &u, unsigned int &v, TClonesArray *strato1Gen, TClone
 
 
 void RumoreGauss(unsigned int &u, unsigned int &v, double &parametro1, double &parametro2, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, Urto *urto1L, Urto *urto2L){
+
+  TClonesArray &strato1RecoInd = *strato1Reco;
+  TClonesArray &strato2RecoInd = *strato2Reco;
+  
+  //occhio al rumore nel vertice!!!
+  //new(strato1RecoInd[u]) Urto(urto1L);
+  //u += 1;
+  //new(strato2RecoInd[v]) Urto(urto2L);
+  //v += 1;
+  
   cout << "Gauss" << endl;
 }
 
 
 void RumoreFissa(unsigned int &u, unsigned int &v, double &parametro1, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, Urto *urto1L, Urto *urto2L){
+  
+  TClonesArray &strato1RecoInd = *strato1Reco;
+  TClonesArray &strato2RecoInd = *strato2Reco;
+  
+  //new(strato1RecoInd[u]) Urto(urto1L);
+  //u += 1;
+  //new(strato2RecoInd[v]) Urto(urto2L);
+  //v += 1;
+  
   cout << "Fissa" << endl;
 }
