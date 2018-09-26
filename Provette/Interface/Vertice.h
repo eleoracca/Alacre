@@ -5,7 +5,7 @@
   ~ Dichiarazione della classe Vertice                      ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 18/09/2018                             ~
+  ~ Ultima modifica: 26/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #include "Punto.h"
@@ -25,16 +25,16 @@ class Vertice : public Punto{
   
   // ---------------- Setter ----------------
   void SetMolteplicita(int Molteplicita);
-  void SetRumore(double Rumore);
+  void SetRumore(int Rumore);
   
   // ---------------- Getter ----------------
   int GetMolteplicita();
-  double GetRumore();
+  int GetRumore();
     
  private:
 
   int dmMolteplicita; // Numero di tracce da generare
-  double dmRumore; // Numero di particelle di rumore da generare o generate
+  int dmRumore; // Numero di particelle di rumore da generare o generate
   
   ClassDef(Vertice,1)
 };

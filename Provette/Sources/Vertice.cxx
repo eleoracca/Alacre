@@ -2,7 +2,7 @@
   ~ Implementazione della classe Vertice                    ~
   ~ Autori: Racca Eleonora - eleonora.racca288@edu.unito.it ~
   ~         Sauda Cristina - cristina.sauda@edu.unito.it    ~
-  ~ Ultima modifica: 18/09/2018                             ~
+  ~ Ultima modifica: 26/09/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined (__CINT__) || defined (__MAKECINT__)
@@ -42,7 +42,7 @@ void Vertice::SetMolteplicita(int Molteplicita){
   dmMolteplicita = Molteplicita;
 }
 
-void Vertice::SetRumore(double Rumore){
+void Vertice::SetRumore(int Rumore){
   dmRumore = Rumore;
 }
 
@@ -51,6 +51,6 @@ int Vertice::GetMolteplicita(){
   return dmMolteplicita;
 }
 
-double Vertice::GetRumore(){
+int Vertice::GetRumore(){
   return dmRumore;
 }
