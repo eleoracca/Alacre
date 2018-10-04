@@ -46,7 +46,7 @@ void StampaInformazioni(bool &onoff, TString &distribuzione, double &parametro1,
 int Smearing(unsigned int &u, unsigned int &v, TClonesArray *strato1Gen, TClonesArray *strato2Gen, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, Urto *urto1L, Urto *urto2L);
 
 // Funzione per aggiungere il rumore eventualmente
-int RumoreGauss(unsigned int &u, unsigned int &v, double &parametro1, double &parametro2, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, Urto *urto1L, Urto *urto2L);
+int RumoreGauss(unsigned int &u, unsigned int &v, double &media, double &deviazionestandard, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, Urto *urto1L, Urto *urto2L);
 int RumoreFissa(unsigned int &u, unsigned int &v, double &parametro1, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, Urto *urto1L, Urto *urto2L);
 
 // Funzione per ricostruire il vertice
@@ -148,7 +148,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
   TClonesArray *PuntatoreRiv2Reco = new TClonesArray("Urto", 100);
   TClonesArray& IndPuntRiv2Reco = *PuntatoreRiv2Reco;
 
-  rovere -> Branch("VerticeReco", &PuntatoreVertReco);
+  //rovere -> Branch("VerticeReco", &PuntatoreVertReco);
   rovere -> Branch("UrtiRivelatore1Reco", &PuntatoreRiv1Reco);
   rovere -> Branch("UrtiRivelatore2Reco", &PuntatoreRiv2Reco);
 
@@ -176,7 +176,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
     }
 
     // Si riempie di nuovo per sicurezza il tree e si cancellano gli array per il nuovo ciclo
-    gelso -> Fill();
+    rovere -> Fill();
     u = 0;
     v = 0;
     PuntatoreVertReco -> Clear();
@@ -302,18 +302,19 @@ int Smearing(unsigned int &u, unsigned int &v, TClonesArray *strato1Gen, TClones
 }
 
 
-int RumoreGauss(unsigned int &u, unsigned int &v, double &parametro1, double &parametro2, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, Urto *urto1L, Urto *urto2L){
+int RumoreGauss(unsigned int &u, unsigned int &v, double &media, double &deviazionestandard, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, Urto *urto1L, Urto *urto2L){
 
   TClonesArray &strato1RecoInd = *strato1Reco;
   TClonesArray &strato2RecoInd = *strato2Reco;
 
-  int numeroRumore = 0;
-  
-  //occhio al rumore nel vertice!!!
-  //new(strato1RecoInd[u]) Urto(urto1L);
-  //u += 1;
-  //new(strato2RecoInd[v]) Urto(urto2L);
-  //v += 1;
+  int numeroRumore = gRandom->Gaus(media, deviazionestandard);
+
+  for(int i = 0; i < numeroRumore; i++){
+    //new(strato1RecoInd[u]) Urto(urto1L);
+    //u += 1;
+    //new(strato2RecoInd[v]) Urto(urto2L);
+    //v += 1;
+  }
   
   cout << "Gauss" << endl;
 
