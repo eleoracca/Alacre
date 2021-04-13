@@ -28,8 +28,8 @@ void Poissoniana(int ntot, const float deltat, const float ttot, const float alf
   double Nrest;
   
   TH1F *histo = new TH1F("histo", "Numero di decadimenti", nbin, - 0.5, nbin - 0.5);
-  THF1 *fpoissoniana = new THF1("fpoissoniana", "Curva poissoniana", nbin, -0.5, nbin - 0.5);
-  THF1 *fbinomiale = new THF1("fbinomiale", "Curva binomiale", nbin, -0.5, nbin - 0.5);
+  TH1F *fpoissoniana = new TH1F("fpoissoniana", "Curva poissoniana", nbin, -0.5, nbin - 0.5);
+  TH1F *fbinomiale = new TH1F("fbinomiale", "Curva binomiale", nbin, -0.5, nbin - 0.5);
 
   ///*
   for(int i = 0; i < nesp; i++){
@@ -42,7 +42,7 @@ void Poissoniana(int ntot, const float deltat, const float ttot, const float alf
   //*/
 
   for(double x=0.; x < nbin - 0.5; x+=1.){
-    fpoissoniana->Fill(x, Ntot*Poisson(x, beta, tempo));
+    fpoissoniana->Fill(x, Ntot*Poisson(x, beta, tempotot));
     fbinomiale->Fill(x, Ntot*Binomiale(x, nesp, beta, deltat));
   }
   
@@ -76,14 +76,14 @@ double Decadimento(int ntot, const float deltat, const float ttot, const float a
 
 // /*
 double Binomiale(const int nesperimenti, const int nintervalli, float beta, float tempo){
-  probabilita = beta*tempo;
+  float probabilita = beta*tempo;
   return Exp(LnGamma(nintervalli + 1) - LnGamma(nesperimenti + 1) - LnGamma(nintervalli - nesperimenti + 1) + nesperimenti*Log(probabilita) + nesperimenti*Log(nintervalli - probabilita));
 }
 // */
 
 // /*
 double Poisson(const int nrestanti, float beta, float tempo){
-  probabilita = beta*tempo;
+  float probabilita = beta*tempo;
   return Exp(nrestanti * Log(probabilita) - probabilita - LnGamma(nrestanti + 1));
 }
 // */
