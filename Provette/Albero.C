@@ -24,6 +24,7 @@
 #include "Urto.h"
 #include "Varie.h"
 #include "Vertice.h"
+
 #endif
 
 using namespace std;
@@ -42,7 +43,7 @@ bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
 // Funzione che stampa i parametri della simulazione
 void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &disteta);
 
-// Funzione che decide la molteplicità
+// Funzione che decide la molteplicitï¿½
 int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &parametro2, TH1F *istogramma);
 
 
@@ -85,6 +86,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
   }
   
   // File di output per i dati generati dal Monte Carlo
+  //gSystem->Exec("mkdir Output");
   TFile *fileoutput = new TFile("Output/Simulazione.root", "RECREATE");
   if(fileoutput->IsZombie()){
     cout << Avvertimento("Problema nel creare il file Simulazione.root. \nLa simulazione si interrompe.") << endl;
@@ -125,7 +127,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
   gaggia -> Branch("UrtiRivelatore2", &PuntatoreRiv2);
 
   // ----------------------------------------------------------------------------
-  // Dichiarazione della molteplicità ed eventuale caricamento della distribuzione da istogramma
+  // Dichiarazione della molteplicitï¿½ ed eventuale caricamento della distribuzione da istogramma
   int numeroparticelle = 0;
   TH1F *istogrammamolteplicita = new TH1F();
   if(distmolteplicita == "istogramma"){
@@ -133,7 +135,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
     istogrammamolteplicita -> SetDirectory(0);
   }
 
-  // Dichiarazione degli angoli ed eventuale caricamento della distribuzione di pseudorapidità da istogramma
+  // Dichiarazione degli angoli ed eventuale caricamento della distribuzione di pseudorapiditï¿½ da istogramma
   double phi;
   double theta;
   TH1F *istogrammapseudorapidita = new TH1F();
@@ -146,7 +148,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
   // Loop sugli eventi per creare i dati della simulazione
   for(int i = 0; i < (int)numeroeventi; i++){
 
-    // Generazione della molteplicità dell'evento, ovvero il numero di particelle generato
+    // Generazione della molteplicitï¿½ dell'evento, ovvero il numero di particelle generato
     numeroparticelle = DecisioneMolteplicita(distmolteplicita, par1molteplicita, par2molteplicita, istogrammamolteplicita);
     
     // Generazione del vertice dell'evento, rms in centimetri
