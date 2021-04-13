@@ -8,9 +8,9 @@
 #include <TRandom.h>
 #include <TVirtualFitter.h>
 
-#include <boost/foreach.hpp>
-#define foreach BOOST_FOREACH
 #endif
+
+using namespace std;
 
 void Decadimento(int ntot = 50000, const float deltat = 1., const float ttot = 300., const float alfa = 0.05){
 

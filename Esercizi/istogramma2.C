@@ -3,9 +3,10 @@
 #include <TH1D.h>
 #include <TFile.h>
 #include <TCanvas.h>
-#include <boost/foreach.hpp>
-#define foreach BOOST_FOREACH
+
 #endif
+
+using namespace std;
 
 void istogramma2(const char *filein, const char *fileout){
   ifstream in(filein);
@@ -36,7 +37,7 @@ void istogramma2(const char *filein, const char *fileout){
   
   TH1D *hist = new TH1D("hist", "Istogramma", sqrt(vettore.size()), min, max);
   
-  foreach(const double prova, vettore){
+  for(const double prova:vettore){
     hist->Fill(prova);
   }
   

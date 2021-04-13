@@ -5,9 +5,9 @@
 #include <TH1F.h>
 #include <TRandom.h>
 
-#include <boost/foreach.hpp>
-#define foreach BOOST_FOREACH
 #endif
+
+using namespace std;
 
 float gener(){
   float x = gRandom->Rndm();
