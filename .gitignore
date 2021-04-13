@@ -36,3 +36,6 @@
 *.root
 *.pcm
 *.pdf
+
+# vscode
+.vscode/*
