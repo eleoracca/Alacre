@@ -11,3 +11,4 @@
 - [ ] aggiungere Branch per BP
 - [ ] aggiungere "READ" al file input della Ricostruzione           Ricostruzione.C
 - [ ] vedere z, p, beta per multipe scattering                      Urto.C
+- [ ] scrivre istruzioni per scaricare la repository in README
