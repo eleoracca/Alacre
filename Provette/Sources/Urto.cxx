@@ -122,7 +122,7 @@ Urto Urto::UrtodaUrto(Trasporto *Direttrice, Rivelatore *Detector, bool Scatteri
   if(ScatteringMult){
     
     // #theta0 � la rms di una gaussiana con centro 0
-    // Formula per il multiple scattering: #theta0 = (13.6 MeV/#beta*c*p)*Z*(#sqrt(x/X_0))[1+0.038*Ln(x/X_0)]
+    // Formula per il multiple scattering: #deltatheta0 = (13.6 MeV/#beta*c*p)*Z*(#sqrt(x/X_0))[1+0.038*Ln(x/X_0)]
     
     double X0;
     double Larghezza;
