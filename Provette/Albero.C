@@ -198,14 +198,13 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
   fileoutput -> Close();
 
   // Distruzione delle variabili nello heap
-  istogrammapseudorapidita->~TH1F();
-  istogrammamolteplicita->~TH1F();
-  detector->~Rivelatore();
-  PuntatoreVertice->~Vertice();
-  PuntatoreDirezione->~Trasporto();
-  UrtoBP.~Urto();
-  Urto1L.~Urto();
-  Urto2L.~Urto();
+  delete istogrammapseudorapidita;
+  delete istogrammamolteplicita;
+  delete PuntatoreVertice;
+  delete PuntatoreDirezione;
+  // UrtoBP.~Urto();
+  // Urto1L.~Urto();
+  // Urto2L.~Urto();
   
   return kTRUE;
 }

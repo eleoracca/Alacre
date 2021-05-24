@@ -17,6 +17,8 @@
 #include "Rivelatore.h"
 #endif
 
+using namespace std;
+
 ClassImp(Urto)
 
 // ------------- Costruttori --------------
@@ -93,7 +95,7 @@ Urto Urto::UrtodaVertice(Vertice *Origine, Trasporto *Direttrice, double Raggio,
     return SuRivelatore;
   }
   else{
-    // Prende le coordinate del vetice da "Vertice"
+    // Prende le coordinate del vertice da "Vertice"
     const double xO = Origine->GetX();
     const double yO = Origine->GetY();
     const double zO = Origine->GetZ();
@@ -119,7 +121,7 @@ Urto Urto::UrtodaUrto(Trasporto *Direttrice, Rivelatore *Detector, bool Scatteri
     
   if(ScatteringMult){
     
-    // #theta0 è la rms di una gaussiana con centro 0
+    // #theta0 ï¿½ la rms di una gaussiana con centro 0
     // Formula per il multiple scattering: #theta0 = (13.6 MeV/#beta*c*p)*Z*(#sqrt(x/X_0))[1+0.038*Ln(x/X_0)]
     
     double X0;
@@ -141,7 +143,7 @@ Urto Urto::UrtodaUrto(Trasporto *Direttrice, Rivelatore *Detector, bool Scatteri
     // #theta viene generato da una distribuzione gaussiana di media 0 e rms #theta0
     const double thetalocale = gRandom -> Gaus(0., ThetaZero);
     
-    // #phi è distribuito tra 0 e 2#pi uniformemente
+    // #phi ï¿½ distribuito tra 0 e 2#pi uniformemente
     const double philocale = gRandom -> Uniform(0., 2*TMath::Pi());
     
     // Rotazione delle coordinate per tornare al laboratorio
@@ -173,7 +175,7 @@ Urto Urto::UrtodaUrto(Trasporto *Direttrice, Rivelatore *Detector, bool Scatteri
 void Urto::SmearingGaussiano(Rivelatore *Detector, int NumLayer){
   this -> SetZ(this -> GetZ() + gRandom -> Gaus(0., Detector->GetSmearZ()));
   
-  // Si può trovare la rms di #theta dividendo RPhi per il raggio
+  // Si puï¿½ trovare la rms di #theta dividendo RPhi per il raggio
   double Raggio;
   if(NumLayer == 0){
     Raggio = Detector->GetRaggioBP();

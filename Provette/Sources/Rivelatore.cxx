@@ -12,6 +12,8 @@
 #include "TString.h"
 #endif
 
+using namespace std;
+
 ClassImp(Rivelatore)
 
 // ------------- Costruttori --------------
