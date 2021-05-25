@@ -30,6 +30,7 @@ class Vertice : public Punto{
   // ---------------- Getter ----------------
   int GetMolteplicita();
   int GetRumore();
+  Punto GetCoordinate();
     
  private:
 

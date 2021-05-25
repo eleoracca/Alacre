@@ -54,3 +54,7 @@ int Vertice::GetMolteplicita(){
 int Vertice::GetRumore(){
   return dmRumore;
 }
+
+Punto Vertice::GetCoordinate(){
+  return Punto(dmX, dmY, dmZ);
+}
