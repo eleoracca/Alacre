@@ -108,7 +108,7 @@ Urto Urto::UrtodaVertice(Vertice *Origine, Trasporto *Direttrice, double Raggio,
   }
 }
   
-Urto Urto::UrtodaUrto(Trasporto *Direttrice, Rivelatore *Detector, bool ScatteringMult, int NumLayer, double P, int Z, double Beta){
+Urto Urto::UrtodaUrto(Trasporto *Direttrice, Rivelatore *Detector, bool ScatteringMult, int NumLayer){
 
   // Scelta del raggio in base al layer  
   double Raggio;
@@ -123,7 +123,8 @@ Urto Urto::UrtodaUrto(Trasporto *Direttrice, Rivelatore *Detector, bool Scatteri
     
     // #theta0 � la rms di una gaussiana con centro 0
     // Formula per il multiple scattering: #deltatheta0 = (13.6 MeV/#beta*c*p)*Z*(#sqrt(x/X_0))[1+0.038*Ln(x/X_0)]
-    
+    // Z = 1 perchè sono pioni, #beta*c*p = dmEnergia del Detector
+
     double X0;
     double Larghezza;
     
@@ -137,8 +138,8 @@ Urto Urto::UrtodaUrto(Trasporto *Direttrice, Rivelatore *Detector, bool Scatteri
       Larghezza = Detector->GetSpessoreL();
     }
 
-    // #theta0; per le dimensioni giuste, c non compare nel conto 
-    const double ThetaZero = (13.6/(Beta * P)) * Z * TMath::Sqrt(Larghezza/X0) * (1 + 0.038 * TMath::Log(Larghezza/X0));
+    // #theta0 (in realtà è devizione da #theta della particella); per le dimensioni giuste, c non compare nel conto 
+    const double ThetaZero = (13.6/(Detector->GetEnergia())) * TMath::Sqrt(Larghezza/X0) * (1 + 0.038 * TMath::Log(Larghezza/X0));
     
     // #theta viene generato da una distribuzione gaussiana di media 0 e rms #theta0
     const double thetalocale = gRandom -> Gaus(0., ThetaZero);

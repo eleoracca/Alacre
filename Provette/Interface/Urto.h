@@ -44,7 +44,7 @@ class Urto : public Punto{
   static Urto UrtodaVertice(Vertice *Origine, Trasporto *Direttrice, double Raggio, int IDe, int NumLayer = -1);
   
   // Genera un urto partendo dall'urto, contemplando anche lo cattering multiplo con il materiale lungo la traiettoria
-  Urto UrtodaUrto(Trasporto *Direttrice, Rivelatore *Detector, bool ScatteringMult = kTRUE, int NumLayer = -1, double P = 750, int Z = 1, double Beta = 1);
+  Urto UrtodaUrto(Trasporto *Direttrice, Rivelatore *Detector, bool ScatteringMult = kTRUE, int NumLayer = -1);
   
   // Smearing: modifica delle coordinate a causa della risoluzione definita
   void SmearingGaussiano(Rivelatore *Detector, int NumLayer);
