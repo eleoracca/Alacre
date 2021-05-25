@@ -46,7 +46,6 @@ class Punto : public TObject{
   static double GetDeltaPhi(Punto &PuntoUno, Punto &PuntoDue);
 
   // ----------- Member functions -----------
-  //double EtaTheta(bool &distribuzione, const double &inferiore, const double &superiore, TH1F* istogramma);
   
  private:
 

@@ -18,8 +18,11 @@
 // ************************ Dichiarazione delle funzioni ************************
 // ******************************************************************************
 
-// Funzione che trasforma pseudorapidità in theta
-double EtaTheta(bool &distribuzione, double inferiore, double superiore, TH1F* istogramma);
+// Funzione che trasforma pseudorapiditï¿½ in theta
+double EtaTheta(bool &distribuzione, const double inferiore, const double superiore, TH1F* istogramma);
+
+// Funzione che trasforma theta in pseudorapiditÃ 
+double ThetaEta(const double theta);
 
 // Funzione che importa istogrammi
 TH1F* ImportaIstogramma(TString file, TString istogramma);
@@ -30,7 +33,7 @@ TH1F* ImportaIstogramma(TString file, TString istogramma);
 // *********************** Implementazione delle funzioni ***********************
 // ******************************************************************************
 
-double EtaTheta(bool &distribuzione, double inferiore, double superiore, TH1F* istogramma){  
+double EtaTheta(bool &distribuzione, const double inferiore, const double superiore, TH1F* istogramma){  
   double eta;
   
   do{
@@ -43,6 +46,11 @@ double EtaTheta(bool &distribuzione, double inferiore, double superiore, TH1F* i
   }while((eta<0 && eta<=inferiore) || (eta>0 && eta>=superiore));
   
   return 2*TMath::ATan(TMath::Exp(-eta));
+}
+
+
+double ThetaEta(const double theta){
+  return -TMath::Log(TMath::Tan(theta/2));
 }
 
 

@@ -166,23 +166,6 @@ double Punto::GetDeltaPhi(Punto &PuntoUno, Punto &PuntoDue){
 
 
 // ----------- Member functions -----------
-/*
-double Punto::EtaTheta(bool &distribuzione, const double &inferiore, const double &superiore, TH1F* istogramma){  
-  double eta;
-  
-  do{
-    if(distribuzione){
-      eta = istogramma -> GetRandom();
-    }
-    else{
-      eta = gRandom -> Uniform(inferiore, superiore);
-    }
-  }while((eta<0 && eta<=inferiore) || (eta>0 && eta>=superiore));
-  
-  return 2*TMath::ATan(TMath::Exp(-eta));
-}
-*/
-
 void Punto::CartesianeCilindriche(){   
   if (dmX > 0.) {
     if (dmY > 0. || dmY == 0.){
