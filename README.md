@@ -1,21 +1,26 @@
 # Alacre
-Progetto per l'esame del corso di Tecniche di Analisi Numerica e Simulazione di Cristina Sauda ed Eleonora Racca.
+Progetto per l'esame del corso di Tecniche di Analisi Numerica e Simulazione di Cristina Sauda (@crisauda) ed Eleonora Racca (@eleoracca).
 
 Obiettivi:
-- Simulare la generazione di particelle di alto momento in un esperimento a collider:
-  - generazione casuale del vertice;
-  - generazione della molteplicità fissa o da distribuzioni assegnata o uniforme;
-  - generazione della direzione delle particelle con distribuzione uniforme in azumut e assegnata in pseudorapidità;
-  - trasporto delle particelle:
-    - intersezioni con beam pipe e due layer di rivelatori;
-    - scattering multiplo spegnibile.
-- Ricostruzione degli eventi:
-  - smearing gaussiano dei punti di impatto;
-  - aggiunta di rumore spegnibile.
-- Analisi delle prestazioni:
-  - ricostruzione del vertice;
-  - efficienza in funzione della molteplicità;
-  - risoluzione.
+1. Simulare la generazione di particelle di alto momento in un esperimento a collider:
+   - generazione casuale del vertice;
+   - generazione della molteplicità fissa o da distribuzioni assegnata o uniforme;
+   - generazione della direzione delle particelle con distribuzione uniforme in azumut e assegnata in pseudorapidità;
+   - trasporto delle particelle:
+     - intersezioni con beam pipe e due layer di rivelatori;
+     - scattering multiplo spegnibile.
+2. Ricostruzione degli eventi:
+   - smearing gaussiano dei punti di impatto;
+   - aggiunta di rumore spegnibile.
+3. Analisi delle prestazioni:
+   - ricostruzione del vertice;
+   - efficienza in funzione della molteplicità;
+   - risoluzione.
+   
+Scaricare la repository
+-----------------------
+
+Da fare
   
 Esecuzione del programma
 ------------------------
@@ -25,37 +30,45 @@ Comandi principali:
 - compilazione:
 
     posizionarsi nella cartella dove è stata scaricata la repository, poi eseguire i comandi:
-  
+    ```
     $cd Alacre/Provette/
     $root -l
-    
+    ```
     dopo aver avviato Root, eseguire:
-    
+    ```
     root [0] .x compila.C("force");
-    
+    ```
 - esecuzione della simulazione:
   
     eseguire le istruzioni riportate alla voce "compilazione" e, senza uscire da Root digitare il comando:
-    
+    ```
     root [1] Rivelatore *detector = new Rivelatore("Configurazioni/Rivelatore.txt")
     root [2] Albero(detector, kTRUE)
-    
+    ```
 - esecuzione della ricostruzione:
   
     eseguire le istruzioni riportate alla voce "compilazione" e, senza uscire da Root digitare il comando:
-    
+    ```
     root [1] Rivelatore *detector = new Rivelatore("Configurazioni/Rivelatore.txt")
     root [2] Ricostruzione(detector, kTRUE)
-    
+    ```
 - esecuzione dell'analisi:
   
     eseguire le istruzioni riportate alla voce "compilazione" e, senza uscire da Root digitare il comando:
-    
+    ```
     root [1] Analisi()
-    
+    ```
 - esecuzione completa del programma:
   
     eseguire le istruzioni riportate alla voce "compilazione" e, senza uscire da Root digitare il comando:
-    
+    ```
     root [1] EsecuzioneEsame()
+    ```
     
+## Comandi utili per GitHub
+Comandi base di Git
+```
+git status
+git add
+git commit
+```
