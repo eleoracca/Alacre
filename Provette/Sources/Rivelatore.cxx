@@ -24,6 +24,7 @@ Rivelatore::Rivelatore(): TObject(){
   dmSpessoreBP = 0.;
   dmSpessoreL = 0.;
   dmLunghezza = 0.;
+  dmEnergia = 0.;
   dmMaterialeBP = TMaterial();
   dmMaterialeL = TMaterial();
   
@@ -51,8 +52,8 @@ Rivelatore::Rivelatore(TString Configurazione): TObject(){
   dmMaterialeBP = TMaterial("dmMaterialeBP", "Be", 8, 4, 1.85, 35.28, 0.8);
   dmMaterialeL = TMaterial("dmMaterialeL", "Si", 28, 14, 2.33, 9.37, 0.2);
   
-  dmEtaMinimo = -2.;
-  dmEtaMassimo = 2.;
+  dmEtaMinimo = -1.;
+  dmEtaMassimo = 1.;
   dmPhiLimite = 0.005;
 
   TString commento;
@@ -60,8 +61,9 @@ Rivelatore::Rivelatore(TString Configurazione): TObject(){
   ifstream in(Configurazione);
   if(!in){
     cout << "!! File di configurazione del rivelatore on trovato !!\nLa simulazione termina ora." << endl;
+    return;
   }  
-  in >> commento >> dmSmearingZ >> dmSmearingRPhi >> dmXVertice >> dmXVerticeSigma >> dmYVertice >> dmYVerticeSigma >> dmZVertice >> dmZVerticeSigma;
+  in >> commento >> dmSmearingZ >> dmSmearingRPhi >> dmXVertice >> dmXVerticeSigma >> dmYVertice >> dmYVerticeSigma >> dmZVertice >> dmZVerticeSigma >> dmEnergia;
   in.close();
 }
 
@@ -70,6 +72,10 @@ Rivelatore::~Rivelatore()
 {}
 
 // ---------------- Setter ----------------
+void Rivelatore::SetEnergia(const double Energia){
+  dmEnergia = Energia;
+}
+
 void Rivelatore::SetEtaMin(const double Etamin){
   dmEtaMinimo = Etamin;
 }
@@ -109,6 +115,10 @@ double Rivelatore::GetSpessoreL(){
 
 double Rivelatore::GetLunghezza(){
   return dmLunghezza;
+}
+
+double Rivelatore::GetEnergia(){
+  return dmEnergia;
 }
 
 TMaterial Rivelatore::GetMaterialeBP(){

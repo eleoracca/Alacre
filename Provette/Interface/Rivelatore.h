@@ -23,6 +23,7 @@ class Rivelatore : public TObject{
   virtual ~Rivelatore();
 
   // ---------------- Setter ----------------
+  void SetEnergia(const double Energia);
   void SetEtaMin(const double Etamin);
   void SetEtaMax(const double Etamax);
   void SetSmearZ(const double SmearZ);
@@ -35,6 +36,7 @@ class Rivelatore : public TObject{
   double GetSpessoreBP();
   double GetSpessoreL();
   double GetLunghezza();
+  double GetEnergia();
   TMaterial GetMaterialeBP();
   TMaterial GetMaterialeL();
   
@@ -62,11 +64,12 @@ class Rivelatore : public TObject{
   double dmSpessoreBP; // Spessore della Beam Pipe in cm
   double dmSpessoreL; // Spessore del primo strato in cm
   double dmLunghezza; // Lunghezza del rivelatore in cm
+  double dmEnergia; // Energia della collisione (#beta p c)
   TMaterial dmMaterialeBP; // Materiale della Beam Pipe
   TMaterial dmMaterialeL; // Materiale degli strati
   
-  double dmEtaMinimo; // Pseudorapidità minima rilevabile
-  double dmEtaMassimo; // Pseudorapidità massima rilevabile
+  double dmEtaMinimo; // Pseudorapiditï¿½ minima rilevabile
+  double dmEtaMassimo; // Pseudorapiditï¿½ massima rilevabile
   double dmSmearingZ; // Smearing nella direzione Z in cm
   double dmSmearingRPhi; // Smearing nelle direzioni R e #phi in cm
   double dmPhiLimite; // Taglio su #phi in rad
