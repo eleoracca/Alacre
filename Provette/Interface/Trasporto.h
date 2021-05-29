@@ -22,16 +22,9 @@ class Trasporto : public TObject {
   virtual ~Trasporto();
   
   // ----------- Setter -----------
-  void SetDirTheta(const double Theta);
-  void SetDirPhi(const double Phi);
-  void SetCosDirX(const double Cx);
-  void SetCosDirY(const double Cy);
-  void SetCosDirZ(const double Cz);
-  void SetCosDir(const double Cx, const double Cy, const double Cz);
-  void SetAngoli(const double Theta, const double Phi);
-  void SetDirID(const double ID);
   void FlipBit();
   void Rotazione(double Theta, double Phi);
+  void SetAngoli(const double Theta, const double Phi);
   
   // ----------- Getter -----------
   int GetID();
@@ -43,6 +36,14 @@ class Trasporto : public TObject {
   bool GetRotStatus();
   
  private:
+  // ----------- Setter ----------- 
+  void SetDirTheta(const double Theta);
+  void SetDirPhi(const double Phi);
+  void SetCosDirX(const double Cx);
+  void SetCosDirY(const double Cy);
+  void SetCosDirZ(const double Cz);
+  void SetCosDir(const double Cx, const double Cy, const double Cz);
+  void SetDirID(const double ID);
   
   void AggiornaAng();
   void AggiornaDirCos();

@@ -6,11 +6,14 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined (__CINT__) || defined (__MAKECINT__)
+#include "Riostream.h"
 #include "Trasporto.h"
 #include "TMath.h"
 #include "TObject.h"
 #include "TString.h"
 #endif
+
+using namespace std;
 
 ClassImp(Trasporto)
 
@@ -108,36 +111,17 @@ bool Trasporto::GetRotStatus(){
 }
 
 void Trasporto::AggiornaAng(){
-  
-  // Siccome D[ATan(x)] = [-Pi,+Pi], bisogna discutere i valori dei coseni direttori per trovare il valore vero di Phi.
-  
   dmTheta = TMath::ACos(dmCDz);
-  
-  if(dmCDx > 0){
-    if(dmCDy >= 0){
-      dmPhi = TMath::ATan(dmCDy/dmCDx);
-    }
-    else{
-      dmPhi = 2*TMath::Pi() + TMath::ATan(dmCDy/dmCDx);
-    }
-  } 
+
+  // Siccome il dominio di ATan(x) è [-Pi/2,+Pi/2], bisogna discutere i valori dei coseni direttori per trovare il valore vero di Phi.
+  // La funzione Atan2 risolve i problemi sulla discussione di #phi e restituisce un angolo fra [0,2Pi]
+  // ATan2 non è definita per CDx = 0 e CDy = 0, quindi l'angolo #phi può avere qualsiasi valore: rimane invariato
+
+  if(dmCDx != 0 && dmCDy != 0){
+    dmPhi = TMath::ATan2(dmCDy, dmCDx);
+  }
   else{
-    if(dmCDx != 0){ // CDx < 0
-      if(dmCDy >= 0){
-	dmPhi = TMath::Pi() + TMath::ATan(dmCDy/dmCDx);
-      }
-      else{
-	dmPhi = TMath::Pi() + TMath::ATan(dmCDy/dmCDx);
-      }
-    }
-    else{ // CDx = 0
-      if(dmCDx >= 0){
-	dmPhi = 0.5 * TMath::Pi();
-      }
-      else{
-	dmPhi = 1.5 * TMath::Pi();
-      }
-    }
+    cout << "Attenzione: \u03d1 = 0" << endl; //da fare: trovare codice utf di theta
   }
 }
 
