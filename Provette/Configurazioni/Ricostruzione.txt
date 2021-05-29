@@ -1,5 +1,5 @@
 //onoff,distribuzione,par1,par2
-kFALSE
+1
 fissa
 2.
 0.
