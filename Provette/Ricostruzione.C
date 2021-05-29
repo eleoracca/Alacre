@@ -97,7 +97,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
 
   // ----------------------------------------------------------------------------
   // File della simulazione e della ricostruzione
-  TFile *fileinput = new TFile("Output/Simulazione.root");
+  TFile *fileinput = new TFile("Output/Simulazione.root", "READ");
   TFile *fileoutput = new TFile("Output/Ricostruzione.root", "RECREATE");
 
   if(fileinput->IsZombie()){
@@ -148,6 +148,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
   TClonesArray *PuntatoreRiv2Reco = new TClonesArray("Urto", 100);
   TClonesArray& IndPuntRiv2Reco = *PuntatoreRiv2Reco;
 
+  // Dichiariamo i branch del tree
   //rovere -> Branch("VerticeReco", &PuntatoreVertReco);
   rovere -> Branch("UrtiRivelatore1Reco", &PuntatoreRiv1Reco);
   rovere -> Branch("UrtiRivelatore2Reco", &PuntatoreRiv2Reco);
