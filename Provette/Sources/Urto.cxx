@@ -90,9 +90,9 @@ Urto Urto::UrtodaVertice(Vertice *Origine, Trasporto *Direttrice, double Raggio,
   
   // Eccezione #theta = 0
   if(theta == 0.f || theta == TMath::Pi()){
-    Urto SuRivelatore;
+    Urto SuAsse;
     
-    return SuRivelatore;
+    return SuAsse;
   }
   else{
     // Prende le coordinate del vertice da "Vertice"
@@ -128,7 +128,7 @@ Urto Urto::UrtodaUrto(Trasporto *Direttrice, Rivelatore *Detector, bool Scatteri
     double X0;
     double Larghezza;
     
-    if(NumLayer == 1){
+    if(NumLayer == 1){ // perche' fa ScatteringMultiplo dopo la BeamPipe
       // Lunghezza di radiazione, X0, e larghezza del materiale, x
       X0 = Detector->GetMaterialeBP().GetRadLength();
       Larghezza = Detector->GetSpessoreBP();
@@ -151,15 +151,15 @@ Urto Urto::UrtodaUrto(Trasporto *Direttrice, Rivelatore *Detector, bool Scatteri
     Direttrice->Rotazione(thetalocale, philocale);
   }
   
-  // Extract theta and phi from "Direzione".
+  // Si estraggono theta e phi da "Direttrice"
   const double theta = Direttrice->GetDirTheta();
   const double phi = Direttrice->GetDirPhi();
   
   // Eccezione #theta=0
   if(theta == 0.f || TMath::Abs(theta) == TMath::Pi()){
-    Urto SuRivelatore;
+    Urto SuAsse;
     
-    return SuRivelatore;
+    return SuAsse;
   }
   else{
     
