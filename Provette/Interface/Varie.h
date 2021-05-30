@@ -34,7 +34,7 @@ TH1F* ImportaIstogramma(TString file, TString istogramma);
 // ******************************************************************************
 
 double EtaTheta(bool &distribuzione, const double inferiore, const double superiore, TH1F* istogramma){  
-  double eta;
+  double eta = 0.0;
   
   do{
     if(distribuzione){
@@ -43,7 +43,7 @@ double EtaTheta(bool &distribuzione, const double inferiore, const double superi
     else{
       eta = gRandom -> Uniform(inferiore, superiore);
     }
-  }while((eta<0 && eta<=inferiore) || (eta>0 && eta>=superiore));
+  }while(eta<inferiore || eta>superiore);
   
   return 2*TMath::ATan(TMath::Exp(-eta));
 }
