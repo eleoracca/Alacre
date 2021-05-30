@@ -1,12 +1,15 @@
 # Cose da fare
 - [ ] capire cosa fa FlipBit                                        Albero.C                riga 173
-- [ ] controllare return su Layer1                                  Ricostruzione.C
 - [ ] controllare se Branch1Gen contiene i dati di Albero.C
-- [ ] vedere come inizializzare le variabili                        Ricostruzione.C      riga 160, 165, 71 a 74
-- [ ] capire dove viene settato dmUrtoReale                         Urto.h
-- [ ] capire se ha senso lasciare ID in Trasporto.C                 
+- [ ] capire se ha senso lasciare ID in Trasporto.C 
+- [ ] implementare funzione RumoreGauss                             Ricostruzione.C
+- [ ] implementare funzione RumoreFissa                             Ricostruzione.C
+- [ ] implementare Analisi.C    
 - [ ] scrivere istruzioni per scaricare la repository in README
 - [ ] scrivere nel **REPORT** che energia della collisione è in Rivelatore.C perchè è propria della struttura
+- [x] capire dove viene settato dmUrtoReale                         Urto.h
+- [x] vedere come inizializzare le variabili                        Ricostruzione.C      riga 160, 165, 71 a 74
+- [x] controllare return su Layer1                                  Ricostruzione.C
 - [x] aggiungere TClonesArray per BP                                Ricostruzione.C         riga 118
 - [x] aggiungere Branch per BP
 - [x] aggiungere "READ" al file input della Ricostruzione           Ricostruzione.C
