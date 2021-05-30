@@ -68,10 +68,6 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
   double parametro2 = 0.;
   TString commento = "\0";
   TString distribuzione = "\0";
-  //Urto *urto1L;
-  //Urto *urto2L;
-  //Urto *rumore1L;
-  //Urto *rumore2L;
   unsigned int u = 0;
   unsigned int v = 0;
 
@@ -87,7 +83,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
     ifstream in("Configurazioni/Ricostruzione.txt");
     if(!in){
       cout << Violetto("!! File di configurazione non trovato !!") << endl << "La simulazione riparte automaticamente chiedendo di inserire a mano i parametri.";
-      Ricostruzione(detector, kFALSE);
+      return Ricostruzione(detector, kFALSE);
     }  
     in >> commento >> onoff >> distribuzione >> parametro1 >> parametro2;
     in.close();
