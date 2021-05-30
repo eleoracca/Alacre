@@ -173,10 +173,10 @@ Urto Urto::UrtodaUrto(Trasporto *Direttrice, Rivelatore *Detector, bool Scatteri
 }
 
 void Urto::SmearingGaussiano(Rivelatore *Detector, int NumLayer){
-  this -> SetZ(this -> GetZ() + gRandom -> Gaus(0., Detector->GetSmearZ()));
-  
+  this -> SetZ(dmZ + gRandom -> Gaus(0., Detector->GetSmearZ()));
+
   // Si pu� trovare la rms di #theta dividendo RPhi per il raggio
-  double Raggio;
+  double Raggio = 0.0;
   if(NumLayer == 0){
     Raggio = Detector->GetRaggioBP();
   }
@@ -189,7 +189,7 @@ void Urto::SmearingGaussiano(Rivelatore *Detector, int NumLayer){
   else{
     std::cout << "Problema con il raggio del detector." << endl;
   }
-  this -> SetPhi(this -> GetPhi() + gRandom -> Gaus(0., Detector->GetSmearRPhi()/Raggio));
+  this -> SetPhi(dmPhi + gRandom -> Gaus(0., Detector->GetSmearRPhi()/Raggio));
 }
 
 Urto Urto::RumoreRivelatore(Rivelatore *Detector, int NumLayer){
