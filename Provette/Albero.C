@@ -77,7 +77,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
     ifstream in("Configurazioni/Generazione.txt");
     if(!in){
       cout << Violetto("!! File di configurazione non trovato !!") << endl << "La simulazione riparte automaticamente chiedendo di inserire a mano i parametri.";
-      Albero(detector, kFALSE);
+      return Albero(detector, kFALSE);
     }  
     in >> commento >> numeroeventi >> distmolteplicita >> par1molteplicita >> par2molteplicita >> multiplescattering >> disteta;
     in.close();
@@ -150,7 +150,10 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
 
     // Generazione della molteplicit� dell'evento, ovvero il numero di particelle generato
     numeroparticelle = DecisioneMolteplicita(distmolteplicita, par1molteplicita, par2molteplicita, istogrammamolteplicita);
-    
+    if(numeroparticelle <= 0) {
+      cout << "Errato numero di particelle: " << numeroparticelle << endl;
+      return kFALSE;
+    }
     // Generazione del vertice dell'evento, rms in centimetri
     PuntatoreVertice = new Vertice(detector, numeroparticelle);
     
@@ -181,7 +184,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
       // Registrazione dei dati sul Tree
       new(IndPuntBP[j]) Urto(UrtoBP);
       new(IndPuntRiv1[j]) Urto(Urto1L);
-      new(IndPuntRiv2[j]) Urto(Urto2L);	
+      new(IndPuntRiv2[j]) Urto(Urto2L);
     }
 
   // ----------------------------------------------------------------------------
@@ -202,9 +205,6 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
   delete istogrammamolteplicita;
   delete PuntatoreVertice;
   delete PuntatoreDirezione;
-  // UrtoBP.~Urto();
-  // Urto1L.~Urto();
-  // Urto2L.~Urto();
   
   return kTRUE;
 }
@@ -348,23 +348,24 @@ int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &pa
   int numero = 0;
 
   if(distribuzione == "gaussiana"){
-    while(numero == 0){
+    while(numero <= 0){
       numero = (int)(0.5 + gRandom->Gaus(parametro1, parametro2));
     }
   }
   else if(distribuzione == "uniforme"){
-    while(numero == 0){
+    while(numero <= 0){
       numero = (int)(0.5 + gRandom->Uniform(parametro1, parametro2));
     }
   }
   else if(distribuzione == "istogramma"){
-    while(numero == 0){      
+    while(numero <= 0){      
       numero = istogramma -> GetRandom();
     }
   }
   else if(distribuzione == "fissa"){
-    while(numero == 0){
-      numero = (int)parametro1;
+    numero = (int) parametro1;
+    if(numero <= 0){
+      numero = -100;
     }
   }
   

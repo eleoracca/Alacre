@@ -43,11 +43,11 @@ bool RichiestaInformazioni(bool &onoff, TString &distribuzione, double &parametr
 void StampaInformazioni(bool &onoff, TString &distribuzione, double &parametro1, double &parametro2);
 
 // Funzione per fare lo smearing dei punti
-int Smearing(unsigned int &u, unsigned int &v, TClonesArray *strato1Gen, TClonesArray *strato2Gen, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, Urto *urto1L, Urto *urto2L);
+int Smearing(unsigned int &u, unsigned int &v, TClonesArray *strato1Gen, TClonesArray *strato2Gen, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector);//, Urto *urto1L, Urto *urto2L);
 
 // Funzione per aggiungere il rumore eventualmente
-int RumoreGauss(unsigned int &u, unsigned int &v, double &media, double &deviazionestandard, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, Urto *urto1L, Urto *urto2L);
-int RumoreFissa(unsigned int &u, unsigned int &v, double &parametro1, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, Urto *urto1L, Urto *urto2L);
+int RumoreGauss(unsigned int &u, unsigned int &v, double &media, double &deviazionestandard, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector);//, Urto *urto1L, Urto *urto2L);
+int RumoreFissa(unsigned int &u, unsigned int &v, double &parametro1, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector);//, Urto *urto1L, Urto *urto2L);
 
 // Funzione per ricostruire il vertice
 void RicostruzioneVertice(TTree *modificato);
@@ -68,10 +68,10 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
   double parametro2 = 0.;
   TString commento = "\0";
   TString distribuzione = "\0";
-  Urto *urto1L;
-  Urto *urto2L;
-  Urto *rumore1L;
-  Urto *rumore2L;
+  //Urto *urto1L;
+  //Urto *urto2L;
+  //Urto *rumore1L;
+  //Urto *rumore2L;
   unsigned int u = 0;
   unsigned int v = 0;
 
@@ -158,17 +158,17 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
   for(int i = 0; i < (int)numeroEventi; i++){
     gelso -> GetEntry(i);
     
-    numeroMolteplicita = Smearing(u, v, UrtiRiv1Gen, UrtiRiv2Gen, PuntatoreRiv1Reco, PuntatoreRiv2Reco, detector, urto1L, urto2L);
+    numeroMolteplicita = Smearing(u, v, UrtiRiv1Gen, UrtiRiv2Gen, PuntatoreRiv1Reco, PuntatoreRiv2Reco, detector);//, urto1L, urto2L);
     PuntatoreVertReco -> Vertice::SetMolteplicita(numeroMolteplicita);
     rovere -> Fill();
     
     if(onoff && distribuzione == "gaussiana"){
-      numeroRumore = RumoreGauss(u, v, parametro1, parametro2, PuntatoreRiv1Reco, PuntatoreRiv2Reco, detector, rumore1L, rumore2L);
+      numeroRumore = RumoreGauss(u, v, parametro1, parametro2, PuntatoreRiv1Reco, PuntatoreRiv2Reco, detector);//, rumore1L, rumore2L);
       PuntatoreVertReco -> Vertice::SetRumore(numeroRumore);
       rovere -> Fill();
     }
     else if(onoff && distribuzione == "fissa"){
-      numeroRumore = RumoreFissa(u, v, parametro1, PuntatoreRiv1Reco, PuntatoreRiv2Reco, detector, rumore1L, rumore2L);
+      numeroRumore = RumoreFissa(u, v, parametro1, PuntatoreRiv1Reco, PuntatoreRiv2Reco, detector);//, rumore1L, rumore2L);
       PuntatoreVertReco -> Vertice::SetRumore(numeroRumore);
       rovere -> Fill();
     }
@@ -268,8 +268,10 @@ bool RichiestaInformazioni(bool &onoff, TString &distribuzione, double &parametr
 }
 
 
-int Smearing(unsigned int &u, unsigned int &v, TClonesArray *strato1Gen, TClonesArray *strato2Gen, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, Urto *urto1L, Urto *urto2L){
+int Smearing(unsigned int &u, unsigned int &v, TClonesArray *strato1Gen, TClonesArray *strato2Gen, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector) {//, Urto* urto1L, Urto* urto2L){
   
+  Urto* urto1L = NULL;
+  Urto* urto2L = NULL;
   unsigned int numeroUrti1LGen = strato1Gen -> GetEntries();
   unsigned int numeroUrti2LGen = strato2Gen -> GetEntries();
   TClonesArray &strato1RecoInd = *strato1Reco;
@@ -281,7 +283,7 @@ int Smearing(unsigned int &u, unsigned int &v, TClonesArray *strato1Gen, TClones
     
     if(TMath::Abs(urto1L -> GetZ()) <= (detector -> GetLunghezza())/2.){ //se non vale, il rivelatore non vede il passaggio
       urto1L -> SmearingGaussiano(detector, 1);
-      new(strato1RecoInd[u]) Urto(urto1L); // come si fa senza fare il costruttore Urto(Urto *urto)???
+      new(strato1RecoInd[u]) Urto(*urto1L); // come si fa senza fare il costruttore Urto(Urto *urto)???
       u += 1;
     }
     else continue;
@@ -293,7 +295,7 @@ int Smearing(unsigned int &u, unsigned int &v, TClonesArray *strato1Gen, TClones
     
     if(TMath::Abs(urto2L -> GetZ()) <= (detector -> GetLunghezza())/2.){
       urto2L -> SmearingGaussiano(detector, 1);
-      new(strato2RecoInd[v]) Urto(urto2L);
+      new(strato2RecoInd[v]) Urto(*urto2L);
       v += 1;
     }
     else continue;
@@ -303,7 +305,7 @@ int Smearing(unsigned int &u, unsigned int &v, TClonesArray *strato1Gen, TClones
 }
 
 
-int RumoreGauss(unsigned int &u, unsigned int &v, double &media, double &deviazionestandard, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, Urto *urto1L, Urto *urto2L){
+int RumoreGauss(unsigned int &u, unsigned int &v, double &media, double &deviazionestandard, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector) {//, Urto *urto1L, Urto *urto2L){
 
   TClonesArray &strato1RecoInd = *strato1Reco;
   TClonesArray &strato2RecoInd = *strato2Reco;
@@ -323,7 +325,7 @@ int RumoreGauss(unsigned int &u, unsigned int &v, double &media, double &deviazi
 }
 
 
-int RumoreFissa(unsigned int &u, unsigned int &v, double &parametro1, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector, Urto *urto1L, Urto *urto2L){
+int RumoreFissa(unsigned int &u, unsigned int &v, double &parametro1, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector) {//, Urto *urto1L, Urto *urto2L){
   
   TClonesArray &strato1RecoInd = *strato1Reco;
   TClonesArray &strato2RecoInd = *strato2Reco;

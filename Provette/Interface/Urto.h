@@ -21,7 +21,7 @@ class Urto : public Punto{
   // ------------- Costruttori --------------
   Urto();
   Urto(double x, double y, double z, int NumLayer, int ID = -2);
-  Urto(Urto *urto);
+  // Urto(const Urto& urto);
   
   // ------------- Distruttori --------------
   virtual ~Urto();

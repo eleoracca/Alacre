@@ -34,14 +34,13 @@ Urto::Urto(double x, double y, double z, int NumLayer, int ID): Punto(x, y, z){
   dmUrtoReale = kFALSE;
 }
 
-Urto::Urto(Urto *urto){
-  dmX = urto -> GetX();
-  dmY = urto -> GetY();
-  dmZ = urto -> GetZ();
-  dmNumLayer = urto -> GetNumeroLayer();
-  dmID = urto -> GetID();
-  dmUrtoReale = urto -> TestReale();
+/*
+Urto::Urto(const Urto& urto) : Punto(urto.dmX, urto.dmY, urto.dmZ){
+  dmNumLayer = urto.dmNumLayer;
+  dmID = urto.dmID;
+  dmUrtoReale = urto.dmUrtoReale;
 }
+*/
 
 // ------------- Distruttori --------------
 Urto::~Urto()
