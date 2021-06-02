@@ -24,7 +24,7 @@ ClassImp(Urto)
 // ------------- Costruttori --------------
 Urto::Urto(): Punto(0., 0., 0.){
   dmNumLayer = 0.;
-  dmID = 0.;
+  dmID = -2; // Si setta ID così perché il rumore avrà ID = -1 e tutte le particelle create nell'evento avranno ID >= 0
   dmUrtoReale = kFALSE;
 }
 
