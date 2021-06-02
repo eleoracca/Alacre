@@ -9,7 +9,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #include "TObject.h"
-#include "TH1F.h"
+#include "TString.h"
 
 class Punto : public TObject{
 
@@ -18,6 +18,7 @@ class Punto : public TObject{
   // ------------- Costruttori --------------
   Punto();
   Punto(double X, double Y, double Z);
+  Punto(double R, double Phi, double X3, TString tipo);
   
   // ------------- Distruttori --------------
   virtual ~Punto();

@@ -6,11 +6,15 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #if !defined (__CINT__) || defined (__MAKECINT__)
+#include "Riostream.h"
 #include "Punto.h"
 #include "TMath.h"
 #include "TRandom3.h"
-#include "TString.h"
+#include "Colori.h"
 #endif
+
+using namespace std;
+using namespace colore;
 
 ClassImp(Punto)
 
@@ -34,7 +38,7 @@ Punto::Punto(double X, double Y, double Z): TObject() {
   CartesianeCilindriche(); // Assegna i valori delle coordinate cilindriche
 }
 
-Punto::Punto(double R, double Phi, double X3, char tipo){
+Punto::Punto(double R, double Phi, double X3, TString tipo){
   if(tipo == "c"){
     dmRaggioC = R;
     dmPhi = Phi;
@@ -53,7 +57,7 @@ Punto::Punto(double R, double Phi, double X3, char tipo){
   }
   else{
     cout << "Tipo di coordinate sconosciuto: inserire s per sferiche o c per cilindriche" << endl;
-    return kFALSE;
+    return ;
   }
 }
 
