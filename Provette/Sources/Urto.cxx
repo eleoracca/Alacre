@@ -15,9 +15,11 @@
 #include "Urto.h"
 #include "Vertice.h"
 #include "Rivelatore.h"
+#include "Colori.h"
 #endif
 
 using namespace std;
+using namespace colore;
 
 ClassImp(Urto)
 
@@ -29,6 +31,26 @@ Urto::Urto(): Punto(0., 0., 0.){
 }
 
 Urto::Urto(double x, double y, double z, int NumLayer, int ID): Punto(x, y, z){
+  dmNumLayer = NumLayer;
+  dmID = ID;
+  dmUrtoReale = kFALSE;
+}
+
+Urto::Urto(double phi, double z, int NumLayer, Rivelatore *detector, int ID){
+  double R = 0.; 
+
+  if(NumLayer == 1){
+    R = detector->GetRaggio1L();
+  }
+  else if(NumLayer == 2){
+    R = detector->GetRaggio2L();
+  }
+  else{
+    cout << Avvertimento("Numero del Layer errato; viene imposto NumLayer = 1") << endl;
+    R = detector->GetRaggio1L(); 
+  }
+
+  Punto(R, phi, z, "c");
   dmNumLayer = NumLayer;
   dmID = ID;
   dmUrtoReale = kFALSE;
