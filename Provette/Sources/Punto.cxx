@@ -166,68 +166,33 @@ double Punto::GetDeltaPhi(Punto &PuntoUno, Punto &PuntoDue){
 
 
 // ----------- Member functions -----------
-void Punto::CartesianeCilindriche(){   
-  if (dmX > 0.) {
-    if (dmY > 0. || dmY == 0.){
-      dmPhi = TMath::ATan(dmY/dmX); // per X > 0. e Y >= 0.
-    }
-    else {
-      dmPhi = 2*TMath::Pi() + TMath::ATan(dmY/dmX); // per X > 0. e Y < 0.
-    }
-  } 
+void Punto::CartesianeCilindriche(){
+  dmRaggioC = TMath::Sqrt(dmX*dmX + dmY*dmY);
+  // dmZ rimane sè stesso
+
+  if (dmX != 0. && dmY != 0.){
+    dmPhi = TMath::ATan2(dmY, dmX);
+  }
   else {
-    if (dmX == 0.) {
-      if (dmY > 0.){
-	dmPhi = TMath::Pi()/2; // per X = 0. e Y > 0.
-      }
-      else {
-	if (dmY == 0.){
-	  dmPhi = dmTheta = 0.; // per X=0. e Y=0.
-	}
-	else {
-	  dmPhi = TMath::Pi() + TMath::Pi()/2; // per X = 0. e Y < 0.
-	}
-      }
-    } 
-    else {
-      dmPhi = TMath::Pi() + TMath::ATan(dmY/dmX); // per X <0. e ∀Y
-    }
+    dmPhi = 0.;
   }
 }
 
 void Punto::CartesianeSferiche(){
+  dmRaggioS = TMath::Sqrt(dmX*dmX + dmY*dmY + dmZ*dmZ);
+
   if (dmRaggioS != 0.){
     
     dmTheta = TMath::ACos(dmZ/dmRaggioS);
     
-    if (dmX > 0.){
-      if (dmY > 0. || dmY == 0.){
-	dmPhi = TMath::ATan(dmY/dmX); // per X > 0. e Y>=0.
-      }
-      else {
-	dmPhi = 2*TMath::Pi() + TMath::ATan(dmY/dmX); // per X>0. e Y<0.
-      }
+    if (dmX != 0. && dmY != 0.){
+      dmPhi = TMath::ATan2(dmY, dmX);
     }
     else {
-      if (dmX == 0.){
-	if (dmY > 0.){
-	  dmPhi = TMath::Pi()/2; // per X = 0. e Y > 0.
-	}
-	else {
-	  if (dmY == 0.){
-	    dmPhi = 0.;
-	    dmTheta=0.; // per X = 0. e Y = 0.
-	  }
-	  else{
-	    dmPhi = TMath::Pi() + TMath::Pi()/2; // per X = 0. e Y < 0.
-	  }
-	}
-      } 
-      else {
-	dmPhi = TMath::Pi() + TMath::ATan(dmY/dmX); // X < 0. e ∀Y
-      }
+      dmPhi = 0.;
+      dmTheta = 0.;
     }
-  } 
+  }
   else {
     dmPhi = 0.;
     dmTheta = 0.;   // valore di default per evitare errori
