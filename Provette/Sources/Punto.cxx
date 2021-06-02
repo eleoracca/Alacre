@@ -34,6 +34,29 @@ Punto::Punto(double X, double Y, double Z): TObject() {
   CartesianeCilindriche(); // Assegna i valori delle coordinate cilindriche
 }
 
+Punto::Punto(double R, double Phi, double X3, char tipo){
+  if(tipo == "c"){
+    dmRaggioC = R;
+    dmPhi = Phi;
+    dmZ = X3;
+
+    CilindricheCartesiane();
+    CartesianeSferiche();
+  }
+  else if(tipo == "s"){
+    dmRaggioS = R;
+    dmPhi = Phi;
+    dmTheta = X3;
+
+    SfericheCartesiane();
+    CartesianeCilindriche();
+  }
+  else{
+    cout << "Tipo di coordinate sconosciuto: inserire s per sferiche o c per cilindriche" << endl;
+    return kFALSE;
+  }
+}
+
 // ------------- Distruttori --------------
 Punto::~Punto(){}
 
