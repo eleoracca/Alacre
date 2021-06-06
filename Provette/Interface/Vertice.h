@@ -11,6 +11,8 @@
 #include "Punto.h"
 #include "Rivelatore.h"
 
+class Urto;
+
 class Vertice : public Punto{
 
  public:
@@ -31,6 +33,8 @@ class Vertice : public Punto{
   int GetMolteplicita();
   int GetRumore();
   Punto GetCoordinate();
+
+  static double TrovaVertice(Urto L1, Urto L2);
     
  private:
 

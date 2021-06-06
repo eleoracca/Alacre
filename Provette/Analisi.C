@@ -5,7 +5,7 @@
 #include "Colori.h"
 
 
-void Analisi(){
+void Analisi(const double sogliaPhi){
 
   // --------------- RICOSTRUZIONE VERTICE---------------
 
@@ -26,11 +26,11 @@ void Analisi(){
   fileRicostruzione -> cd();
   TTree* robinia = (TTree*) fileRicostruzione -> Get("rovere");
 
-  TClonesArray* UrtiRiv1Reco; //= new TClonesArray("Urto", 100);
+  TClonesArray* UrtiRiv1Reco = new TClonesArray("Urto", 100);
   TBranch* Branch1LReco = robinia -> GetBranch("UrtiRivelatore1");
   Branch1LReco -> SetAddress(&UrtiRiv1Reco);
 
-  TClonesArray* UrtiRiv2Reco; //= new TClonesArray("Urto", 100);
+  TClonesArray* UrtiRiv2Reco = new TClonesArray("Urto", 100);
   TBranch* Branch2LReco = robinia -> GetBranch("UrtiRivelatore2");
   Branch2LReco -> SetAddress(&UrtiRiv2Reco);
 
@@ -76,6 +76,23 @@ void Analisi(){
   
   // Grafico risoluzione in funzione della molteplicità
   // Grafico efficienza in funzione della molteplicità valutando 1sigma
-  // Grafico conteggi per valutare moda del vertice z reco  
+  // Grafico conteggi per valutare moda del vertice z reco
+  int neventi = robinia -> GetEntries();  
+  TH1D* hzReco[neventi];
+  for(int nev = 0; i < robinia -> GetEntries(); i++) {
+    hzReco[nev] = new TH1D("hzReco%d" % nev, "Coordinata z del vertice ricostruito, evento %d" % nev, 50, -27, 27);
+    robinia -> GetEvent(nev);
+    for(int i = 0; i < UrtiRiv1Reco -> GetEntries(); i++) {
+      for(int j = 0; j < UrtiRiv2Reco -> GetEntries(); j++) {
+        Urto* u1, u2;
+        u1 = UrtiRiv1Reco -> At(i);
+        u2 = UrtiRiv2Reco -> At(j);
 
+        if(TMath::Abs(u1 -> GetPhi() - u2 -> GetPhi()) < sogliaPhi) {
+          double zReco = Vertice::TrovaVertice(*u1, *u2);
+          hzReco[nev] -> Fill(zReco);
+        }
+      }
+    }
+  }
 }

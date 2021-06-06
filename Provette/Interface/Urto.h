@@ -9,10 +9,11 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #include "Punto.h"
-#include "Vertice.h"
 #include "Trasporto.h"
 #include "TString.h"
 #include "TMaterial.h"
+
+class Vertice;
 
 class Urto : public Punto{
   

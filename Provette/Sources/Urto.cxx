@@ -13,7 +13,6 @@
 #include "Punto.h"
 #include "Trasporto.h"
 #include "Urto.h"
-#include "Vertice.h"
 #include "Rivelatore.h"
 #include "Colori.h"
 #endif
