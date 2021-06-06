@@ -12,6 +12,7 @@
 #include "Trasporto.h"
 #include "TString.h"
 #include "TMaterial.h"
+#include "Rivelatore.h"
 
 class Vertice;
 

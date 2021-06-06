@@ -9,6 +9,7 @@
 #include "TMath.h"
 #include "TRandom3.h"
 #include "Vertice.h"
+#include "Urto.h"
 #include "Punto.h"
 #endif
 
@@ -59,12 +60,12 @@ Punto Vertice::GetCoordinate(){
   return Punto(dmX, dmY, dmZ);
 }
 
-double Vertice::TrovaVertice(Urto L1, Urto L2){
+double Vertice::TrovaVertice(Urto* L1, Urto* L2){
   double a = 0;
   double b = 0;
 
-  a = (L2.GetRaggioC() - L1.GetRaggioC()) / (L2.GetZ() - L1.GetZ());
-  b = (L1.GetRaggioC() * L2.GetZ() - L2.GetRaggioC() * L1.GetZ()) / (L2.GetZ() - L1.GetZ());
+  a = (L2 -> GetRaggioC() - L1 -> GetRaggioC()) / (L2 -> GetZ() - L1 -> GetZ());
+  b = (L1 -> GetRaggioC() * L2 -> GetZ() - L2 -> GetRaggioC() * L1 -> GetZ()) / (L2 -> GetZ() - L1 -> GetZ());
 
   return -b/a;
 }

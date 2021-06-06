@@ -34,7 +34,7 @@ class Vertice : public Punto{
   int GetRumore();
   Punto GetCoordinate();
 
-  static double TrovaVertice(Urto L1, Urto L2);
+  static double TrovaVertice(Urto* L1, Urto* L2);
     
  private:
 

@@ -89,7 +89,7 @@ void Analisi(const double sogliaPhi){
         u2 = UrtiRiv2Reco -> At(j);
 
         if(TMath::Abs(u1 -> GetPhi() - u2 -> GetPhi()) < sogliaPhi) {
-          double zReco = Vertice::TrovaVertice(*u1, *u2);
+          double zReco = Vertice::TrovaVertice(u1, u2);
           hzReco[nev] -> Fill(zReco);
         }
       }
