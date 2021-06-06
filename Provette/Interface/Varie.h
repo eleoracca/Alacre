@@ -27,6 +27,9 @@ double ThetaEta(const double theta);
 // Funzione che importa istogrammi
 TH1F* ImportaIstogramma(TString file, TString istogramma);
 
+// Funzione che trova la moda
+double Moda(TH1D *istogramma, double larghezza);
+
 
 
 // ******************************************************************************
@@ -63,6 +66,37 @@ TH1F* ImportaIstogramma(TString file, TString istogramma){
   delete fileistogramma;
   
   return isto;
+}
+
+
+double Moda(TH1D *istogramma, double larghezza){
+	// Cerco la moda più a sinistra
+	int binDelMassimo = istogramma -> GetMaximumBin();
+	double moda = istogramma -> GetXaxis() -> GetBinCenter(binDelMassimo);
+	
+	// Controllo che non ci siano altri massimi a destra
+	int ultimobin = istogramma -> GetXaxis() -> GetLast();
+	istogramma -> GetXaxis() -> SetRange(binDelMassimo + 1, ultimobin);
+	int binDelMassimo2 = istogramma -> GetMaximumBin();
+	double moda2 = istogramma -> GetXaxis() -> GetBinCenter(binMaximum2);
+	
+	if(istogramma -> GetBinContent(binDelMassimo2) == istogramma -> GetBinContent(binDelMassimo)){
+		// Cerco il massimo migliore
+		if(fabs(moda - moda2) < larghezza){
+			double media = (moda + moda2)/2.;
+			return media;
+		}
+		else{
+			if(fabs(moda) <= fabs(moda2)){
+				return moda;
+			}
+			else{
+				return moda2;
+			}
+		}
+	}
+	else
+		return moda;
 }
 
 #endif
