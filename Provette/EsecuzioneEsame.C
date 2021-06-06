@@ -12,6 +12,7 @@
 #include "Rivelatore.h"
 #include "Albero.C"
 #include "Ricostruzione.C"
+#include "Analisi.C"
 #include "Colori.h"
 #endif
 
@@ -62,7 +63,7 @@ void EsecuzioneEsame(bool filegenerazione = kTRUE, bool filerumore = kTRUE){
   cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   tempoanalisi.Start(kTRUE);
   if(generazione && ricostruzione){
-    analisi = kTRUE;
+    analisi = Analisi(0.01, 0.5);
   }  
   tempoanalisi.Stop();
 
