@@ -78,7 +78,7 @@ double Moda(TH1D *istogramma, double larghezza){
 	int ultimobin = istogramma -> GetXaxis() -> GetLast();
 	istogramma -> GetXaxis() -> SetRange(binDelMassimo + 1, ultimobin);
 	int binDelMassimo2 = istogramma -> GetMaximumBin();
-	double moda2 = istogramma -> GetXaxis() -> GetBinCenter(binMaximum2);
+	double moda2 = istogramma -> GetXaxis() -> GetBinCenter(binDelMassimo2);
 	
 	if(istogramma -> GetBinContent(binDelMassimo2) == istogramma -> GetBinContent(binDelMassimo)){
 		// Cerco il massimo migliore
