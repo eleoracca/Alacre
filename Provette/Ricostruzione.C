@@ -151,7 +151,6 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
     
     // Smearing degli urti
     numeroMolteplicita = Smearing(UrtiRiv1Gen, UrtiRiv2Gen, PuntatoreRiv1Reco, PuntatoreRiv2Reco, detector);
-    rovere -> Fill();
     
     if(numeroMolteplicita != PuntatoreVertice -> GetMolteplicita()){
       cout << Azzurro("Il numero di urti ricostruiti sul secondo layer è diverso dalla molteplicità dell'evento.") << endl;
@@ -162,12 +161,10 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
     if(onoff && distribuzione == "gaussiana"){
       numeroRumore = RumoreGauss(parametro1, parametro2, PuntatoreRiv1Reco, PuntatoreRiv2Reco, detector);
       PuntatoreVertice -> SetRumore(numeroRumore);
-      rovere -> Fill();
     }
     else if(onoff && distribuzione == "fissa"){
       numeroRumore = RumoreFissa(parametro1, PuntatoreRiv1Reco, PuntatoreRiv2Reco, detector);
       PuntatoreVertice -> SetRumore(numeroRumore);
-      rovere -> Fill();
     }
     else if(onoff && distribuzione != "fissa" && distribuzione != "gaussiana"){
       cout << Avvertimento("Problema con la distribuzione del rumore") << endl;
