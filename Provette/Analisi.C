@@ -27,7 +27,7 @@ bool Analisi(const double sogliaPhi, const double larghezza){
   }
   //cout << "Prima di lettura ricostruzione";
 
-  // lettura ricostruzione
+  // Lettura ricostruzione
   fileRicostruzione -> cd();
   TTree *robinia = (TTree*) fileRicostruzione -> Get("rovere");
 
@@ -40,43 +40,12 @@ bool Analisi(const double sogliaPhi, const double larghezza){
   TBranch *Branch2LReco = robinia -> GetBranch("UrtiRivelatore2Reco");
   Branch2LReco -> SetAddress(&UrtiRiv2Reco);
 
-  // lettura generazione
+  // Lettura generazione
   fileGenerazione -> cd();
   TTree *ginko = (TTree*) fileGenerazione -> Get("gaggia");
   TBranch *BranchVGen = ginko -> GetBranch("Vertice");
 
-  // --------------- GRAFICI ---------------
-  // Grafico della risoluzione dell'apparato
-  // per ogni evento riempio un bin dell'istogramma
-  /*
-  cout << "************** Grafico Risoluzione **************" << endl;
-  TCanvas *cRisoluzioneApp = new TCanvas("cRisoluzioneApp","Risoluzione",200,10,600,400);
-  cRisoluzioneApp->SetFillColor(0);
-  cRisoluzioneApp->cd();
-  TH1I* hRisoluzioneApp = new TH1I("hRisoluzioneApp","Risoluzione", 200,-0.2,0.2); //non ricordo come funzionano
-  hRisoluzioneApp->SetTitle("Risoluzione");
-  hRisoluzioneApp->GetXaxis()->SetTitle("zGen - zReco [cm]");
-  hRisoluzioneApp->GetYaxis()->SetTitle("Conteggi");
-  hRisoluzioneApp->Draw("AP"); */
 
-  // Grafio della risoluzione in funzione di zGen
-  /*
-  cout << "************** Grafico Risoluzione vs zGen **************" << endl;
-  TCanvas *cRisoluzioneGen = new TCanvas("cRisoluzioneGen","Risoluzione vs zGen",200,10,600,400);
-  cRisoluzioneGen->SetFillColor(0);
-  cRisoluzioneGen->cd();
-  */
-  //TH1I* hRisoluzioneGen = new TH1I("hRisoluzioneGen","Risoluzione", 200,-0.2,0.2); //non ricordo come funzionano
-  //hRisoluzioneGen->SetTitle("Risoluzione");
-  //hRisoluzioneGen->GetXaxis()->SetTitle("zGen [cm]");
-  //hRisoluzioneGen->GetYaxis()->SetTitle("Conteggi");
-  //hRisoluzioneGen->Draw("AP");
-
-  // Grafico efficienza in funzione della molteplicità
-
-  
-  // Grafico risoluzione in funzione della molteplicità
-  // Grafico efficienza in funzione della molteplicità valutando 1sigma
   // Grafico conteggi per valutare moda del vertice z reco
   int neventi = robinia -> GetEntries();
   double zReco = -50;
@@ -104,12 +73,97 @@ bool Analisi(const double sogliaPhi, const double larghezza){
     }
     moda = Moda(hzReco[nev], larghezza);
     hzModa -> Fill(moda);
+
   }
 
   TCanvas* cModa = new TCanvas("cModa", "Coordinata del vertice ricostruito", 0, 0, 1280, 1024);
+  hzModa->GetXaxis()->SetTitle("zReco [cm]");
+  hzModa->GetYaxis()->SetTitle("Conteggi");
   hzModa -> Draw();
   cModa -> SaveAs(".pdf");
 
+
+  // --------------- GRAFICI ---------------
+  // Risoluzione dell'apparato: distanza minima per cui vengono riconosciuti due eventi vicini
+  // per ogni evento riempio un bin dell'istogramma
+  /*
+  cout << "************** Grafico Risoluzione **************" << endl;
+  TCanvas *cRisoluzioneApp = new TCanvas("cRisoluzioneApp","Risoluzione",0,0,1280,1024);
+  cRisoluzioneApp->SetFillColor(0);
+  cRisoluzioneApp->cd();
+  TH1D* hRisoluzioneApp = new TH1D("hRisoluzioneApp","Risoluzione", NBiNS,-27,27); //non ricordo come funzionano
+  hRisoluzioneApp->SetTitle("Risoluzione");
+  hRisoluzioneApp->GetXaxis()->SetTitle("zGen - zReco [cm]");
+  hRisoluzioneApp->GetYaxis()->SetTitle("Conteggi");
+  hRisoluzioneApp->Draw(); 
+  cRisoluzioneApp->SaveAs(".pdf");*/
+
+  // Grafico della risoluzione in funzione di zGen
+  /*
+  cout << "************** Grafico Risoluzione vs zGen **************" << endl;
+  TCanvas *cRisoluzioneGen = new TCanvas("cRisoluzioneGen","Risoluzione vs zGen",200,10,600,400);
+  cRisoluzioneGen->SetFillColor(0);
+  cRisoluzioneGen->cd();
+  
+  TH1I* hRisoluzioneGen = new TH1I("hRisoluzioneGen","Risoluzione vs zGen", 200,-0.2,0.2); //non ricordo come funzionano
+  hRisoluzioneGen->SetTitle("Risoluzione");
+  hRisoluzioneGen->GetXaxis()->SetTitle("zGen [cm]");
+  hRisoluzioneGen->GetYaxis()->SetTitle("Conteggi");
+  hRisoluzioneGen->Draw();
+  cRisoluzioneGen->SaveAs(".pdf");
+  */
+
+  // Grafico risoluzione in funzione della molteplicità
+
+   /*
+  cout << "************** Grafico Risoluzione vs Molteplicità **************" << endl;
+  TCanvas *cRisMolt = new TCanvas("cRisMolt","Risoluzione vs Molteplicità",200,10,600,400);
+  cRisMolt->SetFillColor(0);
+  cRisMolt->cd();
+  
+  TH1I* hRisMolt = new TH1I("hRisMolt","Risoluzione vs Molteplicità", 200,-0.2,0.2); //non ricordo come funzionano
+  hRisMolt->SetTitle("Risoluzione");
+  hRisMolt->GetXaxis()->SetTitle("# particelle");
+  hRisMolt->GetYaxis()->SetTitle("Risoluzione su z");
+
+  hRisMolt->Draw();
+  cRisMolt->SaveAs(".pdf");
+  */
+
+  //Efficienza: #particelle ricostruite/#particelle generate
+
+  // Grafico efficienza in funzione della molteplicità
+ /*
+  cout << "************** Grafico Efficienza vs Molteplicità **************" << endl;
+  TCanvas *cEffMolt = new TCanvas("cEffMolt","Efficienza vs Molteplicità",200,10,600,400);
+  cEffMolt->SetFillColor(0);
+  cEffMolt->cd();
+  
+  TH1D* hEffMolt = new TH1I("hEffMolt","Efficienza vs Molteplicità", 200,-0.2,0.2); //non ricordo come funzionano
+  hEffMolt->SetTitle("Risoluzione");
+  hEffMolt->GetXaxis()->SetTitle("# particelle generate");
+  hEffMolt->GetYaxis()->SetTitle("Efficienza");
+  hEffMolt->Draw();
+  cEffMolt->SaveAs(".pdf");
+  */
+
+  // Grafico efficienza in funzione della molteplicità valutando 1sigma
+   /*
+  cout << "************** Grafico Efficienza vs Molteplicità in 1 /sigma **************" << endl;
+  TCanvas *cEffMolt1S = new TCanvas("cEffMolt1S","Efficienza vs Molteplicità in 1 sigma",200,10,600,400);
+  cEffMolt1S->SetFillColor(0);
+  cEffMolt1S->cd();
+  
+  TH1I* hEffMolt1S = new TH1I("hEffMolt1S","Efficienza vs Molteplicità in 1 sigma", 200,-0.2,0.2); //non ricordo come funzionano
+  hEffMolt1S->SetTitle("Risoluzione");
+  hEffMolt1S->GetXaxis()->SetTitle("# particelle vicino al vertice");
+  hEffMolt1S->GetYaxis()->SetTitle("Efficienza");
+  hEffMolt1S->Draw();
+  cEffMolt1s->SaveAs(".pdf");
+  */
+
+
+ // Chiusura dei file e deallocazione della memoria
   fileRicostruzione -> Close();
   fileGenerazione -> Close();
   delete cModa;
@@ -118,6 +172,5 @@ bool Analisi(const double sogliaPhi, const double larghezza){
     delete hzReco[i];
   }
   */
-
   return kTRUE;
 }
