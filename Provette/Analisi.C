@@ -5,6 +5,7 @@
 #include "TMath.h"
 #include "Colori.h"
 #include "TString.h"
+#include "TEfficiency.h"
 
 #define NBINS 108
 
@@ -133,13 +134,14 @@ bool Analisi(const double sogliaPhi, const double larghezza){
   //Efficienza: #particelle ricostruite/#particelle generate
 
   // Grafico efficienza in funzione della molteplicità
- /*
+ 
   cout << "************** Grafico Efficienza vs Molteplicità **************" << endl;
   TCanvas *cEffMolt = new TCanvas("cEffMolt","Efficienza vs Molteplicità",200,10,600,400);
   cEffMolt->SetFillColor(0);
   cEffMolt->cd();
   
-  TH1D* hEffMolt = new TH1I("hEffMolt","Efficienza vs Molteplicità", 200,-0.2,0.2); //non ricordo come funzionano
+  //TEfficiency* hEffMolt = new TEfficiency("hEffMolt","Efficienza vs Molteplicità", 200,-0.2,0.2); //non ricordo come funzionano
+  /*
   hEffMolt->SetTitle("Risoluzione");
   hEffMolt->GetXaxis()->SetTitle("# particelle generate");
   hEffMolt->GetYaxis()->SetTitle("Efficienza");
