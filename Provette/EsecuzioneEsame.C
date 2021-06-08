@@ -63,7 +63,7 @@ void EsecuzioneEsame(bool filegenerazione = kTRUE, bool filerumore = kTRUE){
   cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   tempoanalisi.Start(kTRUE);
   if(generazione && ricostruzione){
-    analisi = Analisi(0.01, 0.5);
+    analisi = Analisi(0.01, 0.5, 100, detector);
   }  
   tempoanalisi.Stop();
 
