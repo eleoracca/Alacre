@@ -3,6 +3,7 @@
 #include "TH1D.h"
 #include "TCanvas.h"
 #include "TMath.h"
+#include "Rivelatore.h"
 #include "Colori.h"
 #include "TString.h"
 #include "TEfficiency.h"
@@ -12,13 +13,14 @@
 using namespace std;
 using namespace colore;
 
-bool Analisi(const double sogliaPhi, const double larghezza){
+bool Analisi(const double sogliaPhi, const double larghezza, const int maxMolteplicita, Rivelatore* detector){
 
   // --------------- RICOSTRUZIONE VERTICE---------------
 
   // funzioni per leggere i tree
   TFile *fileRicostruzione = new TFile("Output/Ricostruzione.root", "READ");
   TFile *fileGenerazione = new TFile("Output/Simulazione.root", "READ");
+  // File da passare per configurazione Analisi
 
   if(fileRicostruzione->IsZombie()){
     cout << Avvertimento("Problema nel leggere il file Simulazione.root \nLa ricostruzione si interrompe.") << endl;
@@ -45,6 +47,8 @@ bool Analisi(const double sogliaPhi, const double larghezza){
   fileGenerazione -> cd();
   TTree *ginko = (TTree*) fileGenerazione -> Get("gaggia");
   TBranch *BranchVGen = ginko -> GetBranch("Vertice");
+  Vertice* VerticeGen = new Vertice();
+  BranchVGen -> SetAddress(&VerticeGen); 
 
   // File di output Analisi
   TFile *fileAnalisi = new TFile("Output/Analisi.root", "RECREATE");
@@ -55,16 +59,21 @@ bool Analisi(const double sogliaPhi, const double larghezza){
 
   fileAnalisi->cd();
 
+  TH1D *hzDiff = new TH1D("hzDiff", "Differenza tra z generata e z ricostruita", NBINS);
+  TH1I *hMolTutti = new TH1I("hMolTutti", "Molteplicità di tutti gli eventi", maxMolteplicita, -0.5, 100.5); //Istogramma per raccogliere Molteplicità di tutti gli eventi
+  TH1I *hMolReco = new TH1I("hMolReco", "Molteplicità di tutti gli eventi ricostruiti", maxMolteplicita, -0.5, 100.5); //Istogramma per raccogliere Molteplicità di tutti gli eventi ricostruiti
+  TH1I *hMolReco1s = new TH1I("hMolReco1s", "Molteplicità degli eventi ricostruiti entro 1 dev std da z = 0", maxMolteplicita, -0.5, 100.5); //Istogramma per raccogliere Molteplicità di eventi ricostruiti entro 1 sigma dallo 0
+  TH1I *hMolReco3s = new TH1I("hMolReco3s", "Molteplicità degli eventi ricostruiti entro 3 dev std da z = 0", maxMolteplicita, -0.5, 100.5); //Istogramma per raccogliere Molteplicità di eventi ricostruiti entro 3 sigma dallo 0
+
   // Grafico conteggi per valutare moda del vertice z reco
   int neventi = robinia -> GetEntries();
-  double zReco = -50;
+  double zReco = -50.;
   TH1D *hzReco[neventi];
   TH1D *hzModa = new TH1D("hzModa", "Coordinata del vertice ricostruito", NBINS);
   Urto *u1, *u2;
-  double moda = -50;
+  double moda = -50.;
+  double zDiff = -50.;
 
-  TH1D *hzDiff = new TH1D("hzDiff", "Differenza tra z generata e z ricostruita", NBINS);
-  
   for(int nev = 0; nev < neventi; nev++) {
     hzReco[nev] = new TH1D(TString::Format("hzReco_%d", nev), TString::Format("Distribuzione coordinate z, evento %d", nev), NBINS);
     robinia -> GetEvent(nev);
@@ -85,18 +94,33 @@ bool Analisi(const double sogliaPhi, const double larghezza){
     }
     else if(moda != -600){
       hzModa -> Fill(moda);
+      zDiff = VerticeGen->GetZ() - moda;
+      hzDiff -> Fill(zDiff);
+      hMolReco -> Fill(VerticeGen->GetMolteplicita());
+
+      if(TMath::Abs(moda) < detector->GetVerticeSZ()){
+        hMolReco1s -> Fill(VerticeGen->GetMolteplicita());
+      }
+
+      if(TMath::Abs(moda) < 3*detector->GetVerticeSZ()){
+        hMolReco3s -> Fill(VerticeGen->GetMolteplicita());
+      }
     }
+
+    hMolTutti -> Fill(VerticeGen->GetMolteplicita());  
 
   }
 
+
+  // --------------- GRAFICI ---------------
+
+  // Grafico della moda per valutare z ricostruita
   TCanvas* cModa = new TCanvas("cModa", "Coordinata del vertice ricostruito", 0, 0, 1280, 1024);
   hzModa->GetXaxis()->SetTitle("zReco [cm]");
   hzModa->GetYaxis()->SetTitle("Conteggi");
   hzModa -> Draw();
-  cModa -> SaveAs(".pdf");
+  cModa -> SaveAs("Output/Z_Ricostruiti.pdf");
 
-
-  // --------------- GRAFICI ---------------
   // Risoluzione dell'apparato: distanza minima per cui vengono riconosciuti due eventi vicini
   // per ogni evento riempio un bin dell'istogramma
   /*
@@ -146,36 +170,45 @@ bool Analisi(const double sogliaPhi, const double larghezza){
   //Efficienza: #particelle ricostruite/#particelle generate
 
   // Grafico efficienza in funzione della molteplicità
- 
   cout << "************** Grafico Efficienza vs Molteplicità **************" << endl;
-  TCanvas *cEffMolt = new TCanvas("cEffMolt","Efficienza vs Molteplicità",200,10,600,400);
+  TCanvas *cEffMolt = new TCanvas("cEffMolt","Efficienza vs Molteplicità", 0, 0, 1280, 1024);
   cEffMolt->SetFillColor(0);
   cEffMolt->cd();
   
-  //TEfficiency* hEffMolt = new TEfficiency("hEffMolt","Efficienza vs Molteplicità", 200,-0.2,0.2); //non ricordo come funzionano
-  /*
-  hEffMolt->SetTitle("Risoluzione");
-  hEffMolt->GetXaxis()->SetTitle("# particelle generate");
-  hEffMolt->GetYaxis()->SetTitle("Efficienza");
+  TEfficiency* hEffMolt = new TEfficiency(*hMolReco, *hMolTutti);
+  hMolReco->SetTitle("Efficienza della ricostruzione");
+  hMolReco->GetXaxis()->SetTitle("Molteplicità");
+  hMolReco->GetYaxis()->SetTitle("#frac{eventi Ricostruiti}{eventi Generati}");
   hEffMolt->Draw();
-  cEffMolt->SaveAs(".pdf");
-  */
+  cEffMolt->SaveAs("Output/Efficienza_Molteplicita_Tot.pdf");
+  
 
   // Grafico efficienza in funzione della molteplicità valutando 1sigma
-   /*
   cout << "************** Grafico Efficienza vs Molteplicità in 1 /sigma **************" << endl;
-  TCanvas *cEffMolt1S = new TCanvas("cEffMolt1S","Efficienza vs Molteplicità in 1 sigma",200,10,600,400);
+  TCanvas *cEffMolt1S = new TCanvas("cEffMolt1S","Efficienza vs Molteplicità in 1 sigma", 0, 0, 1280, 1024);
   cEffMolt1S->SetFillColor(0);
   cEffMolt1S->cd();
   
-  TH1I* hEffMolt1S = new TH1I("hEffMolt1S","Efficienza vs Molteplicità in 1 sigma", 200,-0.2,0.2); //non ricordo come funzionano
-  hEffMolt1S->SetTitle("Risoluzione");
-  hEffMolt1S->GetXaxis()->SetTitle("# particelle vicino al vertice");
-  hEffMolt1S->GetYaxis()->SetTitle("Efficienza");
+  TEfficiency* hEffMolt1S = new TEfficiency(*hMolReco1s, *hMolTutti);
+  hMolReco1s->SetTitle("Efficienza della ricostruzione entro 1#sigma dal centro");
+  hMolReco1s->GetXaxis()->SetTitle("Molteplicità");
+  hMolReco1s->GetYaxis()->SetTitle("#frac{eventi Ricostruiti}{eventi Generati}");
   hEffMolt1S->Draw();
-  cEffMolt1s->SaveAs(".pdf");
-  */
-
+  cEffMolt1S->SaveAs("Output/Efficienza_Molteplicita_1s.pdf");
+  
+// Grafico efficienza in funzione della molteplicità valutando 3sigma
+  cout << "************** Grafico Efficienza vs Molteplicità in 3 /sigma **************" << endl;
+  TCanvas *cEffMolt3S = new TCanvas("cEffMolt3S","Efficienza vs Molteplicità in 3 sigma", 0, 0, 1280, 1024);
+  cEffMolt3S->SetFillColor(0);
+  cEffMolt3S->cd();
+  
+  TEfficiency* hEffMolt3S = new TEfficiency(*hMolReco3s, *hMolTutti);
+  hMolReco3s->SetTitle("Efficienza della ricostruzione entro 3#sigma dal centro");
+  hMolReco3s->GetXaxis()->SetTitle("Molteplicità");
+  hMolReco3s->GetYaxis()->SetTitle("#frac{eventi Ricostruiti}{eventi Generati}");
+  hEffMolt3S->Draw();
+  cEffMolt3S->SaveAs("Output/Efficienza_Molteplicita_3s.pdf");
+  
 
  // Chiusura dei file e deallocazione della memoria
   fileAnalisi -> Write();
