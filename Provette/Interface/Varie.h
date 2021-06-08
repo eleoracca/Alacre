@@ -8,11 +8,17 @@
   ~ Ultima modifica: 25/08/2018                             ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+#include "Riostream.h"
 #include "TFile.h"
 #include "TH1F.h"
 #include "TMath.h"
 #include "TRandom3.h"
 #include "TString.h"
+#include "Colori.h"
+
+using namespace std;
+using namespace colore;
+
 
 // ******************************************************************************
 // ************************ Dichiarazione delle funzioni ************************
@@ -73,11 +79,19 @@ double Moda(TH1D *istogramma, double larghezza){
 	// Cerco la moda più a sinistra
 	int binDelMassimo = istogramma -> GetMaximumBin();
 	double moda = istogramma -> GetXaxis() -> GetBinCenter(binDelMassimo);
-	
+
+	// Controllo che esista una moda
+	if(istogramma->GetBinContent(binDelMassimo)==0){
+		cout << Errore("Moda della coordinata z = 0") << endl;
+		return moda = -500;
+	}
+	else if(istogramma->GetBinContent(binDelMassimo)==1){
+		cout << Avvertimento("Moda della coordinata z = 1") << endl;
+		return moda = -600;
+	}
+
 	// Controllo che non ci siano altri massimi a destra
-	int ultimobin = istogramma -> GetXaxis() -> GetLast();
-	istogramma -> GetXaxis() -> SetRange(binDelMassimo + 1, ultimobin);
-	int binDelMassimo2 = istogramma -> GetMaximumBin();
+	int binDelMassimo2 = istogramma -> FindLastBinAbove(istogramma -> GetBinContent(binDelMassimo) - 1, 1, binDelMassimo +1, -1);
 	double moda2 = istogramma -> GetXaxis() -> GetBinCenter(binDelMassimo2);
 	
 	if(istogramma -> GetBinContent(binDelMassimo2) == istogramma -> GetBinContent(binDelMassimo)){
