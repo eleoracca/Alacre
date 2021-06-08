@@ -7,14 +7,16 @@
 #include "TString.h"
 #include "TEfficiency.h"
 
-#define NBINS 108
+#define NBINS 108, -27, 27
+
+using namespace std;
+using namespace colore;
 
 bool Analisi(const double sogliaPhi, const double larghezza){
 
   // --------------- RICOSTRUZIONE VERTICE---------------
 
   // funzioni per leggere i tree
-  //cout << "Prima di apertura file";
   TFile *fileRicostruzione = new TFile("Output/Ricostruzione.root", "READ");
   TFile *fileGenerazione = new TFile("Output/Simulazione.root", "READ");
 
@@ -26,7 +28,6 @@ bool Analisi(const double sogliaPhi, const double larghezza){
     cout << Avvertimento("Problema nel creare il file Ricostruzione.root \nLa ricostruzione si interrompe.") << endl;
     return kFALSE;
   }
-  //cout << "Prima di lettura ricostruzione";
 
   // Lettura ricostruzione
   fileRicostruzione -> cd();
@@ -34,9 +35,8 @@ bool Analisi(const double sogliaPhi, const double larghezza){
 
   TClonesArray *UrtiRiv1Reco = new TClonesArray("Urto", 100);
   TBranch *Branch1LReco = robinia -> GetBranch("UrtiRivelatore1Reco");
-  //cout << "Prima";
   Branch1LReco -> SetAddress(&UrtiRiv1Reco);
-  //cout << "Dopo";
+  
   TClonesArray *UrtiRiv2Reco = new TClonesArray("Urto", 100);
   TBranch *Branch2LReco = robinia -> GetBranch("UrtiRivelatore2Reco");
   Branch2LReco -> SetAddress(&UrtiRiv2Reco);
@@ -46,18 +46,27 @@ bool Analisi(const double sogliaPhi, const double larghezza){
   TTree *ginko = (TTree*) fileGenerazione -> Get("gaggia");
   TBranch *BranchVGen = ginko -> GetBranch("Vertice");
 
+  // File di output Analisi
+  TFile *fileAnalisi = new TFile("Output/Analisi.root", "RECREATE");
+  if(fileAnalisi->IsZombie()){
+    cout << Avvertimento("Problema nel creare il file Analisi.root. \nLa simulazione si interrompe.") << endl;
+    return kFALSE;
+  }
+
+  fileAnalisi->cd();
 
   // Grafico conteggi per valutare moda del vertice z reco
   int neventi = robinia -> GetEntries();
   double zReco = -50;
   TH1D *hzReco[neventi];
-  TH1D *hzModa = new TH1D("hzModa", "Coordinata del vertice ricostruito", NBINS, -27, 27);
+  TH1D *hzModa = new TH1D("hzModa", "Coordinata del vertice ricostruito", NBINS);
   Urto *u1, *u2;
   double moda = -50;
-  //cout << "Prima ciclo for eventi";
+
+  TH1D *hzDiff = new TH1D("hzDiff", "Differenza tra z generata e z ricostruita", NBINS);
+  
   for(int nev = 0; nev < neventi; nev++) {
-    //cout << "Creo hzReco" << nev;
-    hzReco[nev] = new TH1D(TString::Format("hzReco_%d", nev), TString::Format("Distribuzione coordinate z, evento %d", nev), NBINS, -27, 27);
+    hzReco[nev] = new TH1D(TString::Format("hzReco_%d", nev), TString::Format("Distribuzione coordinate z, evento %d", nev), NBINS);
     robinia -> GetEvent(nev);
     for(int i = 0; i < UrtiRiv1Reco -> GetEntries(); i++) {
       u1 = (Urto*) UrtiRiv1Reco -> At(i);
@@ -65,15 +74,18 @@ bool Analisi(const double sogliaPhi, const double larghezza){
         u2 = (Urto*) UrtiRiv2Reco -> At(j);
         zReco = -50;
         if(TMath::Abs(u1 -> GetPhi() - u2 -> GetPhi()) < sogliaPhi) {
-          //cout << "Prima di trovavertice";
           zReco = Vertice::TrovaVertice(u1, u2);
-          //cout << "Dopo trovavertice";
           hzReco[nev] -> Fill(zReco);
         }
       }
     }
     moda = Moda(hzReco[nev], larghezza);
-    hzModa -> Fill(moda);
+    if(moda == -500){
+      return kFALSE;
+    }
+    else if(moda != -600){
+      hzModa -> Fill(moda);
+    }
 
   }
 
@@ -166,8 +178,11 @@ bool Analisi(const double sogliaPhi, const double larghezza){
 
 
  // Chiusura dei file e deallocazione della memoria
+  fileAnalisi -> Write();
+  fileAnalisi -> Close();
   fileRicostruzione -> Close();
   fileGenerazione -> Close();
+
   delete cModa;
   /*
   for(int i = 0; i < neventi; i++) {
