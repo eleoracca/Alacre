@@ -150,7 +150,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
 
     // Generazione della molteplicit� dell'evento, ovvero il numero di particelle generato
     numeroparticelle = DecisioneMolteplicita(distmolteplicita, par1molteplicita, par2molteplicita, istogrammamolteplicita);
-    if(numeroparticelle <= 0) {
+    if(numeroparticelle <= 1) {
       cout << "Errato numero di particelle: " << numeroparticelle << endl;
       return kFALSE;
     }
@@ -348,23 +348,23 @@ int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &pa
   int numero = 0;
 
   if(distribuzione == "gaussiana"){
-    while(numero <= 0){
+    while(numero <= 1){
       numero = (int)(0.5 + gRandom->Gaus(parametro1, parametro2));
     }
   }
   else if(distribuzione == "uniforme"){
-    while(numero <= 0){
+    while(numero <= 1){
       numero = (int)(0.5 + gRandom->Uniform(parametro1, parametro2));
     }
   }
   else if(distribuzione == "istogramma"){
-    while(numero <= 0){      
+    while(numero <= 1){      
       numero = istogramma -> GetRandom();
     }
   }
   else if(distribuzione == "fissa"){
     numero = (int) parametro1;
-    if(numero <= 0){
+    if(numero <= 1){
       numero = -100;
     }
   }
