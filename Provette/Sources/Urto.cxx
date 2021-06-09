@@ -24,9 +24,9 @@ using namespace colore;
 ClassImp(Urto)
 
 // ------------- Costruttori --------------
-Urto::Urto(): Punto(0., 0., 0.){
-  dmNumLayer = 0.;
-  dmID = -2; // Si setta ID così perché il rumore avrà ID = -1 e tutte le particelle create nell'evento avranno ID >= 0
+Urto::Urto(): Punto(-100., -100., -100.){ // In questo modo non rischio di avere un urto vuoto al posto del vertice o del punto a zero
+  dmNumLayer = -2; // In questo modo non penso che sia sulla Beam Pipe
+  dmID = -2; // Il rumore ha ID = -1 e tutte le particelle create nell'evento hanno ID >= 0
   dmUrtoReale = kFALSE;
 }
 
@@ -55,14 +55,6 @@ Urto::Urto(double phi, double z, int NumLayer, Rivelatore *detector, int ID){
   dmID = ID;
   dmUrtoReale = kFALSE;
 }
-
-/*
-Urto::Urto(const Urto& urto) : Punto(urto.dmX, urto.dmY, urto.dmZ){
-  dmNumLayer = urto.dmNumLayer;
-  dmID = urto.dmID;
-  dmUrtoReale = urto.dmUrtoReale;
-}
-*/
 
 // ------------- Distruttori --------------
 Urto::~Urto()
