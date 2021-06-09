@@ -54,7 +54,7 @@ Rivelatore::Rivelatore(TString Configurazione): TObject(){
   
   dmEtaMinimo = -1.;
   dmEtaMassimo = 1.;
-  dmPhiLimite = 0.005;
+  dmPhiLimite = -100;
 
   TString commento;
   
@@ -62,8 +62,9 @@ Rivelatore::Rivelatore(TString Configurazione): TObject(){
   if(!in){
     cout << "!! File di configurazione del rivelatore on trovato !!\nLa simulazione termina ora." << endl;
     return;
-  }  
-  in >> commento >> dmSmearingZ >> dmSmearingRPhi >> dmXVertice >> dmXVerticeSigma >> dmYVertice >> dmYVerticeSigma >> dmZVertice >> dmZVerticeSigma >> dmEnergia;
+  }
+  
+  in >> commento >> dmSmearingZ >> dmSmearingRPhi >> dmXVertice >> dmXVerticeSigma >> dmYVertice >> dmYVerticeSigma >> dmZVertice >> dmZVerticeSigma >> dmEnergia >> dmPhiLimite;
   in.close();
 }
 
