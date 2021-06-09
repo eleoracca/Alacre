@@ -1,4 +1,4 @@
-//SmearingZ,SmearingRPhi,VertX,VertSigmaX,VertY,VertSigmaY,VertZ,VertSigmaZ
+//SmearingZ,SmearingRPhi,VertX,VertSigmaX,VertY,VertSigmaY,VertZ,VertSigmaZ,Energia,PhiMax
 0.0120
 0.003
 0.
@@ -7,3 +7,5 @@
 0.01
 0.
 5.3
+800.
+0.01

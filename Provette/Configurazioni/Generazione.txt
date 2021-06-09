@@ -1,7 +1,9 @@
 //numeroeventi,distmolteplicita,par1molteplicita,par2molteplicita,multiplescattering,disteta
 1000
 fissa
-5.
+15.
 0.
 0
 0
+1.5
+-1.5
