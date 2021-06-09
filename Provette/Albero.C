@@ -86,22 +86,23 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
   }
   
   // File di output per i dati generati dal Monte Carlo
-  //gSystem->Exec("mkdir Output");
   TFile *fileoutput = new TFile("Output/Simulazione.root", "RECREATE");
   if(fileoutput->IsZombie()){
     cout << Avvertimento("Problema nel creare il file Simulazione.root. \nLa simulazione si interrompe.") << endl;
     return kFALSE;
   }
   
-  // ----------------------------------------------------------------------------
   fileoutput -> cd();
-
+  
+  // ----------------------------------------------------------------------------
+  
   // Tree della simulazione
   TTree *gaggia = new TTree("gaggia", "Tree della simulazione");
 
   // Vertice della collisione e direzione
   Vertice *PuntatoreVertice = new Vertice();
-  Vertice& IndPuntVertice = *PuntatoreVertice;  
+  Vertice& IndPuntVertice = *PuntatoreVertice;
+  
   Trasporto *PuntatoreDirezione = new Trasporto();
   Trasporto& IndPuntDirezione = *PuntatoreDirezione;
 
@@ -127,6 +128,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
   gaggia -> Branch("UrtiRivelatore2", &PuntatoreRiv2);
 
   // ----------------------------------------------------------------------------
+  
   // Dichiarazione della molteplicit� ed eventuale caricamento della distribuzione da istogramma
   int numeroparticelle = 0;
   TH1F *istogrammamolteplicita = new TH1F();
@@ -145,6 +147,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
   }
 
   // ----------------------------------------------------------------------------
+
   // Loop sugli eventi per creare i dati della simulazione
   for(int i = 0; i < (int)numeroeventi; i++){
 
@@ -154,6 +157,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
       cout << "Errato numero di particelle: " << numeroparticelle << endl;
       return kFALSE;
     }
+    
     // Generazione del vertice dell'evento, rms in centimetri
     PuntatoreVertice = new Vertice(detector, numeroparticelle);
     
@@ -169,7 +173,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
       UrtoBP = Urto::UrtodaVertice(PuntatoreVertice, PuntatoreDirezione, detector->GetRaggioBP(), j, 0);
       UrtoBP.SetUrtoReale();
       
-      // Generazione dell'urto sul primo strato
+      // Generazione dell'urto sul primo strato e multiple scattering
       Urto1L = UrtoBP.UrtodaUrto(PuntatoreDirezione, detector, multiplescattering, 1);
       Urto1L.SetUrtoReale();
       
@@ -177,7 +181,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
         PuntatoreDirezione->FlipBit();
       }
       
-      // Generazione dell'urto sul secondo strato
+      // Generazione dell'urto sul secondo strato e multiple scattering
       Urto2L = Urto1L.UrtodaUrto(PuntatoreDirezione, detector, multiplescattering, 2);
       Urto2L.SetUrtoReale();
       
@@ -187,7 +191,10 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
       new(IndPuntRiv2[j]) Urto(Urto2L);
     }
 
+    cout << "Molteplicita vertice: " << PuntatoreVertice->GetMolteplicita() << endl;
+
   // ----------------------------------------------------------------------------
+    
     // Si riempie il tree e si cancellano gli array per il nuovo ciclo
     gaggia -> Fill();
     PuntatoreVertice -> Clear();
@@ -243,8 +250,8 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
   }
   else{
     cout << "uniforme" << endl;
-    cout << "  - Minimo:                            -2" << endl;
-    cout << "  - Massimo:                            2" << endl;
+    cout << "  - Minimo:                            -1" << endl;
+    cout << "  - Massimo:                            1" << endl;
   }
   
   cout << "+ Scattering multiplo:                 " << scattering << endl;
@@ -257,25 +264,25 @@ bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
   
   cout << "-------------- " << Arancione("Parametri per la generazione degli eventi") << " ---------------" << endl;
   cout << "Inserire i parametri per la simulazione della generazione" << endl;
-  cout << "+ Numero di eventi:                    ";
+  cout << "+ Numero di eventi:                                         ";
   cin >> numeroeventi;
-  cout << endl << "+ Distribuzione della molteplicita:    ";
+  cout << endl << "+ Distribuzione della molteplicita:                         ";
   cin >> distmolteplicita;
   
   if(distmolteplicita == "gaussiana"){
-    cout << endl << "  - Media:                             ";
+    cout << endl << "  - Media:                                                  ";
     cin >> par1molteplicita;
-    cout << endl << "  - Deviazione standard:               ";
+    cout << endl << "  - Deviazione standard:                                    ";
     cin >> par2molteplicita;
   }
   else if(distmolteplicita == "uniforme"){
-    cout << endl << "  - Minimo:                            ";
+    cout << endl << "  - Minimo:                                                 ";
     cin >> par1molteplicita;
-    cout << endl << "  - Massimo:                           ";
+    cout << endl << "  - Massimo:                                                ";
     cin >> par2molteplicita;
   }
   else if(distmolteplicita == "fissa"){
-    cout << endl << "  - Valore:                            ";
+    cout << endl << "  - Valore:                                                 ";
     cin >> par1molteplicita;
   }
   else{
@@ -284,19 +291,19 @@ bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
     cin >> distmolteplicita;
     
     if(distmolteplicita == "gaussiana"){
-      cout << endl << "  - Media:                            ";
+      cout << endl << "  - Media:                                                 ";
       cin >> par1molteplicita;
-      cout << endl << "  - Deviazione standard:              ";
+      cout << endl << "  - Deviazione standard:                                   ";
       cin >> par2molteplicita;
     }
     else if(distmolteplicita == "uniforme"){
-      cout << endl << "  - Minimo:                           ";
+      cout << endl << "  - Minimo:                                                ";
       cin >> par1molteplicita;
-      cout << endl << "  - Massimo:                          ";
+      cout << endl << "  - Massimo:                                               ";
       cin >> par2molteplicita;
     }
     else if(distmolteplicita == "fissa"){
-      cout << endl << "  - Valore:                           ";
+      cout << endl << "  - Valore:                                                ";
       cin >> par1molteplicita;
     }
     else{
@@ -305,7 +312,7 @@ bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
     }
   }
   
-  cout << endl << "+ Distribuzione della pseudorapidita:  ";
+  cout << endl << "+ Distribuzione della pseudorapidita (1 per s\u00ec, 0 per no):  ";
   cin >> disteta;
   
   if(disteta){
@@ -313,11 +320,11 @@ bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
   }
   else{
     cout << "uniforme" << endl;
-    cout << "  - Minimo:                              -2" << endl;
-    cout << "  - Massimo:                              2" << endl;
+    cout << "  - Minimo:                              -1" << endl;
+    cout << "  - Massimo:                              1" << endl;
   }
   
-  cout << endl << "+ Scattering multiplo:                 ";
+  cout << endl << "+ Scattering multiplo (acceso o spento):                    ";
   cin >> scattering;
   if(scattering == "acceso"){
     multiplescattering = kTRUE;

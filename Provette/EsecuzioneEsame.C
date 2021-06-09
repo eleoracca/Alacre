@@ -33,6 +33,12 @@ void EsecuzioneEsame(bool filegenerazione = kTRUE, bool filerumore = kTRUE){
 
   // Rivelatore per la generazione e la ricostruzione
   Rivelatore *detector = new Rivelatore("Configurazioni/Rivelatore.txt");
+
+  // Controllo che il rivelatore sia stato creato correttamente
+  if(detector -> GetPhiLimite() == -100){
+    cout << Errore("Errore con la costruzione del rivelatore. \nLa simulazione si interrompe.") << endl;
+    return;
+  }
   
   // Booleani
   bool generazione = kFALSE;
@@ -63,7 +69,7 @@ void EsecuzioneEsame(bool filegenerazione = kTRUE, bool filerumore = kTRUE){
   cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   tempoanalisi.Start(kTRUE);
   if(generazione && ricostruzione){
-    analisi = Analisi(0.01, 0.5, 100, detector);
+    analisi = Analisi(0.5, 100, detector);
   }  
   tempoanalisi.Stop();
 

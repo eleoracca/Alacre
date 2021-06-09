@@ -8,31 +8,50 @@
 #include "TString.h"
 #include "TEfficiency.h"
 
+#include "Colori.h"
+#include "Punto.h"
+#include "Rivelatore.h"
+#include "Trasporto.h"
+#include "Urto.h"
+#include "Varie.h"
+#include "Vertice.h"
+
 #define NBINS 108, -27, 27
 
 using namespace std;
 using namespace colore;
 
-bool Analisi(const double sogliaPhi, const double larghezza, const int maxMolteplicita, Rivelatore* detector){
-
-  // --------------- RICOSTRUZIONE VERTICE---------------
-
-  // funzioni per leggere i tree
-  TFile *fileRicostruzione = new TFile("Output/Ricostruzione.root", "READ");
+bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* detector){
+  
+  // ----------------------------------------------------------------------------
+  // Lettura della generazione del vertice
   TFile *fileGenerazione = new TFile("Output/Simulazione.root", "READ");
-  // File da passare per configurazione Analisi
-
-  if(fileRicostruzione->IsZombie()){
-    cout << Avvertimento("Problema nel leggere il file Simulazione.root \nLa ricostruzione si interrompe.") << endl;
-    return kFALSE;
-  }
+  
   if(fileGenerazione->IsZombie()){
     cout << Avvertimento("Problema nel creare il file Ricostruzione.root \nLa ricostruzione si interrompe.") << endl;
     return kFALSE;
   }
+  
+  fileGenerazione -> cd();
+  TTree *ginko = (TTree*) fileGenerazione -> Get("gaggia");
+  int eventi = ginko -> GetEntries();
+  
+  Vertice *PuntatoreVertice = new Vertice();
+  TBranch *BranchVGen = ginko -> GetBranch("Vertice");
+  BranchVGen -> SetAddress(&PuntatoreVertice);
 
-  // Lettura ricostruzione
+  
+  // ----------------------------------------------------------------------------
+  // Lettura della ricostruzione degli urti sui layer
+  TFile *fileRicostruzione = new TFile("Output/Ricostruzione.root", "READ");
+  
+  if(fileRicostruzione->IsZombie()){
+    cout << Avvertimento("Problema nel leggere il file Simulazione.root \nLa ricostruzione si interrompe.") << endl;
+    return kFALSE;
+  }
+  
   fileRicostruzione -> cd();
+
   TTree *robinia = (TTree*) fileRicostruzione -> Get("rovere");
 
   TClonesArray *UrtiRiv1Reco = new TClonesArray("Urto", 100);
@@ -42,14 +61,11 @@ bool Analisi(const double sogliaPhi, const double larghezza, const int maxMoltep
   TClonesArray *UrtiRiv2Reco = new TClonesArray("Urto", 100);
   TBranch *Branch2LReco = robinia -> GetBranch("UrtiRivelatore2Reco");
   Branch2LReco -> SetAddress(&UrtiRiv2Reco);
+  
 
-  // Lettura generazione
-  fileGenerazione -> cd();
-  TTree *ginko = (TTree*) fileGenerazione -> Get("gaggia");
-  TBranch *BranchVGen = ginko -> GetBranch("Vertice");
-  Vertice* VerticeGen = new Vertice();
-  BranchVGen -> SetAddress(&VerticeGen); 
-
+  // ----------------------------------------------------------------------------
+  // Lettura della configurazione per l'analisi
+  
   // File di output Analisi
   TFile *fileAnalisi = new TFile("Output/Analisi.root", "RECREATE");
   if(fileAnalisi->IsZombie()){
@@ -59,61 +75,76 @@ bool Analisi(const double sogliaPhi, const double larghezza, const int maxMoltep
 
   fileAnalisi->cd();
 
+  
+  // ----------------------------------------------------------------------------
+  // Inizializzazione di istogrammi e variabili utili
   TH1D *hzDiff = new TH1D("hzDiff", "Differenza tra z generata e z ricostruita", NBINS);
-  TH1I *hMolTutti = new TH1I("hMolTutti", "Molteplicità di tutti gli eventi", maxMolteplicita, -0.5, 100.5); //Istogramma per raccogliere Molteplicità di tutti gli eventi
-  TH1I *hMolReco = new TH1I("hMolReco", "Molteplicità di tutti gli eventi ricostruiti", maxMolteplicita, -0.5, 100.5); //Istogramma per raccogliere Molteplicità di tutti gli eventi ricostruiti
-  TH1I *hMolReco1s = new TH1I("hMolReco1s", "Molteplicità degli eventi ricostruiti entro 1 dev std da z = 0", maxMolteplicita, -0.5, 100.5); //Istogramma per raccogliere Molteplicità di eventi ricostruiti entro 1 sigma dallo 0
-  TH1I *hMolReco3s = new TH1I("hMolReco3s", "Molteplicità degli eventi ricostruiti entro 3 dev std da z = 0", maxMolteplicita, -0.5, 100.5); //Istogramma per raccogliere Molteplicità di eventi ricostruiti entro 3 sigma dallo 0
+  TH1I *hMolTutti = new TH1I("hMolTutti", "Molteplicità di tutti gli eventi", maxMolteplicita, -0.5, (float)maxMolteplicita + .5); //Istogramma per raccogliere Molteplicità di tutti gli eventi
+  TH1I *hMolReco = new TH1I("hMolReco", "Molteplicità di tutti gli eventi ricostruiti", maxMolteplicita, -0.5, (float)maxMolteplicita + .5); //Istogramma per raccogliere Molteplicità di tutti gli eventi ricostruiti
+  TH1I *hMolReco1s = new TH1I("hMolReco1s", "Molteplicità degli eventi ricostruiti entro 1 dev std da z = 0", maxMolteplicita, -0.5, (float)maxMolteplicita + .5); //Istogramma per raccogliere Molteplicità di eventi ricostruiti entro 1 sigma dallo 0
+  TH1I *hMolReco3s = new TH1I("hMolReco3s", "Molteplicità degli eventi ricostruiti entro 3 dev std da z = 0", maxMolteplicita, -0.5, (float)maxMolteplicita + .5); //Istogramma per raccogliere Molteplicità di eventi ricostruiti entro 3 sigma dallo 0
 
   // Grafico conteggi per valutare moda del vertice z reco
-  int neventi = robinia -> GetEntries();
   double zReco = -50.;
-  TH1D *hzReco[neventi];
+  TH1D *hzReco[eventi];
   TH1D *hzModa = new TH1D("hzModa", "Coordinata del vertice ricostruito", NBINS);
-  Urto *u1, *u2;
+  Urto *u1 = NULL;
+  Urto *u2 = NULL;
   double moda = -50.;
   double zDiff = -50.;
 
-  for(int nev = 0; nev < neventi; nev++) {
-    hzReco[nev] = new TH1D(TString::Format("hzReco_%d", nev), TString::Format("Distribuzione coordinate z, evento %d", nev), NBINS);
-    robinia -> GetEvent(nev);
+
+  
+  // ----------------------------------------------------------------------------
+  // -------------------------- RICOSTRUZIONE VERTICE ---------------------------
+  // ----------------------------------------------------------------------------
+  
+  for(int ev = 0; ev < eventi; ev++) {
+    hzReco[ev] = new TH1D(TString::Format("hzReco_%d", ev), TString::Format("Distribuzione coordinate z, evento %d", ev), NBINS);
+    ginko -> GetEvent(ev);
+    robinia -> GetEvent(ev);
+    
     for(int i = 0; i < UrtiRiv1Reco -> GetEntries(); i++) {
       u1 = (Urto*) UrtiRiv1Reco -> At(i);
       for(int j = 0; j < UrtiRiv2Reco -> GetEntries(); j++) {
         u2 = (Urto*) UrtiRiv2Reco -> At(j);
         zReco = -50;
-        if(TMath::Abs(u1 -> GetPhi() - u2 -> GetPhi()) < sogliaPhi) {
+        if(TMath::Abs(u1 -> GetPhi() - u2 -> GetPhi()) < detector->GetPhiLimite()) {
           zReco = Vertice::TrovaVertice(u1, u2);
-          hzReco[nev] -> Fill(zReco);
+          hzReco[ev] -> Fill(zReco);
         }
       }
     }
-    moda = Moda(hzReco[nev], larghezza);
+    
+    moda = Moda(hzReco[ev], larghezza);
     if(moda == -500){
       return kFALSE;
     }
     else if(moda != -600){
       hzModa -> Fill(moda);
-      zDiff = VerticeGen->GetZ() - moda;
+      zDiff = PuntatoreVertice->GetZ() - moda;
       hzDiff -> Fill(zDiff);
-      hMolReco -> Fill(VerticeGen->GetMolteplicita());
+      hMolReco -> Fill(PuntatoreVertice->GetMolteplicita());
 
       if(TMath::Abs(moda) < detector->GetVerticeSZ()){
-        hMolReco1s -> Fill(VerticeGen->GetMolteplicita());
+        hMolReco1s -> Fill(PuntatoreVertice->GetMolteplicita());
       }
 
       if(TMath::Abs(moda) < 3*detector->GetVerticeSZ()){
-        hMolReco3s -> Fill(VerticeGen->GetMolteplicita());
+        hMolReco3s -> Fill(PuntatoreVertice->GetMolteplicita());
       }
     }
 
-    hMolTutti -> Fill(VerticeGen->GetMolteplicita());  
-
+    hMolTutti -> Fill(PuntatoreVertice->GetMolteplicita());  
+    
   }
 
 
-  // --------------- GRAFICI ---------------
-
+  
+  // ----------------------------------------------------------------------------
+  // --------------------------------- GRAFICI ----------------------------------
+  // ----------------------------------------------------------------------------
+  
   // Grafico della moda per valutare z ricostruita
   TCanvas* cModa = new TCanvas("cModa", "Coordinata del vertice ricostruito", 0, 0, 1280, 1024);
   hzModa->GetXaxis()->SetTitle("zReco [cm]");
@@ -152,7 +183,7 @@ bool Analisi(const double sogliaPhi, const double larghezza, const int maxMoltep
 
   // Grafico risoluzione in funzione della molteplicità
 
-   /*
+  /*
   cout << "************** Grafico Risoluzione vs Molteplicità **************" << endl;
   TCanvas *cRisMolt = new TCanvas("cRisMolt","Risoluzione vs Molteplicità",200,10,600,400);
   cRisMolt->SetFillColor(0);
@@ -168,7 +199,7 @@ bool Analisi(const double sogliaPhi, const double larghezza, const int maxMoltep
   */
 
   //Efficienza: #particelle ricostruite/#particelle generate
-
+  
   // Grafico efficienza in funzione della molteplicità
   cout << "************** Grafico Efficienza vs Molteplicità **************" << endl;
   TCanvas *cEffMolt = new TCanvas("cEffMolt","Efficienza vs Molteplicità", 0, 0, 1280, 1024);
@@ -218,7 +249,7 @@ bool Analisi(const double sogliaPhi, const double larghezza, const int maxMoltep
 
   delete cModa;
   /*
-  for(int i = 0; i < neventi; i++) {
+  for(int i = 0; i < eventi; i++) {
     delete hzReco[i];
   }
   */
