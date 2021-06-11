@@ -16,6 +16,7 @@
 #include "TString.h"
 #include "TFile.h"
 #include "TEfficiency.h"
+#include "TGraphErrors.h"
 
 #include "Colori.h"
 #include "Punto.h"
@@ -102,7 +103,19 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   double moda = -50.;
   double zDiff = -50.;
 
+  // Inizializzazione vettori per TGraphErrors per la risoluzione
 
+  double vMolt[eventi];
+  double vsMolt[eventi];
+  double vSz[eventi];
+  double vsSz[eventi];
+  for(int i = 0; i < eventi; i++){
+    vMolt[i] = 0;
+    vsMolt[i] = 0;
+    vSz[i] = 0.;
+    vsSz[i] = 0.;
+  }
+  
   
   // ----------------------------------------------------------------------------
   // -------------------------- RICOSTRUZIONE VERTICE ---------------------------
@@ -112,6 +125,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
     hzReco[ev] = new TH1D(TString::Format("hzReco_%d", ev), TString::Format("Distribuzione coordinate z, evento %d", ev), NBINS);
     ginko -> GetEvent(ev);
     robinia -> GetEvent(ev);
+    vMolt[ev] = PuntatoreVertice->GetMolteplicita();
     
     for(int i = 0; i < UrtiRiv1Reco -> GetEntries(); i++) {
       u1 = (Urto*) UrtiRiv1Reco -> At(i);
@@ -144,12 +158,13 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
       }
     }
 
-    hMolTutti -> Fill(PuntatoreVertice->GetMolteplicita());  
+    hMolTutti -> Fill(PuntatoreVertice->GetMolteplicita());
     
+    vSz[ev] = hzReco[ev]->GetStdDev();
+    vsSz[ev] = hzReco[ev]->GetStdDevError();
   }
 
 
-  
   // ----------------------------------------------------------------------------
   // --------------------------------- GRAFICI ----------------------------------
   // ----------------------------------------------------------------------------
@@ -161,19 +176,23 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   hzModa -> Draw();
   cModa -> SaveAs("Output/Z_Ricostruiti.pdf");
 
+
   // Risoluzione dell'apparato: distanza minima per cui vengono riconosciuti due eventi vicini
   // per ogni evento riempio un bin dell'istogramma
-  /*
-  cout << "************** Grafico Risoluzione **************" << endl;
-  TCanvas *cRisoluzioneApp = new TCanvas("cRisoluzioneApp","Risoluzione",0,0,1280,1024);
-  cRisoluzioneApp->SetFillColor(0);
-  cRisoluzioneApp->cd();
-  TH1D* hRisoluzioneApp = new TH1D("hRisoluzioneApp","Risoluzione", NBiNS,-27,27); //non ricordo come funzionano
-  hRisoluzioneApp->SetTitle("Risoluzione");
-  hRisoluzioneApp->GetXaxis()->SetTitle("zGen - zReco [cm]");
-  hRisoluzioneApp->GetYaxis()->SetTitle("Conteggi");
-  hRisoluzioneApp->Draw(); 
-  cRisoluzioneApp->SaveAs(".pdf");*/
+
+  // Grafico risoluzione in funzione della molteplicità
+  
+  cout << "************** Grafico Risoluzione vs Molteplicita **************" << endl;
+  TCanvas *cRisMolt = new TCanvas("cRisMolt","Ris vs Molt",0,0,1280,1024);
+  cRisMolt->SetFillColor(0);
+  cRisMolt->cd();
+
+  TGraphErrors *gRisMolt = new TGraphErrors(eventi,vMolt,vsMolt,vSz,vsSz);
+  gRisMolt->SetTitle("Risoluzione");
+  gRisMolt->GetXaxis()->SetTitle("Molteplicita");
+  gRisMolt->GetYaxis()->SetTitle("Risoluzione [cm]");
+  gRisMolt->Draw(); 
+  cRisMolt->SaveAs("Output/Ris_vs_Molt.pdf");
 
   // Grafico della risoluzione in funzione di zGen
   /*
@@ -182,7 +201,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   cRisoluzioneGen->SetFillColor(0);
   cRisoluzioneGen->cd();
   
-  TH1I* hRisoluzioneGen = new TH1I("hRisoluzioneGen","Risoluzione vs zGen", 200,-0.2,0.2); //non ricordo come funzionano
+  TH1I* hRisoluzioneGen = new TH1I("hRisoluzioneGen","Risoluzione vs zGen", 200,-0.2,j.2); //non ricordo come funzionano
   hRisoluzioneGen->SetTitle("Risoluzione");
   hRisoluzioneGen->GetXaxis()->SetTitle("zGen [cm]");
   hRisoluzioneGen->GetYaxis()->SetTitle("Conteggi");
@@ -190,22 +209,6 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   cRisoluzioneGen->SaveAs(".pdf");
   */
 
-  // Grafico risoluzione in funzione della molteplicità
-
-  /*
-  cout << "************** Grafico Risoluzione vs Molteplicità **************" << endl;
-  TCanvas *cRisMolt = new TCanvas("cRisMolt","Risoluzione vs Molteplicità",200,10,600,400);
-  cRisMolt->SetFillColor(0);
-  cRisMolt->cd();
-  
-  TH1I* hRisMolt = new TH1I("hRisMolt","Risoluzione vs Molteplicità", 200,-0.2,0.2); //non ricordo come funzionano
-  hRisMolt->SetTitle("Risoluzione");
-  hRisMolt->GetXaxis()->SetTitle("# particelle");
-  hRisMolt->GetYaxis()->SetTitle("Risoluzione su z");
-
-  hRisMolt->Draw();
-  cRisMolt->SaveAs(".pdf");
-  */
 
   //Efficienza: #particelle ricostruite/#particelle generate
   
