@@ -264,8 +264,10 @@ bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
   
   cout << "-------------- " << Arancione("Parametri per la generazione degli eventi") << " ---------------" << endl;
   cout << "Inserire i parametri per la simulazione della generazione" << endl;
+  cout << "Inserire un numero intero maggiore di zero" << endl;
   cout << "+ Numero di eventi:                                         ";
   cin >> numeroeventi;
+  cout << endl << "Inserire la distribuzione di molteplicita. Distribuzioni tra cui scegliere: gaussiana / uniforme / fissa";
   cout << endl << "+ Distribuzione della molteplicita:                         ";
   cin >> distmolteplicita;
   
