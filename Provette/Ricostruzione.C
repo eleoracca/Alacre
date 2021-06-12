@@ -88,7 +88,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
 
   // ----------------------------------------------------------------------------
   // File della simulazione e della ricostruzione
-  TFile *fileinput = new TFile("Output/Simulazione.root", "UPDATE");
+  TFile *fileinput = new TFile("Output/Simulazione.root", "READ");
   TFile *fileoutput = new TFile("Output/Ricostruzione.root", "RECREATE");
 
   if(fileinput->IsZombie()){
@@ -132,6 +132,10 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
   // Tree della ricostruzione
   TTree *rovere = new TTree("rovere", "Tree della ricostruzione");
 
+  // Numero di rumore - ricostruzione
+  TClonseArray *PuntatoreRumore = new TClonesArray("int[2]", 100);
+  TClonesArray& IndPuntRumore = *PuntatoreRumore;
+
   // Urti sul primo rivelatore - ricostruzione
   TClonesArray *PuntatoreRiv1Reco = new TClonesArray("Urto", 100);
   TClonesArray& IndPuntRiv1Reco = *PuntatoreRiv1Reco;
@@ -141,6 +145,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
   TClonesArray& IndPuntRiv2Reco = *PuntatoreRiv2Reco;
 
   // Dichiariamo i branch del tree
+  rovere -> Branch("NumeroRumore", &PuntatoreRumore);
   rovere -> Branch("UrtiRivelatore1Reco", &PuntatoreRiv1Reco);
   rovere -> Branch("UrtiRivelatore2Reco", &PuntatoreRiv2Reco);
 
@@ -153,18 +158,16 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
     numeroMolteplicita = Smearing(UrtiRiv1Gen, UrtiRiv2Gen, PuntatoreRiv1Reco, PuntatoreRiv2Reco, detector);
     
     if(numeroMolteplicita != PuntatoreVertice -> GetMolteplicita()){
-      cout << Azzurro("Il numero di urti ricostruiti sul secondo layer è diverso dalla molteplicità dell'evento.") << endl;
-      cout << "Molteplicità = " << PuntatoreVertice -> GetMolteplicita() << "\t Numero urti = " << numeroMolteplicita << endl;
+      //cout << Azzurro("Il numero di urti ricostruiti sul secondo layer è diverso dalla molteplicità dell'evento.") << endl;
+      //cout << "Molteplicità = " << PuntatoreVertice -> GetMolteplicita() << "\t Numero urti = " << numeroMolteplicita << endl;
     }
 
     // Aggiunta del rumore
     if(onoff && distribuzione == "gaussiana"){
       numeroRumore = RumoreGauss(parametro1, parametro2, PuntatoreRiv1Reco, PuntatoreRiv2Reco, detector);
-      PuntatoreVertice -> SetRumore(numeroRumore);
     }
     else if(onoff && distribuzione == "fissa"){
       numeroRumore = RumoreFissa(parametro1, PuntatoreRiv1Reco, PuntatoreRiv2Reco, detector);
-      PuntatoreVertice -> SetRumore(numeroRumore);
     }
     else if(onoff && distribuzione != "fissa" && distribuzione != "gaussiana"){
       cout << Avvertimento("Problema con la distribuzione del rumore") << endl;
@@ -173,6 +176,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
 
     // Si riempie di nuovo per sicurezza il tree e si cancellano gli array per il nuovo ciclo
     rovere -> Fill();
+    gelso -> Fill();
     UrtiRiv1Gen -> Clear();
     UrtiRiv2Gen -> Clear();
     PuntatoreRiv1Reco -> Clear();
@@ -302,6 +306,7 @@ int RumoreGauss(const double &media, const double &deviazionestandard, TClonesAr
 
   int numeroRumore1 = gRandom->Gaus(media, deviazionestandard);
   int numeroRumore2 = gRandom->Gaus(media, deviazionestandard);
+  int numeroRumore = 0;
   Urto* rumore = NULL;
   double phi = 0.;
   double z = 0.;
@@ -324,7 +329,9 @@ int RumoreGauss(const double &media, const double &deviazionestandard, TClonesAr
     v += 1;
   }
 
-  return numeroRumore1 + numeroRumore2;
+  numeroRumore = numeroRumore1 + numeroRumore2;
+
+  return numeroRumore;
 }
 
 

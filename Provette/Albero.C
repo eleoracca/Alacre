@@ -191,9 +191,11 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
       new(IndPuntRiv2[j]) Urto(Urto2L);
     }
 
-    cout << "Molteplicita vertice: " << PuntatoreVertice->GetMolteplicita() << endl;
-
   // ----------------------------------------------------------------------------
+    if(i %10 == 0){
+      cout << "Evento generato numero: " << i << endl;
+      //fileoutput -> Write();
+    }
     
     // Si riempie il tree e si cancellano gli array per il nuovo ciclo
     gaggia -> Fill();

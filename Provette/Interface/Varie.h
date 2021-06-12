@@ -91,7 +91,7 @@ double Moda(TH1D *istogramma, double larghezza){
 	}
 
 	// Controllo che non ci siano altri massimi a destra
-	int binDelMassimo2 = istogramma -> FindLastBinAbove(istogramma -> GetBinContent(binDelMassimo) - 1, 1, binDelMassimo +1, -1);
+	int binDelMassimo2 = istogramma -> FindLastBinAbove(istogramma -> GetBinContent(binDelMassimo) - 1, 1, binDelMassimo +1, istogramma -> GetNbinsX());
 	double moda2 = istogramma -> GetXaxis() -> GetBinCenter(binDelMassimo2);
 	
 	if(istogramma -> GetBinContent(binDelMassimo2) == istogramma -> GetBinContent(binDelMassimo)){
