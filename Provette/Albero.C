@@ -192,11 +192,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
     }
 
   // ----------------------------------------------------------------------------
-    if(i %10 == 0){
-      cout << "Evento generato numero: " << i << endl;
-      //fileoutput -> Write();
-    }
-    
+   
     // Si riempie il tree e si cancellano gli array per il nuovo ciclo
     gaggia -> Fill();
     PuntatoreVertice -> Clear();
