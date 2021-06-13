@@ -98,7 +98,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   // Grafico conteggi per valutare moda del vertice z reco
   double zReco = -50.;
   TH1D *hzReco[eventi];
-  TH1D *hzModa = new TH1D("hzModa", "Coordinata del vertice ricostruito", NBINS);
+  TH1D *hzModa = new TH1D("hzModa", "Coordinata del vertice ricostruito", 200, -27., 27.);
   Urto *u1 = NULL;
   Urto *u2 = NULL;
   double moda = -50.;
