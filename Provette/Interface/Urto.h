@@ -23,7 +23,7 @@ class Urto : public Punto{
   // ------------- Costruttori --------------
   Urto();
   Urto(double x, double y, double z, int NumLayer, int ID = -2);
-  Urto(double phi, double z, int NumLayer, Rivelatore *detector, int ID = -2);
+  Urto(double phi, double z, double R, Rivelatore *detector, int ID = -2);
   
   // ------------- Distruttori --------------
   virtual ~Urto();
@@ -31,7 +31,7 @@ class Urto : public Punto{
   // ---------------- Setter ----------------
   void SetUrtoReale();
   void SetID(int ID);
-  void SetLayer(int NumLayer);
+  void SetNumeroLayer(int NumLayer);
   
   // ---------------- Getter ----------------
   int GetNumeroLayer();

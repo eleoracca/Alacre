@@ -36,24 +36,18 @@ Urto::Urto(double x, double y, double z, int NumLayer, int ID): Punto(x, y, z){
   dmUrtoReale = kFALSE;
 }
 
-Urto::Urto(double phi, double z, int NumLayer, Rivelatore *detector, int ID){
-  double R = 0.; 
-
-  if(NumLayer == 1){
-    R = detector->GetRaggio1L();
-  }
-  else if(NumLayer == 2){
-    R = detector->GetRaggio2L();
-  }
-  else{
-    cout << Avvertimento("Numero del Layer errato; viene imposto NumLayer = 1") << endl;
-    R = detector->GetRaggio1L(); 
-  }
-
-  Punto(R, phi, z, "c");
-  dmNumLayer = NumLayer;
+Urto::Urto(double phi, double z, double R, Rivelatore *detector, int ID) : Punto(R, phi, z, "c"){
   dmID = ID;
   dmUrtoReale = kFALSE;
+  if(R == detector -> GetRaggio1L()) {
+    dmNumLayer = 1;
+  }
+  else if(R == detector -> GetRaggio2L()) {
+    dmNumLayer = 2;
+  }
+  else {
+    cout << "Errore sul raggio" << endl;
+  }
 }
 
 // ------------- Distruttori --------------
@@ -69,7 +63,7 @@ void Urto::SetID(int ID){
   dmID = ID;
 }
 
-void Urto::SetLayer(int NumLayer){
+void Urto::SetNumeroLayer(int NumLayer){
   dmNumLayer = NumLayer;
 }
 
@@ -219,6 +213,7 @@ Urto Urto::RumoreRivelatore(Rivelatore *Detector, int NumLayer){
     Raggio = Detector->GetRaggio2L();
   }
   else{
+    Raggio = -1000;
     std::cout << "Problema con il raggio del detector." << endl;
   }
   

@@ -64,7 +64,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
 
   // ----------------------------------------------------------------------------
   // Inizializzazione e dichiarazione dei parametri a zero
-  bool onoff = kFALSE;
+  bool onoff = kFALSE; // parametro per attivare il rumore
   bool richiesta = kFALSE;
   double parametro1 = 0.;
   double parametro2 = 0.;
@@ -159,13 +159,13 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
   // Smearing degli urti generati e aggiunta del rumore
   for(int i = 0; i < (int)numeroEventi; i++){
     gelso -> GetEntry(i);
+
     
     // Smearing degli urti
     numeroMolteplicita = Smearing(UrtiRiv1Gen, UrtiRiv2Gen, PuntatoreRiv1Reco, PuntatoreRiv2Reco, detector);
     
     if(numeroMolteplicita != PuntatoreVertice -> GetMolteplicita()){
       //cout << Azzurro("Il numero di urti ricostruiti sul secondo layer è diverso dalla molteplicità dell'evento.") << endl;
-      //cout << "Molteplicità = " << PuntatoreVertice -> GetMolteplicita() << "\t Numero urti = " << numeroMolteplicita << endl;
     }
 
     // Aggiunta del rumore
@@ -314,12 +314,13 @@ int RumoreGauss(const double &media, const double &deviazionestandard, TClonesAr
   Urto* rumore = NULL;
   double phi = 0.;
   double z = 0.;
+  double r = -1.;
 
   for(int i = 0; i < numeroRumore1; i++){
     phi = gRandom->Uniform(2*TMath::Pi());
     z = gRandom->Uniform(- detector->GetLunghezza()/2., detector->GetLunghezza()/2.);
-
-    rumore = new Urto(phi, z, 1, detector, -1);
+    r = detector -> GetRaggio1L();
+    rumore = new Urto(phi, z, r, detector, -1);
     new(strato1RecoInd[u]) Urto(*rumore);
     u += 1;
   }
@@ -327,8 +328,8 @@ int RumoreGauss(const double &media, const double &deviazionestandard, TClonesAr
   for(int i = 0; i < numeroRumore2; i++){
     phi = gRandom->Uniform(2*TMath::Pi());
     z = gRandom->Uniform(- detector->GetLunghezza()/2., detector->GetLunghezza()/2.);
-
-    rumore = new Urto(phi, z, 2, detector, -1);
+    r = detector -> GetRaggio2L();
+    rumore = new Urto(phi, z, r, detector, -1);
     new(strato2RecoInd[v]) Urto(*rumore);
     v += 1;
   }
@@ -350,12 +351,13 @@ int RumoreFissa(const double &parametro1, TClonesArray *strato1Reco, TClonesArra
   Urto* rumore = NULL;
   double phi = 0.;
   double z = 0.;
+  double r = -1.;
 
   for(int i = 0; i < nR; i++){
     phi = gRandom->Uniform(2*TMath::Pi());
     z = gRandom->Uniform(- detector->GetLunghezza()/2., detector->GetLunghezza()/2.);
-
-    rumore = new Urto(phi, z, 1, detector, -1);
+    r = detector -> GetRaggio1L();
+    rumore = new Urto(phi, z, r, detector, -1);
     new(strato1RecoInd[u]) Urto(*rumore);
     u += 1;
   }
@@ -363,8 +365,8 @@ int RumoreFissa(const double &parametro1, TClonesArray *strato1Reco, TClonesArra
   for(int i = 0; i < nR; i++){
     phi = gRandom->Uniform(2*TMath::Pi());
     z = gRandom->Uniform(- detector->GetLunghezza()/2., detector->GetLunghezza()/2.);
-
-    rumore = new Urto(phi, z, 2, detector, -1);
+    r = detector -> GetRaggio2L();
+    rumore = new Urto(phi, z, r, detector, -1);
     new(strato2RecoInd[v]) Urto(*rumore);
     v += 1;
   }
