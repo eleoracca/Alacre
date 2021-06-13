@@ -141,14 +141,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
     }
     
     moda = Moda(hzReco[ev], larghezza);
-    if(moda == -500){
-      //return kFALSE;
-      //cout << "Moda del vertice = 0" << " Evento numero: " << ev << "\t Coordinata vertice generato: " << PuntatoreVertice->GetZ() << endl;
-    }
-    else if(moda == -600){
-      //cout << "Moda del vertice = 1" << " Evento numero: " << ev << "\t Coordinata vertice generato: " << PuntatoreVertice->GetZ() << endl;      
-    }
-    else if(moda != -600){
+   if(moda != -600 && moda != -500){
       hzModa -> Fill(moda);
       zDiff = PuntatoreVertice->GetZ() - moda;
       hzDiff -> Fill(zDiff);
