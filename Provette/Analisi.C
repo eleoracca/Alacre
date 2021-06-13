@@ -44,7 +44,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   
   fileGenerazione -> cd();
   TTree *ginko = (TTree*) fileGenerazione -> Get("gaggia");
-  //int eventi = ginko -> GetEntries();
+  int eventi = ginko -> GetEntries();
   
   Vertice *PuntatoreVertice = new Vertice();
   TBranch *BranchVGen = ginko -> GetBranch("Vertice");
@@ -63,7 +63,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   fileRicostruzione -> cd();
 
   TTree *robinia = (TTree*) fileRicostruzione -> Get("rovere");
-  int eventi = robinia -> GetEntries();
+  //int eventi = robinia -> GetEntries();
 
   TClonesArray *UrtiRiv1Reco = new TClonesArray("Urto", 100);
   TBranch *Branch1LReco = robinia -> GetBranch("UrtiRivelatore1Reco");
@@ -226,7 +226,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   cEffMolt->cd();
   
   TEfficiency* hEffMolt = new TEfficiency(*hMolReco, *hMolTutti);
-  hEffMolt->SetTitle("Efficienza della ricostruzione;Molteplicità;#frac{eventi Ricostruiti}{eventi Generati}");
+  hEffMolt->SetTitle("Efficienza della ricostruzione;Molteplicitï¿½;#frac{eventi Ricostruiti}{eventi Generati}");
   hEffMolt->Draw();
   cEffMolt->SaveAs("Output/Efficienza_Molteplicita_Tot.pdf");
   
@@ -238,7 +238,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   cEffMolt1S->cd();
   
   TEfficiency* hEffMolt1S = new TEfficiency(*hMolReco1s, *hMolTutti);
-  hEffMolt1S->SetTitle("Efficienza della ricostruzione entro 1#sigma dal centro;Molteplicità;#frac{eventi Ricostruiti}{eventi Generati}");
+  hEffMolt1S->SetTitle("Efficienza della ricostruzione entro 1#sigma dal centro;Molteplicitï¿½;#frac{eventi Ricostruiti}{eventi Generati}");
   hEffMolt1S->Draw();
   cEffMolt1S->SaveAs("Output/Efficienza_Molteplicita_1s.pdf");
 
@@ -250,7 +250,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   cEffMolt3S->cd();
   
   TEfficiency* hEffMolt3S = new TEfficiency(*hMolReco3s, *hMolTutti);
-  hEffMolt3S->SetTitle("Efficienza della ricostruzione entro 3#sigma dal centro;Molteplicità;#frac{eventi Ricostruiti}{eventi Generati}");
+  hEffMolt3S->SetTitle("Efficienza della ricostruzione entro 3#sigma dal centro;Molteplicitï¿½;#frac{eventi Ricostruiti}{eventi Generati}");
   hEffMolt3S->Draw();
   cEffMolt3S->SaveAs("Output/Efficienza_Molteplicita_3s.pdf");
   
