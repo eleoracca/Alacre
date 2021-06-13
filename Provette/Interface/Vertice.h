@@ -19,19 +19,17 @@ class Vertice : public Punto{
 
   // ------------- Costruttori --------------
   Vertice();
-  Vertice(double X, double Y, double Z, int Molteplicita, int Rumore = 0);
-  Vertice(Rivelatore *Detector, int  Molteplicita, int  Rumore = 0);
+  Vertice(double X, double Y, double Z, int Molteplicita);
+  Vertice(Rivelatore *Detector, int  Molteplicita);
 
   // ------------- Distruttori --------------
   virtual ~Vertice();
   
   // ---------------- Setter ----------------
   void SetMolteplicita(int Molteplicita);
-  void SetRumore(int Rumore);
-  
+
   // ---------------- Getter ----------------
   int GetMolteplicita();
-  int GetRumore();
   Punto GetCoordinate();
 
   static double TrovaVertice(Urto* L1, Urto* L2);
@@ -39,7 +37,6 @@ class Vertice : public Punto{
  private:
 
   int dmMolteplicita; // Numero di tracce da generare
-  int dmRumore; // Numero di particelle di rumore da generare o generate
   
   ClassDef(Vertice,1)
 };

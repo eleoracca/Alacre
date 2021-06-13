@@ -18,20 +18,17 @@ ClassImp(Vertice)
 // ------------- Costruttori --------------
 Vertice::Vertice(): Punto(){
   dmMolteplicita = 0;
-  dmRumore = 0;
 }
 
-Vertice::Vertice(double X, double Y, double Z, int Molteplicita, int Rumore): Punto(X, Y, Z){
+Vertice::Vertice(double X, double Y, double Z, int Molteplicita): Punto(X, Y, Z){
   dmMolteplicita = Molteplicita;
-  dmRumore = Rumore;
 }
 
-Vertice::Vertice(Rivelatore *Detector, int  Molteplicita, int  Rumore){
+Vertice::Vertice(Rivelatore *Detector, int  Molteplicita){
   dmX = gRandom->Gaus(Detector->GetVerticeX(), Detector->GetVerticeSX());
   dmY = gRandom->Gaus(Detector->GetVerticeY(), Detector->GetVerticeSY());
   dmZ = gRandom->Gaus(Detector->GetVerticeZ(), Detector->GetVerticeSZ());
   dmMolteplicita = Molteplicita;
-  dmRumore = Rumore;
 }
 
 // ------------- Distruttori --------------
@@ -43,17 +40,9 @@ void Vertice::SetMolteplicita(int Molteplicita){
   dmMolteplicita = Molteplicita;
 }
 
-void Vertice::SetRumore(int Rumore){
-  dmRumore = Rumore;
-}
-
 // ---------------- Getter ----------------
 int Vertice::GetMolteplicita(){
   return dmMolteplicita;
-}
-
-int Vertice::GetRumore(){
-  return dmRumore;
 }
 
 Punto Vertice::GetCoordinate(){
