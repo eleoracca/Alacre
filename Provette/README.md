@@ -1,14 +1,14 @@
 # Cose da fare
 - [ ] capire cosa fa FlipBit                                        Albero.C                riga 173
-- [ ] controllare perchè moda = 0
+- [ ] controllare moda = 0 e 1 per casi patologici (codici -500 e -600)
 - [ ] fare file configurazione analisi
-- [ ] controllare grafici efficienza
 - [ ] fare grafici risoluzione
-- [ ] modificare banner richieste in caso di errore digitazione
-- [ ] controllare se Branch1Gen contiene i dati di Albero.C
 - [ ] scrivere istruzioni per scaricare la repository in README
 - [ ] scrivere nel **REPORT** che energia della collisione è in Rivelatore.C perchè è propria della struttura
-- [ ] capire se ha senso lasciare ID in Trasporto.C 
+- [x] capire se ha senso lasciare ID in Trasporto.C 
+- [x] controllare se Branch1Gen contiene i dati di Albero.C
+- [x] modificare banner richieste in caso di errore digitazione
+- [x] controllare grafici efficienza
 - [x] implementare funzione RumoreGauss                             Ricostruzione.C
 - [x] implementare funzione RumoreFissa                             Ricostruzione.C
 - [x] implementare Analisi.C    
