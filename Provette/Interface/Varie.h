@@ -82,11 +82,11 @@ double Moda(TH1D *istogramma, double larghezza){
 
 	// Controllo che esista una moda
 	if(istogramma->GetBinContent(binDelMassimo)==0){
-		cout << Errore("Moda della coordinata z = 0") << endl;
+		// cout << Errore("Moda della coordinata z = 0") << endl;
 		return moda = -500;
 	}
 	else if(istogramma->GetBinContent(binDelMassimo)==1){
-		cout << Avvertimento("Moda della coordinata z = 1") << endl;
+		// cout << Avvertimento("Moda della coordinata z = 1") << endl;
 		return moda = -600;
 	}
 
