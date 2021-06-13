@@ -195,6 +195,12 @@ double Punto::GetDeltaPhi(Punto &PuntoUno, Punto &PuntoDue){
 // ----------- Member functions -----------
 void Punto::CartesianeCilindriche(){
   dmRaggioC = TMath::Sqrt(dmX*dmX + dmY*dmY);
+  if(dmRaggioC > 3.95 && dmRaggioC <= 4.05){
+    dmRaggioC = 4.;
+  }
+  if(dmRaggioC > 6.95 && dmRaggioC <= 7.05){
+    dmRaggioC = 7.;
+  }
   // dmZ rimane sè stesso
 
   if (dmX != 0. && dmY != 0.){
