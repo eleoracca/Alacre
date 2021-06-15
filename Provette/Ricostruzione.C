@@ -39,7 +39,7 @@ typedef struct {
 // ******************************************************************************
 
 // Funzione da chiamare per effettuare la ricostruzione
-bool Ricostruzione(Rivelatore* detector, bool fileconfig);
+bool Ricostruzione(Rivelatore* detector, bool fileconfig, TString nomefile);
 
 // Funzione che richiede all'utente i parametri per la generazione del rumore
 bool RichiestaInformazioni(bool &onoff, TString &distribuzione, double &parametro1, double &parametro2);
@@ -60,7 +60,7 @@ int RumoreFissa(const double &parametro1, TClonesArray *strato1Reco, TClonesArra
 // *********************** Implementazione delle funzioni ***********************
 // ******************************************************************************
 
-bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
+bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE, TString nomefile = "\0"){
 
   // ----------------------------------------------------------------------------
   // Inizializzazione e dichiarazione dei parametri a zero
@@ -80,7 +80,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
     }
   }
   else{
-    ifstream in("Configurazioni/Ricostruzione.txt");
+    ifstream in("Configurazioni/Ricostruzione" + nomefile + ".txt");
     if(!in){
       cout << Violetto("!! File di configurazione non trovato !!") << endl << "La simulazione riparte automaticamente chiedendo di inserire a mano i parametri.";
       return Ricostruzione(detector, kFALSE);
@@ -93,8 +93,8 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE){
 
   // ----------------------------------------------------------------------------
   // File della simulazione e della ricostruzione
-  TFile *fileinput = new TFile("Output/Simulazione.root", "READ");
-  TFile *fileoutput = new TFile("Output/Ricostruzione.root", "RECREATE");
+  TFile *fileinput = new TFile("Output/Simulazione" + nomefile + ".root", "READ");
+  TFile *fileoutput = new TFile("Output/Ricostruzione" + nomefile + ".root", "RECREATE");
 
   if(fileinput->IsZombie()){
     cout << Avvertimento("Problema nel leggere il file Simulazione.root \nLa ricostruzione si interrompe.") << endl;
@@ -215,7 +215,7 @@ void StampaInformazioni(const bool &onoff, const TString &distribuzione, const d
       cout << "    * Numero di rivelazioni:             " << parametro1 << endl;
     }
   }
-  else cout << "spento" << endl;
+  else cout << "spento" << endl << endl;
 }
 
 
