@@ -4,12 +4,6 @@
 #include "TH1I.h"
 #include "TCanvas.h"
 #include "TMath.h"
-#include "Rivelatore.h"
-#include "Urto.h"
-#include "Punto.h"
-#include "Vertice.h"
-#include "Varie.h"
-#include "Colori.h"
 #include "TBranch.h"
 #include "TClonesArray.h"
 #include "TTree.h"
@@ -31,7 +25,8 @@
 using namespace std;
 using namespace colore;
 
-bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* detector){
+bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* detector, TString nomifile[]){
+  // Mettere il check sulle desineze per l'analisi di molte simulazioni
   
   // ----------------------------------------------------------------------------
   // Lettura della generazione del vertice

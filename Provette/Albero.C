@@ -35,7 +35,7 @@ using namespace colore;
 // ******************************************************************************
 
 // Funzione da chiamare per effettuare la simulazione
-bool Albero(Rivelatore* detector, bool fileconfig);
+bool Albero(Rivelatore* detector, bool fileconfig, TString nomefile);
 
 // Funzione che richiede all'utente i parametri per effettuare la simulazione
 bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, double &par1molteplicita, double &par2molteplicita, bool &multiplescattering, bool &disteta);
@@ -52,7 +52,7 @@ int DecisioneMolteplicita(TString &distribuzione, double &parametro1, double &pa
 // *********************** Implementazione delle funzioni ***********************
 // ******************************************************************************
 
-bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
+bool Albero(Rivelatore* detector, bool fileconfig = kTRUE, TString nomefile = "\0"){
   
   // ----------------------------------------------------------------------------
   // Inizializzazione e dichiazione dei parametri a zero
@@ -74,7 +74,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
     }
   }
   else{
-    ifstream in("Configurazioni/Generazione.txt");
+    ifstream in("Configurazioni/Generazione" + nomefile + ".txt");
     if(!in){
       cout << Violetto("!! File di configurazione non trovato !!") << endl << "La simulazione riparte automaticamente chiedendo di inserire a mano i parametri.";
       return Albero(detector, kFALSE);
@@ -86,7 +86,7 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE){
   }
   
   // File di output per i dati generati dal Monte Carlo
-  TFile *fileoutput = new TFile("Output/Simulazione.root", "RECREATE");
+  TFile *fileoutput = new TFile("Output/Simulazione" + nomefile + ".root", "RECREATE");
   if(fileoutput->IsZombie()){
     cout << Avvertimento("Problema nel creare il file Simulazione.root. \nLa simulazione si interrompe.") << endl;
     return kFALSE;
@@ -225,7 +225,7 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
     scattering = "spento";
   }
 
-  cout << "-------------- " << Arancione("Parametri per la generazione degli eventi") << " ---------------" << endl;
+  cout << "--------------- " << Arancione("Parametri per la generazione degli eventi") << " ----------------" << endl;
   cout << "I parametri per la generazione vengono letti dal file " << Azzurro("Generazione.txt") << endl;
   cout << "+ Numero di eventi:                    " << numeroeventi << endl;
   cout << "+ Distribuzione della molteplicita:    " << distmolteplicita << endl;
@@ -252,7 +252,7 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
     cout << "  - Massimo:                            1" << endl;
   }
   
-  cout << "+ Scattering multiplo:                 " << scattering << endl;
+  cout << "+ Scattering multiplo:                 " << scattering << endl << endl;
 }
 
 
@@ -260,7 +260,7 @@ bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
 
   TString scattering = "\0";
   
-  cout << "-------------- " << Arancione("Parametri per la generazione degli eventi") << " ---------------" << endl;
+  cout << "-------------- " << Arancione("Parametri per la generazione degli eventi") << " ----------------" << endl;
   cout << "Inserire i parametri per la simulazione della generazione" << endl;
   cout << "Inserire un numero intero maggiore di zero" << endl;
   cout << "+ Numero di eventi:                                         ";
