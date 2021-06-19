@@ -90,6 +90,29 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   TH1I *hMolReco1s = new TH1I("hMolReco1s", "Molteplicità degli eventi ricostruiti entro 1 dev std da z = 0", maxMolteplicita, -0.5, (float)maxMolteplicita + .5); //Istogramma per raccogliere Molteplicità di eventi ricostruiti entro 1 sigma dallo 0
   TH1I *hMolReco3s = new TH1I("hMolReco3s", "Molteplicità degli eventi ricostruiti entro 3 dev std da z = 0", maxMolteplicita, -0.5, (float)maxMolteplicita + .5); //Istogramma per raccogliere Molteplicità di eventi ricostruiti entro 3 sigma dallo 0
 
+  // Istogrammi per analisi risoluzione
+  // risoluzione vs zTrue
+  #define PUNTI_RISOL_Z_VERO 20
+  TH1D *hRisZ[PUNTI_RISOL_Z_VERO];
+  double vZ[PUNTI_RISOL_Z_VERO];
+  double vsZ[PUNTI_RISOL_Z_VERO];
+  for(int i = 0; i < PUNTI_RISOL_Z_VERO; i++) {
+    hRisZ[i] = new TH1D(TString::Format("hRisZ_%d", i), TString::Format("Distribuzione risoluzione, gruppo %d", i), 1000, -5, 5);
+    vZ[i] = -19 + i * 2;
+    vsZ[i] = 1;
+  }
+
+  // risoluzione vs molteplicita'
+  #define PUNTI_RISOL_MOLT 20
+  TH1D *hRisMolt[PUNTI_RISOL_MOLT];
+  double vMolt[PUNTI_RISOL_MOLT];
+  double vsMolt[PUNTI_RISOL_MOLT];
+  for(int i = 0; i < PUNTI_RISOL_MOLT; i++) {
+    hRisMolt[i] = new TH1D(TString::Format("hRisMolt_%d", i), TString::Format("Distribuzione risoluzione, gruppo %d", i), 1000, -5, 5);
+    vMolt[i] = i * 3 + 2;
+    vsMolt[i] = 1.5;
+  }
+
   // Grafico conteggi per valutare moda del vertice z reco
   double zReco = -50.;
   TH1D *hzReco[eventi];
@@ -100,17 +123,10 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   double zDiff = -50.;
 
   // Inizializzazione vettori per TGraphErrors per la risoluzione
-
-  double vMolt[eventi];
-  double vsMolt[eventi];
-  double vSz[eventi];
-  double vsSz[eventi];
-  for(int i = 0; i < eventi; i++){
-    vMolt[i] = 0;
-    vsMolt[i] = 0;
-    vSz[i] = 0.;
-    vsSz[i] = 0.;
-  }
+  double vRisolZVero[PUNTI_RISOL_Z_VERO];
+  double vsRisolZVero[PUNTI_RISOL_Z_VERO];
+  double vRisolMolt[PUNTI_RISOL_MOLT];
+  double vsRisolMolt[PUNTI_RISOL_MOLT];
   
   
   // ----------------------------------------------------------------------------
@@ -121,7 +137,6 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
     hzReco[ev] = new TH1D(TString::Format("hzReco_%d", ev), TString::Format("Distribuzione coordinate z, evento %d", ev), NBINS);
     ginko -> GetEvent(ev);
     robinia -> GetEvent(ev);
-    vMolt[ev] = PuntatoreVertice->GetMolteplicita();
     
     for(int i = 0; i < UrtiRiv1Reco -> GetEntries(); i++) {
       u1 = (Urto*) UrtiRiv1Reco -> At(i);
@@ -150,12 +165,18 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
         hMolReco3s -> Fill(PuntatoreVertice->GetMolteplicita());
       }
     
-      vSz[ev] = hzReco[ev]->GetStdDev();
-      vsSz[ev] = hzReco[ev]->GetStdDevError();
+      for(int i = 0; i < PUNTI_RISOL_Z_VERO; i++){
+        if(TMath::Abs(PuntatoreVertice -> GetZ() - vZ[i]) < vsZ[i])
+          hRisZ[i] -> Fill(zDiff);
+      }
+      for(int i = 0; i < PUNTI_RISOL_MOLT; i++) {
+        if(TMath::Abs(PuntatoreVertice -> GetMolteplicita() - vMolt[i]) < vsMolt[i])
+          hRisMolt[i] -> Fill(zDiff);
+      }
       
-      delete hzReco[ev];
     }
-    
+    if(ev % 1000 != 0)
+      delete hzReco[ev];
     hMolTutti -> Fill(PuntatoreVertice->GetMolteplicita());
   }
 
@@ -182,27 +203,36 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   cRisMolt->SetFillColor(0);
   cRisMolt->cd();
 
-  TGraphErrors *gRisMolt = new TGraphErrors(eventi,vMolt,vsMolt,vSz,vsSz);
-  gRisMolt->SetTitle("Risoluzione");
+  for(int i = 0; i < PUNTI_RISOL_MOLT; i++){
+    vRisolMolt[i] = hRisMolt[i] -> GetStdDev();
+    vsRisolMolt[i] = hRisMolt[i] -> GetStdDevError();
+  }
+
+  TGraphErrors *gRisMolt = new TGraphErrors(PUNTI_RISOL_MOLT, vMolt, vRisolMolt, vsMolt, vsRisolMolt);
+  gRisMolt->SetTitle("Risoluzione vs Molteplicita'");
   gRisMolt->GetXaxis()->SetTitle("Molteplicita");
   gRisMolt->GetYaxis()->SetTitle("Risoluzione [cm]");
   gRisMolt->Draw(); 
   cRisMolt->SaveAs("Output/Ris_vs_Molt.pdf");
 
-  // Grafico della risoluzione in funzione di zGen
-  /*
-  cout << "************** Grafico Risoluzione vs zGen **************" << endl;
-  TCanvas *cRisoluzioneGen = new TCanvas("cRisoluzioneGen","Risoluzione vs zGen",200,10,600,400);
-  cRisoluzioneGen->SetFillColor(0);
-  cRisoluzioneGen->cd();
+  // Grafico della risoluzione in funzione di zVero
+
+  for(int i = 0; i < PUNTI_RISOL_Z_VERO; i++){
+    vRisolZVero[i] = hRisZ[i] -> GetStdDev();
+    vsRisolZVero[i] = hRisZ[i] -> GetStdDevError();
+  }
   
-  TH1I* hRisoluzioneGen = new TH1I("hRisoluzioneGen","Risoluzione vs zGen", 200,-0.2,j.2); //non ricordo come funzionano
-  hRisoluzioneGen->SetTitle("Risoluzione");
-  hRisoluzioneGen->GetXaxis()->SetTitle("zGen [cm]");
-  hRisoluzioneGen->GetYaxis()->SetTitle("Conteggi");
-  hRisoluzioneGen->Draw();
-  cRisoluzioneGen->SaveAs(".pdf");
-  */
+  cout << "************** Grafico Risoluzione vs zVero **************" << endl;
+  TCanvas *cRisoluzioneVero = new TCanvas("cRisoluzioneVero","Risoluzione vs zVero",200,10,600,400);
+  cRisoluzioneVero->SetFillColor(0);
+  cRisoluzioneVero->cd();
+  
+  TGraphErrors *gRisolZVero = new TGraphErrors(PUNTI_RISOL_Z_VERO, vZ, vRisolZVero, vsZ, vsRisolZVero);
+  gRisolZVero->SetTitle("Risoluzione vs zVero");
+  gRisolZVero->GetXaxis()->SetTitle("zVero [cm]");
+  gRisolZVero->GetYaxis()->SetTitle("Conteggi");
+  gRisolZVero->Draw();
+  cRisoluzioneVero->SaveAs("Output/Ris_vs_zVero.pdf");
 
 
   //Efficienza: #particelle ricostruite/#particelle generate
