@@ -196,9 +196,9 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE, TString nomefile = "\
     // Si riempie il tree e si cancellano gli array per il nuovo ciclo
     gaggia -> Fill();
     PuntatoreVertice -> Clear();
-    PuntatoreBP -> Clear();
-    PuntatoreRiv1 -> Clear();
-    PuntatoreRiv2 -> Clear();
+    PuntatoreBP -> Clear("C");
+    PuntatoreRiv1 -> Clear("C");
+    PuntatoreRiv2 -> Clear("C");
   }
 
   // Finisce la scrittura del file e viene chiuso
@@ -210,6 +210,11 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE, TString nomefile = "\
   delete istogrammamolteplicita;
   delete PuntatoreVertice;
   delete PuntatoreDirezione;
+  delete PuntatoreBP;
+  delete PuntatoreRiv1;
+  delete PuntatoreRiv2;
+  delete fileoutput;
+
   
   return kTRUE;
 }

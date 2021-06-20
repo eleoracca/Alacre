@@ -8,6 +8,7 @@
 #if !defined(__CINT__) || defined(__MAKECINT__)
 #include "Riostream.h"
 #include "TStopwatch.h"
+#include "TString.h"
 
 #include "Rivelatore.h"
 #include "Albero.C"
@@ -19,8 +20,40 @@
 using namespace std;
 using namespace colore;
 
+void EsecuzioneEsame(bool simulazioniMultiple, bool filegenerazione, bool filerumore);
+bool SingolaEsecuzione(bool filegenerazione, bool filerumore, bool generazioneFatta, TString nomeRicostruzione, TString nomeGenerazione);
 
-void EsecuzioneEsame(bool filegenerazione = kTRUE, bool filerumore = kTRUE, bool simulazionimultiple = kFALSE){
+void EsecuzioneEsame(bool simulazioniMultiple = kFALSE, bool filegenerazione = kTRUE, bool filerumore = kTRUE) {
+  #define NFILES 4
+  TString ricostruzioni[NFILES] = {"Rumore0", "Rumore10", "Rumore50", "Rumore100"};
+  bool esitoEsecuzione[NFILES] = {kFALSE, kFALSE, kFALSE, kFALSE};
+  bool generazioneFatta = kFALSE;
+
+
+  if(simulazioniMultiple) {
+    for(int i = 0; i < NFILES; i++) {
+      esitoEsecuzione[i] = SingolaEsecuzione(kTRUE, kTRUE, generazioneFatta, ricostruzioni[i], "\0");
+      if(!esitoEsecuzione[0] && i == 0) {
+        cout << Errore("Prima esecuzione fallita!") << endl;
+        return;
+      }
+      generazioneFatta = kTRUE;
+    }
+
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    for(int i = 0; i < NFILES; i++) {
+      cout << "Analisi " + TString::Itoa(i, 10) + " eseguita con il seguente esito: " << esitoEsecuzione[i] << endl;
+    }
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  }
+  else {
+    esitoEsecuzione[0] = SingolaEsecuzione(kTRUE, kTRUE, kFALSE, "\0", "\0");
+  }
+
+  return;
+}
+
+bool SingolaEsecuzione(bool filegenerazione = kTRUE, bool filerumore = kTRUE, bool generazioneFatta = kFALSE, TString nomeRicostruzione = "\0", TString nomeGenerazione = "\0") {
   
   // Dichiarazione dei timer
   TStopwatch tempototale;
@@ -37,82 +70,68 @@ void EsecuzioneEsame(bool filegenerazione = kTRUE, bool filerumore = kTRUE, bool
   // Controllo che il rivelatore sia stato creato correttamente
   if(detector -> GetPhiLimite() == -100){
     cout << Errore("Errore con la costruzione del rivelatore. \nLa simulazione si interrompe.") << endl;
-    return;
+    return kFALSE;
   }
-
-  // Desinenze dei file
-  TString desinenze[10] = {"\0"};
   
   // Booleani
-  bool generazione[10] = {kFALSE};
-  bool ricostruzione[10] = {kFALSE};
+  bool generazione = kFALSE;
+  bool ricostruzione = kFALSE;
   bool analisi = kFALSE;
 
   // Generazione degli eventi
-  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  cout << "~~~~~~~~~~~~~~~~~~~~~~~~ " << Rosso("Generazione degli eventi") << " ~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  tempogenerazione.Start(kTRUE);
-  if(simulazionimultiple){
-    for(int i = 0; i < 10; i++){
-      generazione[i] = Albero(detector, filegenerazione, desinenze[i]);
-    }
+  if(!generazioneFatta) {
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~ " << Rosso("Generazione degli eventi") << " ~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    tempogenerazione.Start(kTRUE);
+    generazione = Albero(detector, filegenerazione, nomeGenerazione);
+    tempogenerazione.Stop();
   }
-  else{
-    generazione[0] = Albero(detector, filegenerazione);
+  else {
+    generazione = kTRUE;
   }
-  tempogenerazione.Stop();
-  
+
   // Ricostruzione degli eventi
-  cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  cout << "~~~~~~~~~~~~~~~~~~~~~~~ " << Rosso("Ricostruzione degli eventi") << " ~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  cout << "~~~~~~~~~~~~~~~~~~~~~~ " << Rosso("Ricostruzione degli eventi") << " ~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   temporicostruzione.Start(kTRUE);
-  if(simulazionimultiple){
-    for(int i = 0; i < 10; i++){
-      if(generazione[i]){
-	ricostruzione[i] = Albero(detector, filerumore, desinenze[i]);
-      }
-    }
-  }
-  else{
-    if(generazione[0]){
-      ricostruzione[0] = Ricostruzione(detector, filerumore);
-    }
+  if(generazione){
+    ricostruzione = Ricostruzione(detector, filerumore, nomeRicostruzione, nomeGenerazione);
   }
   temporicostruzione.Stop();
 
   // Analisi degli eventi
-  cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~ " << Rosso("Analisi degli eventi") << " ~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~ " << Rosso("Analisi degli eventi") << " ~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
   tempoanalisi.Start(kTRUE);
-  if(generazione[0] && ricostruzione[0]){
-    for(int i = 0; i < 10; i++){
-      analisi = Analisi(0.5, 100, detector, desinenze);
-    }
-  }
+  if(generazione && ricostruzione){
+    analisi = Analisi(0.5, 100, detector, nomeRicostruzione, nomeGenerazione);
+  }  
   tempoanalisi.Stop();
 
-  // Dati finali - TEMPO IMPIEGATO
+  // Dati finali TEMPO IMPIEGATO
   tempototale.Stop();
-  cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " << Rosso("Tempo impiegato") << " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  if(generazione[0] && ricostruzione[0] && analisi){
+  cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~ " << Rosso("Tempo impiegato") << " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  if(generazione && ricostruzione && analisi){
     cout << Verde("Simulazione completata con successo.") << endl;
   }
   else{
     cout << Errore("Simulazione completata con errori.") << endl;
-    if(!generazione[0]) cout << "- Problemi con la generazione degli eventi." << endl;
-    if(!ricostruzione[0]) cout << "- Problemi con la ricostruzione degli eventi." << endl;
+    if(!generazione) cout << "- Problemi con la generazione degli eventi." << endl;
+    if(!ricostruzione) cout << "- Problemi con la ricostruzione degli eventi." << endl;
     if(!analisi) cout << "- Problemi con l'analisi degli eventi." << endl;
   }
   cout << "La durata totale e:                     "; tempototale.Print();
   cout << "La generazione degli eventi e durata:   "; tempogenerazione.Print();
   cout << "La ricostruzione degli eventi e durata: "; temporicostruzione.Print();
   cout << "L'analisi degli eventi e durata:        "; tempoanalisi.Print();
-  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" << endl;
+  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+  cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" << endl;
+
+  return generazione && ricostruzione && analisi;
 }

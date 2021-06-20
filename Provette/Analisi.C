@@ -25,15 +25,15 @@
 using namespace std;
 using namespace colore;
 
-bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* detector, TString nomifile[]){
+bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* detector, TString nomefileRicostruzione, TString nomefileGenerazione){
   // Mettere il check sulle desineze per l'analisi di molte simulazioni
   
   // ----------------------------------------------------------------------------
   // Lettura della generazione del vertice
-  TFile *fileGenerazione = new TFile("Output/Simulazione.root", "READ");
+  TFile *fileGenerazione = new TFile("Output/Simulazione" + nomefileGenerazione + ".root", "READ");
   
   if(fileGenerazione->IsZombie()){
-    cout << Avvertimento("Problema nel creare il file Ricostruzione.root \nLa ricostruzione si interrompe.") << endl;
+    cout << Avvertimento("Problema nel leggere il file Simulazione" + nomefileGenerazione + ".root \nLa ricostruzione si interrompe.") << endl;
     return kFALSE;
   }
   
@@ -48,10 +48,10 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   
   // ----------------------------------------------------------------------------
   // Lettura della ricostruzione degli urti sui layer
-  TFile *fileRicostruzione = new TFile("Output/Ricostruzione.root", "READ");
+  TFile *fileRicostruzione = new TFile("Output/Ricostruzione" + nomefileRicostruzione + ".root", "READ");
   
   if(fileRicostruzione->IsZombie()){
-    cout << Avvertimento("Problema nel leggere il file Simulazione.root \nLa ricostruzione si interrompe.") << endl;
+    cout << Avvertimento("Problema nel leggere il file Ricostruzione" + nomefileRicostruzione + ".root \nLa ricostruzione si interrompe.") << endl;
     return kFALSE;
   }
   
@@ -73,7 +73,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   // Lettura della configurazione per l'analisi
   
   // File di output Analisi
-  TFile *fileAnalisi = new TFile("Output/Analisi.root", "RECREATE");
+  TFile *fileAnalisi = new TFile("Output/Analisi" + nomefileGenerazione + "_" + nomefileRicostruzione + ".root", "RECREATE");
   if(fileAnalisi->IsZombie()){
     cout << Avvertimento("Problema nel creare il file Analisi.root. \nLa simulazione si interrompe.") << endl;
     return kFALSE;
@@ -166,17 +166,20 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
       }
     
       for(int i = 0; i < PUNTI_RISOL_Z_VERO; i++){
-        if(TMath::Abs(PuntatoreVertice -> GetZ() - vZ[i]) < vsZ[i])
-          hRisZ[i] -> Fill(zDiff);
+        if(TMath::Abs(PuntatoreVertice -> GetZ() - vZ[i]) < vsZ[i]) {
+            hRisZ[i] -> Fill(zDiff);
+        }
       }
       for(int i = 0; i < PUNTI_RISOL_MOLT; i++) {
-        if(TMath::Abs(PuntatoreVertice -> GetMolteplicita() - vMolt[i]) < vsMolt[i])
+        if(TMath::Abs(PuntatoreVertice -> GetMolteplicita() - vMolt[i]) < vsMolt[i]) {
           hRisMolt[i] -> Fill(zDiff);
+        }
       }
       
     }
-    if(ev % 1000 != 0)
+    if(ev % 1000 != 0) {
       delete hzReco[ev];
+    }
     hMolTutti -> Fill(PuntatoreVertice->GetMolteplicita());
   }
 
@@ -190,7 +193,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   hzModa->GetXaxis()->SetTitle("zReco [cm]");
   hzModa->GetYaxis()->SetTitle("Conteggi");
   hzModa -> Draw();
-  cModa -> SaveAs("Output/Z_Ricostruiti.pdf");
+  cModa -> SaveAs("Output/Z_Ricostruiti" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
 
 
   // Risoluzione dell'apparato: distanza minima per cui vengono riconosciuti due eventi vicini
@@ -213,7 +216,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   gRisMolt->GetXaxis()->SetTitle("Molteplicita");
   gRisMolt->GetYaxis()->SetTitle("Risoluzione [cm]");
   gRisMolt->Draw(); 
-  cRisMolt->SaveAs("Output/Ris_vs_Molt.pdf");
+  cRisMolt->SaveAs("Output/Ris_vs_Molt" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
 
   // Grafico della risoluzione in funzione di zVero
 
@@ -232,7 +235,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   gRisolZVero->GetXaxis()->SetTitle("zVero [cm]");
   gRisolZVero->GetYaxis()->SetTitle("Conteggi");
   gRisolZVero->Draw();
-  cRisoluzioneVero->SaveAs("Output/Ris_vs_zVero.pdf");
+  cRisoluzioneVero->SaveAs("Output/Ris_vs_zVero" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
 
 
   //Efficienza: #particelle ricostruite/#particelle generate
@@ -246,7 +249,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   TEfficiency* hEffMolt = new TEfficiency(*hMolReco, *hMolTutti);
   hEffMolt->SetTitle("Efficienza della ricostruzione;Molteplicit�;#frac{eventi Ricostruiti}{eventi Generati}");
   hEffMolt->Draw();
-  cEffMolt->SaveAs("Output/Efficienza_Molteplicita_Tot.pdf");
+  cEffMolt->SaveAs("Output/Efficienza_Molteplicita_Tot" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
   
 
   // Grafico efficienza in funzione della molteplicità valutando 1sigma
@@ -258,7 +261,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   TEfficiency* hEffMolt1S = new TEfficiency(*hMolReco1s, *hMolTutti);
   hEffMolt1S->SetTitle("Efficienza della ricostruzione entro 1#sigma dal centro;Molteplicit�;#frac{eventi Ricostruiti}{eventi Generati}");
   hEffMolt1S->Draw();
-  cEffMolt1S->SaveAs("Output/Efficienza_Molteplicita_1s.pdf");
+  cEffMolt1S->SaveAs("Output/Efficienza_Molteplicita_1s" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
 
   
   // Grafico efficienza in funzione della molteplicità valutando 3sigma
@@ -270,7 +273,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   TEfficiency* hEffMolt3S = new TEfficiency(*hMolReco3s, *hMolTutti);
   hEffMolt3S->SetTitle("Efficienza della ricostruzione entro 3#sigma dal centro;Molteplicit�;#frac{eventi Ricostruiti}{eventi Generati}");
   hEffMolt3S->Draw();
-  cEffMolt3S->SaveAs("Output/Efficienza_Molteplicita_3s.pdf");
+  cEffMolt3S->SaveAs("Output/Efficienza_Molteplicita_3s" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
   
 
  // Chiusura dei file e deallocazione della memoria
@@ -279,11 +282,24 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   fileRicostruzione -> Close();
   fileGenerazione -> Close();
 
+  delete gRisMolt;
+  delete gRisolZVero;
+  delete hEffMolt;
+  delete hEffMolt1S;
+  delete hEffMolt3S;
+
+  delete PuntatoreVertice;
+  delete UrtiRiv1Reco;
+  delete UrtiRiv2Reco;
   delete cModa;
-  /*
-  for(int i = 0; i < eventi; i++) {
-    delete hzReco[i];
-  }
-  */
+  delete cRisMolt;
+  delete cEffMolt;
+  delete cRisoluzioneVero;
+  delete cEffMolt1S;
+  delete cEffMolt3S;
+  delete fileGenerazione;
+  delete fileRicostruzione;
+  delete fileAnalisi;
+
   return kTRUE;
 }

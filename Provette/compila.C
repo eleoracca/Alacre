@@ -36,8 +36,8 @@ void compila(TString myopt="fast"){
 }
 
 /*
-Per eseguire EsecuzioneEsame:
+Per eseguire SingolaEsecuzione:
 - Avviare Root
 - Compilare le classi e le macro come scritto alle righe 8-10
-- Chiamare dentro Root EsecuzioneEsame()
+- Chiamare dentro Root SingolaEsecuzione()
 */

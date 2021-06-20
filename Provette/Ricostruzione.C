@@ -39,7 +39,7 @@ typedef struct {
 // ******************************************************************************
 
 // Funzione da chiamare per effettuare la ricostruzione
-bool Ricostruzione(Rivelatore* detector, bool fileconfig, TString nomefile);
+bool Ricostruzione(Rivelatore* detector, bool fileconfig, TString nomefileRicostruzione, TString nomefileGenerazione);
 
 // Funzione che richiede all'utente i parametri per la generazione del rumore
 bool RichiestaInformazioni(bool &onoff, TString &distribuzione, double &parametro1, double &parametro2);
@@ -60,7 +60,7 @@ int RumoreFissa(const double &parametro1, TClonesArray *strato1Reco, TClonesArra
 // *********************** Implementazione delle funzioni ***********************
 // ******************************************************************************
 
-bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE, TString nomefile = "\0"){
+bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE, TString nomefileRicostruzione = "\0", TString nomefileGenerazione = "\0"){
 
   // ----------------------------------------------------------------------------
   // Inizializzazione e dichiarazione dei parametri a zero
@@ -80,7 +80,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE, TString nomef
     }
   }
   else{
-    ifstream in("Configurazioni/Ricostruzione" + nomefile + ".txt");
+    ifstream in("Configurazioni/Ricostruzione" + nomefileRicostruzione + ".txt");
     if(!in){
       cout << Violetto("!! File di configurazione non trovato !!") << endl << "La simulazione riparte automaticamente chiedendo di inserire a mano i parametri.";
       return Ricostruzione(detector, kFALSE);
@@ -93,8 +93,8 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE, TString nomef
 
   // ----------------------------------------------------------------------------
   // File della simulazione e della ricostruzione
-  TFile *fileinput = new TFile("Output/Simulazione" + nomefile + ".root", "READ");
-  TFile *fileoutput = new TFile("Output/Ricostruzione" + nomefile + ".root", "RECREATE");
+  TFile *fileinput = new TFile("Output/Simulazione" + nomefileGenerazione + ".root", "READ");
+  TFile *fileoutput = new TFile("Output/Ricostruzione" + nomefileRicostruzione + ".root", "RECREATE");
 
   if(fileinput->IsZombie()){
     cout << Avvertimento("Problema nel leggere il file Simulazione.root \nLa ricostruzione si interrompe.") << endl;
@@ -182,10 +182,11 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE, TString nomef
 
     // Si riempie di nuovo per sicurezza il tree e si cancellano gli array per il nuovo ciclo
     rovere -> Fill();
-    UrtiRiv1Gen -> Clear();
-    UrtiRiv2Gen -> Clear();
-    PuntatoreRiv1Reco -> Clear();
-    PuntatoreRiv2Reco -> Clear();
+    UrtiRiv1Gen -> Clear("C");
+    UrtiRiv2Gen -> Clear("C");
+    PuntatoreRiv1Reco -> Clear("C");
+    PuntatoreRiv2Reco -> Clear("C");
+
   }
 
 
@@ -196,6 +197,14 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE, TString nomef
   fileinput -> Close();
   fileoutput -> Close();
   
+  delete PuntatoreVertice;
+  delete UrtiRiv1Gen;
+  delete UrtiRiv2Gen;
+  delete PuntatoreRiv1Reco;
+  delete PuntatoreRiv2Reco;
+  delete fileinput;
+  delete fileoutput;
+
   return kTRUE;
 }
 
@@ -322,6 +331,7 @@ int RumoreGauss(const double &media, const double &deviazionestandard, TClonesAr
     r = detector -> GetRaggio1L();
     rumore = new Urto(phi, z, r, detector, -1);
     new(strato1RecoInd[u]) Urto(*rumore);
+    delete rumore;
     u += 1;
   }
 
@@ -331,6 +341,7 @@ int RumoreGauss(const double &media, const double &deviazionestandard, TClonesAr
     r = detector -> GetRaggio2L();
     rumore = new Urto(phi, z, r, detector, -1);
     new(strato2RecoInd[v]) Urto(*rumore);
+    delete rumore;
     v += 1;
   }
 
@@ -359,6 +370,7 @@ int RumoreFissa(const double &parametro1, TClonesArray *strato1Reco, TClonesArra
     r = detector -> GetRaggio1L();
     rumore = new Urto(phi, z, r, detector, -1);
     new(strato1RecoInd[u]) Urto(*rumore);
+    delete rumore;
     u += 1;
   }
 
@@ -368,6 +380,7 @@ int RumoreFissa(const double &parametro1, TClonesArray *strato1Reco, TClonesArra
     r = detector -> GetRaggio2L();
     rumore = new Urto(phi, z, r, detector, -1);
     new(strato2RecoInd[v]) Urto(*rumore);
+    delete rumore;
     v += 1;
   }
 
