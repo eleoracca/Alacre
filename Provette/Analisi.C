@@ -11,6 +11,7 @@
 #include "TFile.h"
 #include "TEfficiency.h"
 #include "TGraphErrors.h"
+#include "TMultiGraph.h"
 
 #include "Colori.h"
 #include "Punto.h"
@@ -189,11 +190,11 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   // ----------------------------------------------------------------------------
   
   // Grafico della moda per valutare z ricostruita
-  TCanvas* cModa = new TCanvas("cModa", "Coordinata del vertice ricostruito", 0, 0, 1280, 1024);
+  //TCanvas* cModa = new TCanvas("cModa", "Coordinata del vertice ricostruito", 0, 0, 1280, 1024);
   hzModa->GetXaxis()->SetTitle("zReco [cm]");
   hzModa->GetYaxis()->SetTitle("Conteggi");
-  hzModa -> Draw();
-  cModa -> SaveAs("Output/Z_Ricostruiti" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
+  hzModa -> Write();
+  //cModa -> SaveAs("Output/Z_Ricostruiti" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
 
 
   // Risoluzione dell'apparato: distanza minima per cui vengono riconosciuti due eventi vicini
@@ -202,9 +203,9 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   // Grafico risoluzione in funzione della molteplicità
   
   cout << "************** Grafico Risoluzione vs Molteplicita **************" << endl;
-  TCanvas *cRisMolt = new TCanvas("cRisMolt","Ris vs Molt",0,0,1280,1024);
+  /*TCanvas *cRisMolt = new TCanvas("cRisMolt","Ris vs Molt",0,0,1280,1024);
   cRisMolt->SetFillColor(0);
-  cRisMolt->cd();
+  cRisMolt->cd();*/
 
   for(int i = 0; i < PUNTI_RISOL_MOLT; i++){
     vRisolMolt[i] = hRisMolt[i] -> GetStdDev();
@@ -215,8 +216,9 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   gRisMolt->SetTitle("Risoluzione vs Molteplicita'");
   gRisMolt->GetXaxis()->SetTitle("Molteplicita");
   gRisMolt->GetYaxis()->SetTitle("Risoluzione [cm]");
-  gRisMolt->Draw(); 
-  cRisMolt->SaveAs("Output/Ris_vs_Molt" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
+  gRisMolt->Draw("AP");
+  gRisMolt->Write(); 
+  //cRisMolt->SaveAs("Output/Ris_vs_Molt" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
 
   // Grafico della risoluzione in funzione di zVero
 
@@ -226,54 +228,54 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   }
   
   cout << "************** Grafico Risoluzione vs zVero **************" << endl;
-  TCanvas *cRisoluzioneVero = new TCanvas("cRisoluzioneVero","Risoluzione vs zVero",200,10,600,400);
+  /*TCanvas *cRisoluzioneVero = new TCanvas("cRisoluzioneVero","Risoluzione vs zVero",200,10,600,400);
   cRisoluzioneVero->SetFillColor(0);
-  cRisoluzioneVero->cd();
+  cRisoluzioneVero->cd();*/
   
   TGraphErrors *gRisolZVero = new TGraphErrors(PUNTI_RISOL_Z_VERO, vZ, vRisolZVero, vsZ, vsRisolZVero);
   gRisolZVero->SetTitle("Risoluzione vs zVero");
   gRisolZVero->GetXaxis()->SetTitle("zVero [cm]");
   gRisolZVero->GetYaxis()->SetTitle("Conteggi");
-  gRisolZVero->Draw();
-  cRisoluzioneVero->SaveAs("Output/Ris_vs_zVero" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
+  gRisolZVero->Write();
+  //cRisoluzioneVero->SaveAs("Output/Ris_vs_zVero" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
 
 
   //Efficienza: #particelle ricostruite/#particelle generate
   
   // Grafico efficienza in funzione della molteplicità
   cout << "************** Grafico Efficienza vs Molteplicità **************" << endl;
-  TCanvas *cEffMolt = new TCanvas("cEffMolt","Efficienza vs Molteplicità", 0, 0, 1280, 1024);
+  /*TCanvas *cEffMolt = new TCanvas("cEffMolt","Efficienza vs Molteplicità", 0, 0, 1280, 1024);
   cEffMolt->SetFillColor(0);
-  cEffMolt->cd();
+  cEffMolt->cd();*/
   
   TEfficiency* hEffMolt = new TEfficiency(*hMolReco, *hMolTutti);
   hEffMolt->SetTitle("Efficienza della ricostruzione;Molteplicit�;#frac{eventi Ricostruiti}{eventi Generati}");
-  hEffMolt->Draw();
-  cEffMolt->SaveAs("Output/Efficienza_Molteplicita_Tot" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
+  hEffMolt->Write();
+  //cEffMolt->SaveAs("Output/Efficienza_Molteplicita_Tot" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
   
 
   // Grafico efficienza in funzione della molteplicità valutando 1sigma
   cout << "************** Grafico Efficienza vs Molteplicità in 1 /sigma **************" << endl;
-  TCanvas *cEffMolt1S = new TCanvas("cEffMolt1S","Efficienza vs Molteplicità in 1 sigma", 0, 0, 1280, 1024);
+  /*TCanvas *cEffMolt1S = new TCanvas("cEffMolt1S","Efficienza vs Molteplicità in 1 sigma", 0, 0, 1280, 1024);
   cEffMolt1S->SetFillColor(0);
-  cEffMolt1S->cd();
+  cEffMolt1S->cd();*/
   
   TEfficiency* hEffMolt1S = new TEfficiency(*hMolReco1s, *hMolTutti);
   hEffMolt1S->SetTitle("Efficienza della ricostruzione entro 1#sigma dal centro;Molteplicit�;#frac{eventi Ricostruiti}{eventi Generati}");
-  hEffMolt1S->Draw();
-  cEffMolt1S->SaveAs("Output/Efficienza_Molteplicita_1s" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
+  hEffMolt1S->Write();
+  //cEffMolt1S->SaveAs("Output/Efficienza_Molteplicita_1s" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
 
   
   // Grafico efficienza in funzione della molteplicità valutando 3sigma
   cout << "************** Grafico Efficienza vs Molteplicità in 3 /sigma **************" << endl;
-  TCanvas *cEffMolt3S = new TCanvas("cEffMolt3S","Efficienza vs Molteplicità in 3 sigma", 0, 0, 1280, 1024);
+  /*TCanvas *cEffMolt3S = new TCanvas("cEffMolt3S","Efficienza vs Molteplicità in 3 sigma", 0, 0, 1280, 1024);
   cEffMolt3S->SetFillColor(0);
   cEffMolt3S->cd();
-  
+  */
   TEfficiency* hEffMolt3S = new TEfficiency(*hMolReco3s, *hMolTutti);
   hEffMolt3S->SetTitle("Efficienza della ricostruzione entro 3#sigma dal centro;Molteplicit�;#frac{eventi Ricostruiti}{eventi Generati}");
-  hEffMolt3S->Draw();
-  cEffMolt3S->SaveAs("Output/Efficienza_Molteplicita_3s" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
+  hEffMolt3S->Write();
+  //cEffMolt3S->SaveAs("Output/Efficienza_Molteplicita_3s" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
   
 
  // Chiusura dei file e deallocazione della memoria
@@ -291,15 +293,43 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   delete PuntatoreVertice;
   delete UrtiRiv1Reco;
   delete UrtiRiv2Reco;
-  delete cModa;
-  delete cRisMolt;
-  delete cEffMolt;
-  delete cRisoluzioneVero;
-  delete cEffMolt1S;
-  delete cEffMolt3S;
+  //delete cModa;
+  //delete cRisMolt;
+  //delete cEffMolt;
+  //delete cRisoluzioneVero;
+  //delete cEffMolt1S;
+  //delete cEffMolt3S;
   delete fileGenerazione;
   delete fileRicostruzione;
   delete fileAnalisi;
 
   return kTRUE;
 }
+
+/*
+void PostAnalisi(TString nomiFile[], int lunghezza) {
+  TFile *filetemp;
+  vector<TFile*> files;
+  vector<TEfficiency*> efficienze;
+  vector<TGraphErrors*> risoluzioni;
+
+  vector<TString> nomiEfficienze = {"hMolTutti_clone;1", "hMolTutti_clone;2", "hMolTutti_clone;3"};
+  vector<TString> nomiRisoluzioni = {"Graph;1", "Graph;2"};
+
+  TMultiGraph *multiRisol = new TMultiGraph();
+  TMultiGraph *multiEff = new TMultiGraph();
+  for(int i = 0; i < lunghezza; i++) {
+    filetemp = TFile::Open("Output/" + nomiFile[i] + ".root");
+    files.push_back(filetemp);
+
+    for(int j = 0; j < nomiEfficienze.size(); j++) {
+      efficienze.push_back((TEfficiency*)files[i] -> Get(nomiEfficienze[j]));
+      multiEff -> Add(nomiEfficienze[j]);
+    }
+    for(int j = 0; j < nomiRisoluzioni.size(); j++) {
+      risoluzioni.push_back((TGraphErrors*)files[i] -> Get(nomiRisoluzioni[j]));
+
+    }
+  }
+
+}*/
