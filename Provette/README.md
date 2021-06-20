@@ -1,11 +1,11 @@
 # Cose da fare
 - [ ] capire cosa fa FlipBit                                        Albero.C                riga 173
 - [ ] controllare moda = 0 e 1 per casi patologici (codici -500 e -600)
-- [ ] analisi multiple per errore
 - [ ] fare file configurazione analisi
 - [ ] guardare i grafici di efficienza e fare modifiche per calcolo errori
 - [ ] scrivere istruzioni per scaricare la repository in README
 - [ ] scrivere nel **REPORT** che energia della collisione è in Rivelatore.C perchè è propria della struttura
+- [x] analisi multiple per errore
 - [x] fare grafici risoluzione
 - [x] capire se ha senso lasciare ID in Trasporto.C 
 - [x] controllare se Branch1Gen contiene i dati di Albero.C
