@@ -1,0 +1,5 @@
+//onoff,distribuzione,par1,par2
+0
+gaussiana
+15.
+5.
