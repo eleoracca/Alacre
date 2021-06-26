@@ -11,6 +11,7 @@
 #include "TFile.h"
 #include "TEfficiency.h"
 #include "TGraphErrors.h"
+#include "TLegend.h"
 #include "TMultiGraph.h"
 
 #include "Colori.h"
@@ -306,30 +307,67 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   return kTRUE;
 }
 
-/*
-void PostAnalisi(TString nomiFile[], int lunghezza) {
+
+void PostAnalisi(const vector<TString>& nomiFile) {
   TFile *filetemp;
-  vector<TFile*> files;
-  vector<TEfficiency*> efficienze;
-  vector<TGraphErrors*> risoluzioni;
+  // vector<TFile*> files;
+  // vector<TEfficiency*> efficienze;
+  // vector<TGraphErrors*> risoluzioni;
 
   vector<TString> nomiEfficienze = {"hMolTutti_clone;1", "hMolTutti_clone;2", "hMolTutti_clone;3"};
   vector<TString> nomiRisoluzioni = {"Graph;1", "Graph;2"};
+  vector<EColor> colori = {kRed, kBlue, kBlack, kGreen, kViolet};
 
-  TMultiGraph *multiRisol = new TMultiGraph();
-  TMultiGraph *multiEff = new TMultiGraph();
-  for(int i = 0; i < lunghezza; i++) {
-    filetemp = TFile::Open("Output/" + nomiFile[i] + ".root");
-    files.push_back(filetemp);
+  TCanvas *cMultiEff[nomiEfficienze.size()];
+  TMultiGraph *multiEff[nomiEfficienze.size()];
+  TCanvas *cMultiRisol[nomiRisoluzioni.size()];
+  TMultiGraph *multiRisol[nomiRisoluzioni.size()];
 
-    for(int j = 0; j < nomiEfficienze.size(); j++) {
-      efficienze.push_back((TEfficiency*)files[i] -> Get(nomiEfficienze[j]));
-      multiEff -> Add(nomiEfficienze[j]);
-    }
-    for(int j = 0; j < nomiRisoluzioni.size(); j++) {
-      risoluzioni.push_back((TGraphErrors*)files[i] -> Get(nomiRisoluzioni[j]));
-
-    }
+  for(unsigned int i = 0; i < nomiEfficienze.size(); i++) {
+    cMultiEff[i] = new TCanvas(TString::Format("cMultiEff_%d", i), nomiEfficienze[i], 0, 0, 1280, 1024);
+    multiEff[i] = new TMultiGraph();
+  }
+  for(unsigned int i = 0; i < nomiRisoluzioni.size(); i++) {
+    cMultiRisol[i] = new TCanvas(TString::Format("cMultiRisol_%d", i), nomiRisoluzioni[i], 0, 0, 1280, 1024);
+    multiRisol[i] = new TMultiGraph();
   }
 
-}*/
+  for(unsigned int i = 0; i < nomiFile.size(); i++) {
+    cout << "Processing file " << nomiFile[i] << endl;
+    filetemp = TFile::Open("Output/" + nomiFile[i] + ".root");
+    // files.push_back(filetemp);
+
+    for(unsigned int j = 0; j < nomiEfficienze.size(); j++) {
+      TEfficiency *efficienza = (TEfficiency*)filetemp -> Get(nomiEfficienze[j]);
+      // efficienze.push_back((TEfficiency*)filetemp -> Get(nomiEfficienze[j]));
+      efficienza -> SetTitle(nomiFile[i]);
+      efficienza -> SetLineColor(colori[i]);
+      TGraphAsymmErrors *graficoEfficienza = efficienza -> CreateGraph();
+      multiEff[j] -> Add((TGraph*) graficoEfficienza);
+    }
+
+    for(unsigned int j = 0; j < nomiRisoluzioni.size(); j++) {
+      TGraphErrors *risoluzione = (TGraphErrors*)filetemp -> Get(nomiRisoluzioni[j]);
+      risoluzione -> SetTitle(nomiFile[i]);
+      risoluzione -> SetLineColor(colori[i]);
+      multiRisol[j] -> Add(risoluzione);
+    }
+
+    filetemp -> Close();
+  }
+
+  for(unsigned int i = 0; i < nomiEfficienze.size(); i++) {
+    cMultiEff[i] -> cd();
+    multiEff[i] -> SetTitle(nomiEfficienze[i].ReplaceAll(";", ","));
+    multiEff[i] -> Draw("alp");
+    cMultiEff[i] -> BuildLegend();
+  }
+
+  for(unsigned int i = 0; i < nomiRisoluzioni.size(); i++) {
+    cMultiRisol[i] -> cd();
+    multiRisol[i] -> SetTitle(nomiRisoluzioni[i].ReplaceAll(";", ","));
+    multiRisol[i] -> Draw("alp");
+    cMultiRisol[i] -> BuildLegend();
+  }
+  return;
+}

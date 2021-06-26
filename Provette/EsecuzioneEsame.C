@@ -26,13 +26,17 @@ bool SingolaEsecuzione(bool filegenerazione, bool filerumore, bool generazioneFa
 void EsecuzioneEsame(bool simulazioniMultiple = kFALSE, bool filegenerazione = kTRUE, bool filerumore = kTRUE) {
   #define NFILES 4
   TString ricostruzioni[NFILES] = {"Rumore0", "Rumore10", "Rumore50", "Rumore100"};
-  bool esitoEsecuzione[NFILES] = {kFALSE, kFALSE, kFALSE, kFALSE};
+  bool esitoEsecuzione[NFILES] = {kFALSE};
   bool generazioneFatta = kFALSE;
+  vector<TString> nomiFile;
+  TString nomefile = "\0";
 
 
   if(simulazioniMultiple) {
     for(int i = 0; i < NFILES; i++) {
       esitoEsecuzione[i] = SingolaEsecuzione(kTRUE, kTRUE, generazioneFatta, ricostruzioni[i], "\0");
+      nomefile = "Analisi_" + ricostruzioni[i];
+      nomiFile.push_back(nomefile);
       if(!esitoEsecuzione[0] && i == 0) {
         cout << Errore("Prima esecuzione fallita!") << endl;
         return;
@@ -45,6 +49,7 @@ void EsecuzioneEsame(bool simulazioniMultiple = kFALSE, bool filegenerazione = k
       cout << "Analisi " + TString::Itoa(i, 10) + " eseguita con il seguente esito: " << esitoEsecuzione[i] << endl;
     }
     cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    PostAnalisi(nomiFile);
   }
   else {
     esitoEsecuzione[0] = SingolaEsecuzione(kTRUE, kTRUE, kFALSE, "\0", "\0");
