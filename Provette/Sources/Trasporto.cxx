@@ -25,14 +25,12 @@ Trasporto::Trasporto(): TObject(){
   dmCDx = 0.;
   dmCDy = 0.;
   dmCDz = 0.;
-  dmIsrotated = kFALSE;
 };
 
 Trasporto::Trasporto(double Theta, double Phi, int ID): TObject(){  
   dmID = ID;
   dmTheta = Theta;
   dmPhi = Phi;
-  dmIsrotated = kFALSE;
   dmCDx = TMath::Sin(Theta) * TMath::Cos(Phi);
   dmCDy = TMath::Sin(Theta) * TMath::Sin(Phi);
   dmCDz = TMath::Cos(Theta);
@@ -106,9 +104,6 @@ double Trasporto::GetDirCosZ(){
   return dmCDz;
 }
 
-bool Trasporto::GetRotStatus(){
-  return dmIsrotated;
-}
 
 void Trasporto::AggiornaAng(){
   dmTheta = TMath::ACos(dmCDz);
@@ -129,15 +124,6 @@ void Trasporto::AggiornaDirCos(){
   dmCDx = TMath::Sin(dmTheta) * TMath::Cos(dmPhi);
   dmCDy = TMath::Sin(dmTheta) * TMath::Sin(dmPhi);
   dmCDz = TMath::Cos(dmTheta);
-}
-
-void Trasporto::FlipBit(){
-  if(dmIsrotated) {
-    dmIsrotated = kFALSE;
-  }
-  else {
-    dmIsrotated = kTRUE;
-  }
 }
 
 void Trasporto::Rotazione(double Theta, double Phi){
@@ -174,7 +160,6 @@ void Trasporto::Rotazione(double Theta, double Phi){
   dmCDx = Cd[0];
   dmCDy = Cd[1];
   dmCDz = Cd[2];
-  this->FlipBit();
   
   // Aggiorna Theta and Phi
   this->AggiornaAng();

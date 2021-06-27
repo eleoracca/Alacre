@@ -22,7 +22,6 @@ class Trasporto : public TObject {
   virtual ~Trasporto();
   
   // ----------- Setter -----------
-  void FlipBit();
   void Rotazione(double Theta, double Phi);
   void SetAngoli(const double Theta, const double Phi);
   
@@ -33,7 +32,6 @@ class Trasporto : public TObject {
   double GetDirCosX();
   double GetDirCosY();
   double GetDirCosZ();
-  bool GetRotStatus();
   
  private:
   // ----------- Setter ----------- 
@@ -55,7 +53,6 @@ class Trasporto : public TObject {
   double dmCDx; // Coseno Direttore x.
   double dmCDy; // Coseno Direttore y.
   double dmCDz; // Coseno Direttore z.
-  bool dmIsrotated; // Debug flag.
   
   ClassDef(Trasporto, 1)
     

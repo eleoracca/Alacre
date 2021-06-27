@@ -177,10 +177,6 @@ bool Albero(Rivelatore* detector, bool fileconfig = kTRUE, TString nomefile = "\
       Urto1L = UrtoBP.UrtodaUrto(PuntatoreDirezione, detector, multiplescattering, 1);
       Urto1L.SetUrtoReale();
       
-      if(multiplescattering){
-        PuntatoreDirezione->FlipBit();
-      }
-      
       // Generazione dell'urto sul secondo strato e multiple scattering
       Urto2L = Urto1L.UrtodaUrto(PuntatoreDirezione, detector, multiplescattering, 2);
       Urto2L.SetUrtoReale();
