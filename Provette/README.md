@@ -1,10 +1,13 @@
-# Cose da fare
-- [ ] capire cosa fa FlipBit                                        Albero.C                riga 173
-- [ ] controllare moda = 0 e 1 per casi patologici (codici -500 e -600)
-- [ ] fare file configurazione analisi
-- [ ] guardare i grafici di efficienza e fare modifiche per calcolo errori
-- [ ] scrivere istruzioni per scaricare la repository in README
-- [ ] scrivere nel **REPORT** che energia della collisione è in Rivelatore.C perchè è propria della struttura
+# Cose da fare                                      Albero.C                riga 173
+- [ ] rileggere report e aggiungere grafici
+- [ ] esportare grafici in PostAnalisi in pdf
+- [ ] riguardaer le funzioni per rumore
+- [x] scrivere istruzioni per scaricare la repository in README
+- [x] controllare moda = 0 e 1 per casi patologici (codici -500 e -600)
+- [x] fare file configurazione analisi
+- [x] guardare i grafici di efficienza e fare modifiche per calcolo errori
+- [x] scrivere Report
+- [x] scrivere nel **REPORT** che energia della collisione è in Rivelatore.C perchè è propria della struttura
 - [x] analisi multiple per errore
 - [x] fare grafici risoluzione
 - [x] capire se ha senso lasciare ID in Trasporto.C 
