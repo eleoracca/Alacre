@@ -333,7 +333,6 @@ void PostAnalisi(const vector<TString>& nomiFile) {
   }
 
   for(unsigned int i = 0; i < nomiFile.size(); i++) {
-    cout << "Processing file " << nomiFile[i] << endl;
     filetemp = TFile::Open("Output/" + nomiFile[i] + ".root");
     // files.push_back(filetemp);
 
