@@ -86,7 +86,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   
   // ----------------------------------------------------------------------------
   // Inizializzazione di istogrammi e variabili utili
-  TH1D *hzDiff = new TH1D("hzDiff", "Differenza tra z generata e z ricostruita", NBINS);
+  TH1D *hzDiff = new TH1D("hzDiff", "Differenza tra z generata e z ricostruita", 1000, -0.15, 0.15);
   TH1I *hMolTutti = new TH1I("hMolTutti", "Molteplicità di tutti gli eventi", maxMolteplicita, -0.5, (float)maxMolteplicita + .5); //Istogramma per raccogliere Molteplicità di tutti gli eventi
   TH1I *hMolReco = new TH1I("hMolReco", "Molteplicità di tutti gli eventi ricostruiti", maxMolteplicita, -0.5, (float)maxMolteplicita + .5); //Istogramma per raccogliere Molteplicità di tutti gli eventi ricostruiti
   TH1I *hMolReco1s = new TH1I("hMolReco1s", "Molteplicità degli eventi ricostruiti entro 1 dev std da z = 0", maxMolteplicita, -0.5, (float)maxMolteplicita + .5); //Istogramma per raccogliere Molteplicità di eventi ricostruiti entro 1 sigma dallo 0
