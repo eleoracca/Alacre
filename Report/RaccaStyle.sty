@@ -1,0 +1,55 @@
+% Questo è il file di stile di Eleonora Racca generico
+\usepackage[latin9,utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage{dsfont}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{indentfirst} % per le identazioni italiane
+\usepackage{pifont} % per checkmark e crossmark (\ding{51} e \ding{55})
+\usepackage{pdfpages} % esempio: \includepdf[pages={1,5}]{myfile.pdf}
+\usepackage{slashed} % esempio: \slashed{testo}; per barrare il testo
+\usepackage{verbatim}
+\usepackage{wrapfig}
+% queste sono le virgolette in italiano: ?prova? oppure ``prova''
+
+% Estensioni grafiche
+\DeclareGraphicsExtensions{.pdf, .png, .jpg, .eps, .bmp, .dia, .ps, .gif}
+
+% ---------------------- IMPAGINAZIONE ----------------------
+% Collegamenti ipertestuali
+\hypersetup{pdfpagemode={UseOutlines}, bookmarksopen, pdfstartview={FitH}, colorlinks=true, linkcolor={blue}, citecolor={blue}, urlcolor={blue}}
+
+% Margini
+\usepackage{geometry}
+\geometry{a4paper, tmargin=20mm, bmargin=20mm, lmargin=20mm, rmargin=20mm, twoside}
+
+% Personalizzazione Fancy
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[CE, CO]{\thepage}
+
+% Figure e tabelle
+\usepackage{caption}
+\usepackage{epstopdf}
+\usepackage{graphicx} % per le figure e le tabelle
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{subfigure}
+\usepackage{tabularx}
+\renewcommand{\thetable}{\arabic{chapter}.\arabic{table}}
+\renewcommand{\thefigure}{\arabic{chapter}.\arabic{figure}}
+\renewcommand{\thesubtable}{\alph{subtable}}
+\renewcommand{\thesubfigure}{\alph{subfigure}}
+\captionsetup[figure]{textfont=sl, singlelinecheck=on, justification=raggedright, labelformat=simple, labelsep=colon, labelfont={bf,it}, font=small}
+\captionsetup[table]{textfont=sl, singlelinecheck=on, justification=raggedright, labelformat=simple, labelsep=colon, labelfont={bf,it}, font=small}
+\captionsetup[subfigure]{textfont=it,singlelinecheck=off,justification=raggedright,labelformat=parens,labelsep=colon}
+\captionsetup[subtable]{textfont=it,singlelinecheck=off,justification=raggedright,labelformat=parens,labelsep=colon}
+
+
+% Microsoft Office Word to LaTeX
+% http://www.grindeq.com/index.php?p=word2latex

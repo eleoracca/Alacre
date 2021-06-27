@@ -1,6 +1,7 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage{RaccaStyle}
 \usepackage{RSProgrammazione}
+\usepackage[italian]{babel}
 
 \begin{document}
 \thispagestyle{empty}
@@ -31,17 +32,48 @@ Candidate: RACCA ELEONORA\\
 \end{center}
 
 \section{Introduzione}
-\par Qualcosa di generico sull'obiettivo del progetto
+\par Il progetto consiste nello sviluppo di un programma ROOT per la simulazione di un rivelatore di vertice di un esperimento a collider. Il rivelatore è costituito da una struttura cilindrica concentrica formata da una beam pipe di berillio e due layer di rivelatori al silicio.\\
+Il programma consta di tre parti: una fase di generazione degli eventi, una di ricostruzione e infine una di analisi.
 
 \section{Struttura del programma}
-\par Qualcosa sulle classi
+\par Il programma si articola su tre macro principali, due macro per l'esecuzione ed una serie di classi per l'implementazione delle macro. Le classi utilizzate sono le seguenti:
 \begin{itemize}
-\item \lstinline{Punto}
-\item \lstinline{Rivelatore}
-\item \lstinline{Trasporto}
-\item \lstinline{Urto}
-\item \lstinline{Vertice}
+\item \lstinline{Rivelatore}, contenente le informazioni geometriche e fisiche dell'apparato.
+\item \lstinline{Punto}, contenente le coordinate nei vari sistemi di riferimento (cartesiane, cilindriche e sferiche).
+\item \lstinline{Urto} eredita da \lstinline{Punto} e implementa diversi metodi per generare urti sulla beam pipe e sui layer, effettuare lo smearing e generare i punti di rumore.
+\item \lstinline{Vertice}, eredita da \lstinline{Punto} e memorizza le coordinate del vertice e ha un metodo per ricostruire la coordinata del vertice.
+\item \lstinline{Trasporto} contiene la direzione di propagazione dei singoli urti e permette la rotazione angolare in caso di scattering multiplo.
 \end{itemize}
+Per compilare ed eseguire il programma con le configurazioni di default è necessario seguire questa procedura:
+\begin{enumerate}
+    \item da terminale lanciare i seguenti comandi:
+    \begin{lstlisting}
+        cd Provette
+        root
+    \end{lstlisting}
+    \item all'interno di ROOT eseguire i seguenti comandi
+    \begin{lstlisting}
+        .x compila.C
+        EsecuzioneEsame()
+    \end{lstlisting}
+\end{enumerate}
+La funzione \lstinline{EsecuzioneEsame} permette di specificare, tramite un parametro booleano, l'avvio di simulazioni multiple a differenti livelli di rumore. La simulazione è formata da tre stadi: generazione, ricostruzione e analisi.\\
+Essa viene eseguita andando a leggere da due file di tipo testo le informazioni necessarie. Nello specifico, \textit{Generazione.txt} contiene le informazioni riguardanti il numero di eventi da generare, la distribuzione della molteplicità, la presenza o meno dello scattering multiplo e la distribuzione di pseudorapidità $\eta$, mentre il file \textit{Ricostruzione.txt} contiene le informazioni necessarie alla macro di ricostruzione per abilitare il rumore e specificarne il tipo di distribuzione.\\
+Nel caso di esecuzioni multiple, la generazione è singola, mentre ricostruzione e analisi sono differenti per via di diversi livelli di rumore, riportati nei file \textit{RicostruzioneRumoreN.txt}. Una volta eseguite tutte le simulazioni richieste, viene invocata una ulteriore funzione \lstinline{PostAnalisi} che permette di comparare tramite dei \lstinline{MultiGraph} i grafici di efficienza e risoluzione.\\
+Il compito della macro \textit{EsecuzioneEsame.C} è quindi quello di richiamare le macro di generazione \textit{Albero.C}, ricostruzione \textit{Ricostruzione.C} e analisi \textit{Analisi.C}.
+
+La macro \textit{Albero.C} è quella che si occupa della generazione degli eventi. Viene creato il \lstinline{Tree} "gaggia" con 4 \lstinline{Branch}: Vertice, UrtiBeamPipe, UrtiRivelatore1 e UrtiRivelatore2. Il primo branch contiene oggetti di classe \lstinline{Vertice}, mentre gli altri 3 branch sono dei \lstinline{TClonesArray} di classe \lstinline{Urto}. All'interno della macro viene letto il file di generazione che contiene i parametri per la simulazione. Per la molteplicità dell'evento sono supportate le distribuzioni gaussiana, uniforme e fissa, oppure quella contenuta nel file \textit{kinem.root}. Si specifica all'interno del file testuale se utilizzare una distribuzione di pseudorapidità uniforme o la distribuzione contenuta in \textit{kinem.root}.\\
+Per ogni evento, viene scelto il numero di particelle mediante la funzione \lstinline{DecisioneMolteplicita} e viene generato il vertice tramite l'apposito costruttore.\\
+Per ogni particella da generare, viene calcolata la direzione di propagazione con la funzione \lstinline{EtaTheta} per l'angolo $\theta$ e campionando da una uniforme tra $[0, 2\pi]$ per l'angolo $\phi$. Successivamente, viene generato l'urto sulla beam pipe tramite il metodo \lstinline{UrtoDaVertice} e gli urti sue due layer tramite il metodo \lstinline{UrtoDaUrto}. Il tutto viene salvato nel tree esportato nel file \textit{Output/Simulazione.root}.
+
+La macro \textit{Ricostruzione.C} legge il tree "gaggia" e i suoi 3 branch. Crea il tree della ricostruzione, "rovere", nel quale sono salvati gli urti ricostruiti dopo l'applicazione dello smearing gaussiano e lo scattering multiplo nei branch dei due layer del rivelatore e il terzo salva il numero di punti di rumore generato.
+Si cicla sul numero di eventi e per ognuno viene applicato lo smearing gaussiano con la funzione \lstinline{Smearing}, che, iterando sugli urti per ogni layer, applica lo smearing tramite la funzione \lstinline{SmearingGaussiano}, metodo di \lstinline{Urto}. In seguito, viene aggiunto il rumore tramite due possibili funzioni a seconda della distribuzione: \lstinline{RumoreGaussiano} e \lstinline{RumoreFissa}. I punti di rumore si aggiungono in fondo ai TClonesArray dei due layer. Il tree viene salvato nel file \textit{Output/Ricostruzione.root} nel caso di singola simulazione oppure nei file \textit{Output/RicostruzioneRumoreN.root} per simulazioni multiple.
+
+La macro \textit{Analisi.C} legge i tree "gaggia" e "rovere" e i relativi branch. Per ogni evento si valutano tutte le possibili coppie di punti su layer 1 e layer 2. Per ogni coppia di punti si valuta la differenza $\Delta\phi$: se questa è minore di una soglia impostata dall'utente, allora viene invocato il metodo \lstinline{TrovaVertice} di Vertice per calcolare tutti i possibili vertici ricostruiti con le tracce dell'evento.
+Si valuta quale sia il vertice più probabile tramite la funzione \lstinline{Moda}. Essa cerca il primo bin dell'istogramma in cui è presente il valore massimo di conteggi e assegna a $zRicostruita$ il valore centrale del bin. In seguito, controlla che non siano presenti altri massimi a destra: in caso negativo, viene restituito il valore precedentemente trovato. In caso contrario, viene valutata la distanza tra i due bin: se piccola, viene fatta la media tra i due, altrimenti viene scelto il valore centrale minore.\\
+Infine, si valutano efficienza e risoluzione della simulazione tramite la costruzione di grafici. Tutto viene salvato nel file \textit{Output/Analisi.root} in caso di simulazione singola oppure \textit{Output/Analisi\_RumoreN.root} per simulazioni multiple.
+
+Inoltre, in caso di simulazioni multiple, viene invocata la funzione \lstinline{PostAnalisi}, che apre i vari file di analisi e combina insieme i grafici di efficienza e risoluzione per effettuare un confronto al crescere del rumore.
 
 \section{Efficienza di ricostruzione}
 
