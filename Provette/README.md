@@ -1,7 +1,7 @@
 # Cose da fare                                      Albero.C                riga 173
 - [ ] rileggere report e aggiungere grafici
-- [ ] esportare grafici in PostAnalisi in pdf
-- [ ] riguardaer le funzioni per rumore
+- [ ] riguardare le funzioni per rumore
+- [x] esportare grafici in PostAnalisi in pdf
 - [x] scrivere istruzioni per scaricare la repository in README
 - [x] controllare moda = 0 e 1 per casi patologici (codici -500 e -600)
 - [x] fare file configurazione analisi
