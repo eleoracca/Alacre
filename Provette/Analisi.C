@@ -358,15 +358,17 @@ void PostAnalisi(const vector<TString>& nomiFile) {
   for(unsigned int i = 0; i < nomiEfficienze.size(); i++) {
     cMultiEff[i] -> cd();
     multiEff[i] -> SetTitle(nomiEfficienze[i].ReplaceAll(";", ","));
-    multiEff[i] -> Draw("alp");
+    multiEff[i] -> Draw("ap");
     cMultiEff[i] -> BuildLegend();
+    cMultiEff[i] -> SaveAs(TString::Format("Output/efficienza_molteplicita_%d.pdf", i));
   }
 
   for(unsigned int i = 0; i < nomiRisoluzioni.size(); i++) {
     cMultiRisol[i] -> cd();
     multiRisol[i] -> SetTitle(nomiRisoluzioni[i].ReplaceAll(";", ","));
-    multiRisol[i] -> Draw("alp");
+    multiRisol[i] -> Draw("ap");
     cMultiRisol[i] -> BuildLegend();
+    cMultiRisol[i] -> SaveAs(TString::Format("Output/risoluzione_%d.pdf", i));
   }
   return;
 }
