@@ -20,7 +20,11 @@ Obiettivi:
 Scaricare la repository
 -----------------------
 
-Da fare
+Cliccare il tasto verde Code e fare il Download della cartella .zip
+
+oppure
+
+Scaricare tramite tramite il link https://github.com/eleoracca/Alacre.git
   
 Esecuzione del programma
 ------------------------
