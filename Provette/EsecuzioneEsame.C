@@ -49,7 +49,9 @@ void EsecuzioneEsame(bool simulazioniMultiple = kFALSE, bool filegenerazione = k
       cout << "Analisi " + TString::Itoa(i, 10) + " eseguita con il seguente esito: " << esitoEsecuzione[i] << endl;
     }
     cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-    PostAnalisi(nomiFile);
+    PostAnalisi(nomiFile, "_tutte");
+    nomiFile.pop_back();
+    PostAnalisi(nomiFile, "_no_rumore100");
   }
   else {
     esitoEsecuzione[0] = SingolaEsecuzione(kTRUE, kTRUE, kFALSE, "\0", "\0");

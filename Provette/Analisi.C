@@ -13,6 +13,8 @@
 #include "TGraphErrors.h"
 #include "TLegend.h"
 #include "TMultiGraph.h"
+#include "TGraphAsymmErrors.h"
+#include "TObjString.h"
 
 #include "Colori.h"
 #include "Punto.h"
@@ -308,7 +310,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
 }
 
 
-void PostAnalisi(const vector<TString>& nomiFile) {
+void PostAnalisi(const vector<TString>& nomiFile, const char* desinenza="") {
   TFile *filetemp;
   // vector<TFile*> files;
   // vector<TEfficiency*> efficienze;
@@ -316,39 +318,53 @@ void PostAnalisi(const vector<TString>& nomiFile) {
 
   vector<TString> nomiEfficienze = {"hMolTutti_clone;1", "hMolTutti_clone;2", "hMolTutti_clone;3"};
   vector<TString> nomiRisoluzioni = {"Graph;1", "Graph;2"};
+  vector<TString> vettoreRumore;
+  vector<TString> titoliEfficienze = {"Efficienza della ricostruzione", "Efficienza della ricostruzione entro 1#sigma dal centro", "Efficienza della ricostruzione entro 3#sigma dal centro"};
+  vector<TString> titoliRisoluzione = {"Risoluzione vs Molteplicita'", "Risoluzione vs zVero"};
+  vector<TString> titoliAsseXRisoluzioni = {"Molteplicita'", "zVero [cm]"};
   vector<EColor> colori = {kRed, kBlue, kBlack, kGreen, kViolet};
 
   TCanvas *cMultiEff[nomiEfficienze.size()];
   TMultiGraph *multiEff[nomiEfficienze.size()];
   TCanvas *cMultiRisol[nomiRisoluzioni.size()];
   TMultiGraph *multiRisol[nomiRisoluzioni.size()];
+  TLegend *legendeEfficienze[nomiEfficienze.size()];
+  TLegend *legendeRisoluzioni[nomiRisoluzioni.size()];
 
   for(unsigned int i = 0; i < nomiEfficienze.size(); i++) {
     cMultiEff[i] = new TCanvas(TString::Format("cMultiEff_%d", i), nomiEfficienze[i], 0, 0, 1280, 1024);
     multiEff[i] = new TMultiGraph();
+    legendeEfficienze[i] = new TLegend(0.3, 0.1, 0.6, 0.4);
   }
   for(unsigned int i = 0; i < nomiRisoluzioni.size(); i++) {
     cMultiRisol[i] = new TCanvas(TString::Format("cMultiRisol_%d", i), nomiRisoluzioni[i], 0, 0, 1280, 1024);
     multiRisol[i] = new TMultiGraph();
+    legendeRisoluzioni[i] = new TLegend(0.55, 0.55, 0.85, 0.85);
   }
+
 
   for(unsigned int i = 0; i < nomiFile.size(); i++) {
     filetemp = TFile::Open("Output/" + nomiFile[i] + ".root");
+    TString rumore = ((TObjString *)(nomiFile[i].Tokenize("_") -> At(1))) -> String();
+    vettoreRumore.push_back(rumore);
     // files.push_back(filetemp);
 
     for(unsigned int j = 0; j < nomiEfficienze.size(); j++) {
       TEfficiency *efficienza = (TEfficiency*)filetemp -> Get(nomiEfficienze[j]);
-      // efficienze.push_back((TEfficiency*)filetemp -> Get(nomiEfficienze[j]));
-      efficienza -> SetTitle(nomiFile[i]);
+      efficienza -> SetTitle(titoliEfficienze[i]);
       efficienza -> SetLineColor(colori[i]);
       TGraphAsymmErrors *graficoEfficienza = efficienza -> CreateGraph();
+      legendeEfficienze[j] -> AddEntry(graficoEfficienza, rumore);
       multiEff[j] -> Add((TGraph*) graficoEfficienza);
     }
 
     for(unsigned int j = 0; j < nomiRisoluzioni.size(); j++) {
       TGraphErrors *risoluzione = (TGraphErrors*)filetemp -> Get(nomiRisoluzioni[j]);
-      risoluzione -> SetTitle(nomiFile[i]);
+      risoluzione -> SetTitle(titoliRisoluzione[0]);
+      risoluzione -> GetXaxis() -> SetTitle("Molteplicita'");
+      risoluzione -> GetYaxis() -> SetTitle("Risoluzione [cm]");
       risoluzione -> SetLineColor(colori[i]);
+      legendeRisoluzioni[j] -> AddEntry(risoluzione, rumore);
       multiRisol[j] -> Add(risoluzione);
     }
 
@@ -357,18 +373,20 @@ void PostAnalisi(const vector<TString>& nomiFile) {
 
   for(unsigned int i = 0; i < nomiEfficienze.size(); i++) {
     cMultiEff[i] -> cd();
-    multiEff[i] -> SetTitle(nomiEfficienze[i].ReplaceAll(";", ","));
+    multiEff[i] -> SetTitle(titoliEfficienze[i] + ";Molteplicita';#frac{eventi Ricostruiti}{eventi Generati}");
     multiEff[i] -> Draw("ap");
-    cMultiEff[i] -> BuildLegend();
-    cMultiEff[i] -> SaveAs(TString::Format("Output/efficienza_molteplicita_%d.pdf", i));
+    legendeEfficienze[i] -> Draw();
+    cMultiEff[i] -> SaveAs(TString::Format("Output/efficienza_molteplicita_%d%s.pdf", i, desinenza));
   }
 
   for(unsigned int i = 0; i < nomiRisoluzioni.size(); i++) {
     cMultiRisol[i] -> cd();
-    multiRisol[i] -> SetTitle(nomiRisoluzioni[i].ReplaceAll(";", ","));
+    multiRisol[i] -> SetTitle(titoliRisoluzione[i]);
+    multiRisol[i] -> GetXaxis() -> SetTitle(titoliAsseXRisoluzioni[i]);
+    multiRisol[i] -> GetYaxis() -> SetTitle("Risoluzione [cm]");
     multiRisol[i] -> Draw("ap");
-    cMultiRisol[i] -> BuildLegend();
-    cMultiRisol[i] -> SaveAs(TString::Format("Output/risoluzione_%d.pdf", i));
+    legendeRisoluzioni[i] -> Draw();
+    cMultiRisol[i] -> SaveAs(TString::Format("Output/risoluzione_%d%s.pdf", i, desinenza));
   }
   return;
 }
