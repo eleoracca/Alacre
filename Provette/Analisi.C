@@ -90,6 +90,8 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   // Inizializzazione di istogrammi e variabili utili
   TH1D *hzDiff = new TH1D("hzDiff", "Differenza tra z generata e z ricostruita", 1000, -0.15, 0.15);
   TH1I *hMolTutti = new TH1I("hMolTutti", "Molteplicità di tutti gli eventi", maxMolteplicita, -0.5, (float)maxMolteplicita + .5); //Istogramma per raccogliere Molteplicità di tutti gli eventi
+  TH1I *hMolTutti1s = new TH1I("hMolTutti1s", "Molteplicità di tutti gli eventi", maxMolteplicita, -0.5, (float)maxMolteplicita + .5); //Istogramma per raccogliere Molteplicità di tutti gli eventi
+  TH1I *hMolTutti3s = new TH1I("hMolTutti3s", "Molteplicità di tutti gli eventi", maxMolteplicita, -0.5, (float)maxMolteplicita + .5); //Istogramma per raccogliere Molteplicità di tutti gli eventi
   TH1I *hMolReco = new TH1I("hMolReco", "Molteplicità di tutti gli eventi ricostruiti", maxMolteplicita, -0.5, (float)maxMolteplicita + .5); //Istogramma per raccogliere Molteplicità di tutti gli eventi ricostruiti
   TH1I *hMolReco1s = new TH1I("hMolReco1s", "Molteplicità degli eventi ricostruiti entro 1 dev std da z = 0", maxMolteplicita, -0.5, (float)maxMolteplicita + .5); //Istogramma per raccogliere Molteplicità di eventi ricostruiti entro 1 sigma dallo 0
   TH1I *hMolReco3s = new TH1I("hMolReco3s", "Molteplicità degli eventi ricostruiti entro 3 dev std da z = 0", maxMolteplicita, -0.5, (float)maxMolteplicita + .5); //Istogramma per raccogliere Molteplicità di eventi ricostruiti entro 3 sigma dallo 0
@@ -184,7 +186,23 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
     if(ev % 1000 != 0) {
       delete hzReco[ev];
     }
+
+    // Riempimento dei grafici con il totale della molteplicit�
     hMolTutti -> Fill(PuntatoreVertice->GetMolteplicita());
+    
+    if(TMath::Abs(PuntatoreVertice->GetZ()) < 1.1*detector->GetVerticeSZ()){
+      hMolTutti1s -> Fill(PuntatoreVertice->GetMolteplicita());
+    }
+
+    if(nomefileRicostruzione != "RicostruzioneRumore100"){
+      if(TMath::Abs(PuntatoreVertice->GetZ()) < 3.1*detector->GetVerticeSZ()){      
+	hMolTutti3s -> Fill(PuntatoreVertice->GetMolteplicita());	
+      }
+    }
+    else{
+      hMolTutti3s -> Fill(PuntatoreVertice->GetMolteplicita());	
+    }
+
   }
 
 
@@ -263,7 +281,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   cEffMolt1S->SetFillColor(0);
   cEffMolt1S->cd();*/
   
-  TEfficiency* hEffMolt1S = new TEfficiency(*hMolReco1s, *hMolTutti);
+  TEfficiency* hEffMolt1S = new TEfficiency(*hMolReco1s, *hMolTutti1s);
   hEffMolt1S->SetTitle("Efficienza della ricostruzione entro 1#sigma dal centro;Molteplicit�;#frac{eventi Ricostruiti}{eventi Generati}");
   hEffMolt1S->Write();
   //cEffMolt1S->SaveAs("Output/Efficienza_Molteplicita_1s" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
@@ -275,7 +293,7 @@ bool Analisi(const double larghezza, const int maxMolteplicita, Rivelatore* dete
   cEffMolt3S->SetFillColor(0);
   cEffMolt3S->cd();
   */
-  TEfficiency* hEffMolt3S = new TEfficiency(*hMolReco3s, *hMolTutti);
+  TEfficiency* hEffMolt3S = new TEfficiency(*hMolReco3s, *hMolTutti3s);
   hEffMolt3S->SetTitle("Efficienza della ricostruzione entro 3#sigma dal centro;Molteplicit�;#frac{eventi Ricostruiti}{eventi Generati}");
   hEffMolt3S->Write();
   //cEffMolt3S->SaveAs("Output/Efficienza_Molteplicita_3s" + nomefileGenerazione + "_" + nomefileRicostruzione + ".pdf");
@@ -316,7 +334,7 @@ void PostAnalisi(const vector<TString>& nomiFile, const char* desinenza="") {
   // vector<TEfficiency*> efficienze;
   // vector<TGraphErrors*> risoluzioni;
 
-  vector<TString> nomiEfficienze = {"hMolTutti_clone;1", "hMolTutti_clone;2", "hMolTutti_clone;3"};
+  vector<TString> nomiEfficienze = {"hMolTutti_clone;1", "hMolTutti1s_clone;1", "hMolTutti3s_clone;1"};
   vector<TString> nomiRisoluzioni = {"Graph;1", "Graph;2"};
   vector<TString> vettoreRumore;
   vector<TString> titoliEfficienze = {"Efficienza della ricostruzione", "Efficienza della ricostruzione entro 1#sigma dal centro", "Efficienza della ricostruzione entro 3#sigma dal centro"};
