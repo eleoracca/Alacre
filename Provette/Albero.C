@@ -226,7 +226,7 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
     scattering = "spento";
   }
 
-  cout << "--------------- " << Arancione("Parametri per la generazione degli eventi") << " ----------------" << endl;
+  cout << "---------------- " << Arancione("Parametri per la generazione degli eventi") << " -----------------" << endl;
   cout << "I parametri per la generazione vengono letti dal file " << Azzurro("Generazione.txt") << endl;
   cout << "+ Numero di eventi:                    " << numeroeventi << endl;
   cout << "+ Distribuzione della molteplicita:    " << distmolteplicita << endl;
@@ -249,8 +249,8 @@ void StampaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita, d
   }
   else{
     cout << "uniforme" << endl;
-    cout << "  - Minimo:                            -1" << endl;
-    cout << "  - Massimo:                            1" << endl;
+    cout << "  - Minimo:                            -2" << endl;
+    cout << "  - Massimo:                            2" << endl;
   }
   
   cout << "+ Scattering multiplo:                 " << scattering << endl << endl;
@@ -261,7 +261,7 @@ bool RichiestaInformazioni(unsigned int &numeroeventi, TString &distmolteplicita
 
   TString scattering = "\0";
   
-  cout << "-------------- " << Arancione("Parametri per la generazione degli eventi") << " ----------------" << endl;
+  cout << "---------------- " << Arancione("Parametri per la generazione degli eventi") << " ------------------" << endl;
   cout << "Inserire i parametri per la simulazione della generazione" << endl;
   cout << "Inserire un numero intero maggiore di zero" << endl;
   cout << "+ Numero di eventi:                                         ";

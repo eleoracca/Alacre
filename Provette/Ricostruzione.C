@@ -45,7 +45,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig, TString nomefileRicost
 bool RichiestaInformazioni(bool &onoff, TString &distribuzione, double &parametro1, double &parametro2);
 
 // Funzione che stampa i parametri per la generazione del rumore
-void StampaInformazioni(const bool &onoff, const TString &distribuzione, const double &parametro1, const double &parametro2);
+void StampaInformazioni(const bool &onoff, const TString &distribuzione, const double &parametro1, const double &parametro2, const TString nomefile);
 
 // Funzione per fare lo smearing dei punti
 int Smearing(const TClonesArray *strato1Gen, const TClonesArray *strato2Gen, TClonesArray *strato1Reco, TClonesArray *strato2Reco, Rivelatore *detector);
@@ -88,7 +88,7 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE, TString nomef
     in >> commento >> onoff >> distribuzione >> parametro1 >> parametro2;
     in.close();
     
-    StampaInformazioni(onoff, distribuzione, parametro1, parametro2);
+    StampaInformazioni(onoff, distribuzione, parametro1, parametro2, "Ricostruzione" + nomefileRicostruzione + ".txt");
   }
 
   // ----------------------------------------------------------------------------
@@ -209,19 +209,20 @@ bool Ricostruzione(Rivelatore* detector, bool fileconfig = kFALSE, TString nomef
 }
 
 
-void StampaInformazioni(const bool &onoff, const TString &distribuzione, const double &parametro1, const double &parametro2){
+void StampaInformazioni(const bool &onoff, const TString &distribuzione, const double &parametro1, const double &parametro2, const TString nomefile){
   cout << "------------- " << Arancione("Parametri per la ricostruzione degli eventi") << " --------------" << endl;
-  cout << "I parametri per il rumore vengono letti dal file " << Azzurro("Ricostruzione.txt") << endl;
+  cout << "I parametri per il rumore vengono letti dal file " << Azzurro(nomefile) << endl;
+  cout << "Smearing gaussiano:                    acceso" << endl;
   cout << "Rumore:                                ";
   if(onoff){
     cout << "acceso"  << endl;
-    cout << "  - Distribuzione:                       " << distribuzione << endl;
+    cout << "  - Distribuzione:                     " << distribuzione << endl;
     if(distribuzione == "gaussiana"){
-      cout << "    * Media:                             " << parametro1 << endl;
-      cout << "    * Deviazione standard:               " << parametro2 << endl;
+      cout << "    * Media:                           " << parametro1 << endl;
+      cout << "    * Deviazione standard:             " << parametro2 << endl;
     }
     else if(distribuzione == "fissa"){
-      cout << "    * Numero di rivelazioni:             " << parametro1 << endl;
+      cout << "    * Numero di rivelazioni:           " << parametro1 << endl;
     }
   }
   else cout << "spento" << endl << endl;
@@ -229,7 +230,7 @@ void StampaInformazioni(const bool &onoff, const TString &distribuzione, const d
 
 
 bool RichiestaInformazioni(bool &onoff, TString &distribuzione, double &parametro1, double &parametro2){
-  cout << "-------------- " << Arancione("Parametri per la ricostruzione degli eventi") << " ---------------" << endl;
+  cout << "--------------- " << Arancione("Parametri per la ricostruzione degli eventi") << " ---------------" << endl;
   cout << "Inserire i parametri per la simulazione del rumore" << endl;
   cout << "Rumore (0 o 1):                              ";
   cin >> onoff;
