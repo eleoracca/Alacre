@@ -68,7 +68,7 @@ void Urto::SetNumeroLayer(int NumLayer){
 }
 
 // ---------------- Getter ----------------
-int Urto::GetNumeroLayer(){
+int Urto::GetNumeroLayer() const{
   return dmNumLayer;
 }
 
@@ -76,7 +76,7 @@ bool Urto::TestReale(){
   return dmUrtoReale;
 }
 
-int Urto::GetID(){
+int Urto::GetID() const{
   return dmID;
 }
 

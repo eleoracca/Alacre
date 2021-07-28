@@ -30,28 +30,28 @@ class Rivelatore : public TObject{
   void SetSmearRPhi(const double SmearRPhi);
   
   // ---------------- Getter ----------------
-  double GetRaggioBP();
-  double GetRaggio1L();
-  double GetRaggio2L();
-  double GetSpessoreBP();
-  double GetSpessoreL();
-  double GetLunghezza();
-  double GetEnergia();
-  TMaterial GetMaterialeBP();
-  TMaterial GetMaterialeL();
+  double GetRaggioBP() const;
+  double GetRaggio1L() const;
+  double GetRaggio2L() const;
+  double GetSpessoreBP() const;
+  double GetSpessoreL() const;
+  double GetLunghezza() const;
+  double GetEnergia() const;
+  TMaterial GetMaterialeBP() const;
+  TMaterial GetMaterialeL() const;
   
-  double GetEtaMin();
-  double GetEtaMax();
-  double GetSmearZ();
-  double GetSmearRPhi();
-  double GetPhiLimite();
+  double GetEtaMin() const;
+  double GetEtaMax() const;
+  double GetSmearZ() const;
+  double GetSmearRPhi() const;
+  double GetPhiLimite() const;
   
-  double GetVerticeX();
-  double GetVerticeY();
-  double GetVerticeZ();
-  double GetVerticeSX();
-  double GetVerticeSY();
-  double GetVerticeSZ();
+  double GetVerticeX() const;
+  double GetVerticeY() const;
+  double GetVerticeZ() const;
+  double GetVerticeSX() const;
+  double GetVerticeSY() const;
+  double GetVerticeSZ() const;
   
  private:
 

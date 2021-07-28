@@ -36,13 +36,13 @@ class Punto : public TObject{
   void SetRaggioS(const double RaggioS);
   
   // ---------------- Getter ----------------
-  double GetX();
-  double GetY();
-  double GetZ();
-  double GetTheta();
-  double GetPhi();
-  double GetRaggioC();
-  double GetRaggioS();
+  double GetX() const;
+  double GetY() const;
+  double GetZ() const;
+  double GetTheta() const;
+  double GetPhi() const;
+  double GetRaggioC() const;
+  double GetRaggioS() const;
   static double GetDistanza(Punto &PuntoUno, Punto &PuntoDue);
   static double GetDeltaPhi(Punto &PuntoUno, Punto &PuntoDue);
 

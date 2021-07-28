@@ -94,83 +94,83 @@ void Rivelatore::SetSmearRPhi(const double SmearRPhi){
 }
 
 // ---------------- Getter ----------------
-double Rivelatore::GetRaggioBP(){
+double Rivelatore::GetRaggioBP() const{
   return dmRaggioBP;
 }
 
-double Rivelatore::GetRaggio1L(){
+double Rivelatore::GetRaggio1L() const{
   return dmRaggio1L;
 }
 
-double Rivelatore::GetRaggio2L(){
+double Rivelatore::GetRaggio2L() const{
   return dmRaggio2L;
 }
 
-double Rivelatore::GetSpessoreBP(){
+double Rivelatore::GetSpessoreBP() const{
   return dmSpessoreBP;
 }
 
-double Rivelatore::GetSpessoreL(){
+double Rivelatore::GetSpessoreL() const{
   return dmSpessoreL;
 }
 
-double Rivelatore::GetLunghezza(){
+double Rivelatore::GetLunghezza() const{
   return dmLunghezza;
 }
 
-double Rivelatore::GetEnergia(){
+double Rivelatore::GetEnergia() const{
   return dmEnergia;
 }
 
-TMaterial Rivelatore::GetMaterialeBP(){
+TMaterial Rivelatore::GetMaterialeBP() const{
   return dmMaterialeBP;
 }
 
-TMaterial Rivelatore::GetMaterialeL(){
+TMaterial Rivelatore::GetMaterialeL() const{
   return dmMaterialeL;
 }
 
-double Rivelatore::GetEtaMin(){
+double Rivelatore::GetEtaMin() const{
   return dmEtaMinimo;
 }
 
-double Rivelatore::GetEtaMax(){
+double Rivelatore::GetEtaMax() const{
   return dmEtaMassimo;
 }
 
-double Rivelatore::GetSmearZ(){
+double Rivelatore::GetSmearZ() const{
   return dmSmearingZ;
 }
 
-double Rivelatore::GetSmearRPhi(){
+double Rivelatore::GetSmearRPhi() const{
   return dmSmearingRPhi;
 }
 
-double Rivelatore::GetPhiLimite(){
+double Rivelatore::GetPhiLimite() const{
   return dmPhiLimite;
 }
 
-double Rivelatore::GetVerticeX(){
+double Rivelatore::GetVerticeX() const{
   return dmXVertice;
 }
 
-double Rivelatore::GetVerticeY(){
+double Rivelatore::GetVerticeY() const{
   return dmYVertice;
 }
 
-double Rivelatore::GetVerticeZ(){
+double Rivelatore::GetVerticeZ() const{
   return dmZVertice;
 }
 
-double Rivelatore::GetVerticeSX(){
+double Rivelatore::GetVerticeSX() const{
   return dmXVerticeSigma;
 }
 
-double Rivelatore::GetVerticeSY(){
+double Rivelatore::GetVerticeSY() const{
   return dmYVerticeSigma;
 }
 
-double Rivelatore::GetVerticeSZ(){
+double Rivelatore::GetVerticeSZ() const{
   return dmZVerticeSigma;
 }
 

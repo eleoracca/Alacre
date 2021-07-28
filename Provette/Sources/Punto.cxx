@@ -155,31 +155,31 @@ void Punto::SetRaggioS(const double RaggioS){
 
 
 // ---------------- Getter ----------------
-double Punto::GetX(){
+double Punto::GetX() const{
   return dmX;
 }
 
-double Punto::GetY(){
+double Punto::GetY() const{
   return dmY;
 }
 
-double Punto::GetZ(){
+double Punto::GetZ() const{
   return dmZ;
 }
 
-double Punto::GetTheta(){
+double Punto::GetTheta() const{
   return dmTheta;
 }
 
-double Punto::GetPhi(){
+double Punto::GetPhi() const{
   return dmPhi;
 }
 
-double Punto::GetRaggioC(){
+double Punto::GetRaggioC() const{
   return dmRaggioC;
 }
 
-double Punto::GetRaggioS(){
+double Punto::GetRaggioS() const{
   return dmRaggioS;
 }
 

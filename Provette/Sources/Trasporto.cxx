@@ -80,27 +80,27 @@ void Trasporto::SetDirID(const double ID){
 
 // ----------- Getter -----------
 
-int Trasporto::GetID(){
+int Trasporto::GetID() const{
   return dmID;
 }
 
-double Trasporto::GetDirTheta(){
+double Trasporto::GetDirTheta() const{
   return dmTheta;
 }
 
-double Trasporto::GetDirPhi(){
+double Trasporto::GetDirPhi() const{
   return dmPhi;
 }
 
-double Trasporto::GetDirCosX(){
+double Trasporto::GetDirCosX() const{
   return dmCDx;
 }
 
-double Trasporto::GetDirCosY(){
+double Trasporto::GetDirCosY() const{
   return dmCDy;
 }
 
-double Trasporto::GetDirCosZ(){
+double Trasporto::GetDirCosZ() const{
   return dmCDz;
 }
 

@@ -29,8 +29,8 @@ class Vertice : public Punto{
   void SetMolteplicita(int Molteplicita);
 
   // ---------------- Getter ----------------
-  int GetMolteplicita();
-  Punto GetCoordinate();
+  int GetMolteplicita()  const;
+  Punto GetCoordinate() const;
 
   static double TrovaVertice(Urto* L1, Urto* L2);
     

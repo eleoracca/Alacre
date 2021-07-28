@@ -26,12 +26,12 @@ class Trasporto : public TObject {
   void SetAngoli(const double Theta, const double Phi);
   
   // ----------- Getter -----------
-  int GetID();
-  double GetDirTheta();
-  double GetDirPhi();
-  double GetDirCosX();
-  double GetDirCosY();
-  double GetDirCosZ();
+  int GetID() const;
+  double GetDirTheta() const;
+  double GetDirPhi() const;
+  double GetDirCosX() const;
+  double GetDirCosY() const;
+  double GetDirCosZ() const;
   
  private:
   // ----------- Setter ----------- 

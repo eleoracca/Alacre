@@ -34,9 +34,9 @@ class Urto : public Punto{
   void SetNumeroLayer(int NumLayer);
   
   // ---------------- Getter ----------------
-  int GetNumeroLayer();
+  int GetNumeroLayer() const;
   bool TestReale();
-  int GetID();
+  int GetID() const;
   
   // ----------- Member functions -----------
   // Calcolo dell'intersezione cilindrica e restituzione del parametro

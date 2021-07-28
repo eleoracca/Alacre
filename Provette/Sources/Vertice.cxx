@@ -41,11 +41,11 @@ void Vertice::SetMolteplicita(int Molteplicita){
 }
 
 // ---------------- Getter ----------------
-int Vertice::GetMolteplicita(){
+int Vertice::GetMolteplicita() const{
   return dmMolteplicita;
 }
 
-Punto Vertice::GetCoordinate(){
+Punto Vertice::GetCoordinate() const{
   return Punto(dmX, dmY, dmZ);
 }
 
